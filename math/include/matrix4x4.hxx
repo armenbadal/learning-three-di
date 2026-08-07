@@ -1,5 +1,7 @@
 #pragma once
 
+#include "vector4.hxx"
+
 namespace math {
 
 class matrix4x4 {
@@ -17,6 +19,9 @@ public:
     float operator()(unsigned int row, unsigned int column) const;
     float& operator()(unsigned int row, unsigned int column);
 
+    vector4 row(unsigned int row) const;
+    vector4 column(unsigned int column) const;
+
     bool operator==(const matrix4x4&) const = default;
 
 private:
@@ -25,5 +30,8 @@ private:
                       {0.0F, 0.0F, 1.0F, 0.0F},
                       {0.0F, 0.0F, 0.0F, 1.0F}};
 };
+
+matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v);
+vector4 operator*(const matrix4x4& m, const vector4& v);
 
 } // namespace math

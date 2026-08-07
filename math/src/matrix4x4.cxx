@@ -33,5 +33,36 @@ float& matrix4x4::operator()(unsigned int row, unsigned int column)
     return _m[row][column];
 }
 
+vector4 matrix4x4::row(unsigned int row) const
+{
+    return vector4{_m[row][0], _m[row][1], _m[row][2], _m[row][3]};
+}
+
+vector4 matrix4x4::column(unsigned int column) const
+{
+    return vector4{_m[0][column], _m[1][column], _m[2][column], _m[3][column]};
+}
+
+matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v)
+{
+    matrix4x4 result = matrix4x4::zero();
+    for( unsigned int r = 0; r < 4; ++r ) {
+        const auto row = u.row(r);
+        for( unsigned int c = 0; c < 4; ++c )
+            result(r, c) = row.dot_product(v.column(c));
+    }
+    return result;
+}
+
+vector4 operator*(const matrix4x4& m, const vector4& v)
+{
+    return vector4{
+        m.row(0).dot_product(v),
+        m.row(1).dot_product(v),
+        m.row(2).dot_product(v),
+        m.row(3).dot_product(v)
+    };
+}
+
 } // namespace math
 

@@ -20,6 +20,11 @@ void matrix4x4_test_default_is_identity();
 void matrix4x4_test_identity();
 void matrix4x4_test_zero();
 void matrix4x4_test_element_access_mutable();
+void matrix4x4_test_multiply_identity();
+void matrix4x4_test_multiply_scale();
+void matrix4x4_test_multiply_vector_identity();
+void matrix4x4_test_multiply_vector_scale();
+void matrix4x4_test_multiply_vector_general();
 
 int main()
 {
@@ -43,6 +48,11 @@ int main()
     matrix4x4_test_identity();
     matrix4x4_test_zero();
     matrix4x4_test_element_access_mutable();
+    matrix4x4_test_multiply_identity();
+    matrix4x4_test_multiply_scale();
+    matrix4x4_test_multiply_vector_identity();
+    matrix4x4_test_multiply_vector_scale();
+    matrix4x4_test_multiply_vector_general();
 
     return test::report();
 }
