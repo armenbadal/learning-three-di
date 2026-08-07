@@ -26,9 +26,24 @@ void vector2_test_normalize()
     FLOAT_EQ(v0.y(), 0.8F);
 }
 
+void vector2_test_normalize_zero()
+{
+    vector2 v0{0.0F, 0.0F};
+    v0.normalize();
+    FLOAT_EQ(v0.x(), 0.0F);
+    FLOAT_EQ(v0.y(), 0.0F);
+
+    vector2 v1 = v0.normalized();
+    FLOAT_EQ(v1.x(), 0.0F);
+    FLOAT_EQ(v1.y(), 0.0F);
+}
+
+/*
 int main()
 {
     vector2_test_add();
     vector2_test_length();
     vector2_test_normalize();
+    vector2_test_normalize_zero();
 }
+*/

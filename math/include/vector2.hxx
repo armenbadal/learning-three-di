@@ -20,7 +20,7 @@ public:
     vector2 normalized() const;
     void normalize();
 
-    float dot_product(const vector2& vc);
+    float dot_product(const vector2& vc) const;
 
     bool operator==(const vector2&) const = default;
 

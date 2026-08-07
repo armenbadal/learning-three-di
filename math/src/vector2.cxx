@@ -24,6 +24,8 @@ void vector2::operator*=(float c)
 
 void vector2::operator/=(float c)
 {
+    if( c == 0.0F )
+        return;
     _x /= c;
     _y /= c;
 }
@@ -40,15 +42,20 @@ float vector2::length() const
 
 vector2 vector2::normalized() const
 {
-    return *this / length();
+    const float len = length();
+    if( len == 0.0F )
+        return *this;
+    return *this / len;
 }
 
 void vector2::normalize()
 {
-    *this /= length();
+    const float len = length();
+    if( len != 0.0F )
+        *this /= len;
 }
 
-float vector2::dot_product(const vector2& vc)
+float vector2::dot_product(const vector2& vc) const
 {
     return _x * vc._x + _y * vc._y;
 }

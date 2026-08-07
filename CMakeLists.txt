@@ -6,4 +6,6 @@ set(CMAKE_CXX_EXTENSIONS off)
 
 project(learning-three-di)
 
+enable_testing()
+
 add_subdirectory(math)
