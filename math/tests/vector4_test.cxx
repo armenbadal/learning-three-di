@@ -1,0 +1,39 @@
+#include "testing.hxx"
+#include "vector4.hxx"
+
+using namespace math;
+
+void vector4_test_add()
+{
+    const vector4 v0{1.0F, 2.0F, 3.0F, 4.0F};
+    const vector4 v1{5.0F, 6.0F, 7.0F, 8.0F};
+    const vector4 v2{6.0F, 8.0F, 10.0F, 12.0F};
+
+    EQ(v0 + v1, v2);
+}
+
+void vector4_test_length()
+{
+    const vector4 v0{1.0F, 2.0F, 2.0F, 4.0F};
+
+    FLOAT_EQ(v0.length(), 5.0F);
+}
+
+void vector4_test_normalize()
+{
+    vector4 v0{3.0F, 0.0F, 0.0F, 4.0F};
+    v0.normalize();
+
+    FLOAT_EQ(v0.x(), 0.6F);
+    FLOAT_EQ(v0.y(), 0.0F);
+    FLOAT_EQ(v0.z(), 0.0F);
+    FLOAT_EQ(v0.w(), 0.8F);
+}
+
+void vector4_test_dot_product()
+{
+    const vector4 v0{1.0F, 2.0F, 3.0F, 4.0F};
+    const vector4 v1{5.0F, 6.0F, 7.0F, 8.0F};
+
+    FLOAT_EQ(v0.dot_product(v1), 70.0F);
+}
