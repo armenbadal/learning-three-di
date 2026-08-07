@@ -25,6 +25,12 @@ void matrix4x4_test_multiply_scale();
 void matrix4x4_test_multiply_vector_identity();
 void matrix4x4_test_multiply_vector_scale();
 void matrix4x4_test_multiply_vector_general();
+void matrix4x4_test_rotation_zero_is_identity();
+void matrix4x4_test_rotation_z_quarter_turn();
+void matrix4x4_test_rotation_x_quarter_turn();
+void matrix4x4_test_rotation_y_quarter_turn();
+void matrix4x4_test_rotation_inverse();
+void matrix4x4_test_rotation_full_turn();
 
 int main()
 {
@@ -53,6 +59,12 @@ int main()
     matrix4x4_test_multiply_vector_identity();
     matrix4x4_test_multiply_vector_scale();
     matrix4x4_test_multiply_vector_general();
+    matrix4x4_test_rotation_zero_is_identity();
+    matrix4x4_test_rotation_z_quarter_turn();
+    matrix4x4_test_rotation_x_quarter_turn();
+    matrix4x4_test_rotation_y_quarter_turn();
+    matrix4x4_test_rotation_inverse();
+    matrix4x4_test_rotation_full_turn();
 
     return test::report();
 }

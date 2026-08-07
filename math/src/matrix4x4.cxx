@@ -1,5 +1,7 @@
 #include "matrix4x4.hxx"
 
+#include <cmath>
+
 namespace math {
 
 matrix4x4::matrix4x4(
@@ -20,7 +22,68 @@ matrix4x4 matrix4x4::identity()
 
 matrix4x4 matrix4x4::zero()
 {
-    return matrix4x4{0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
+    return matrix4x4{
+        0.0F, 0.0F, 0.0F, 0.0F,
+        0.0F, 0.0F, 0.0F, 0.0F,
+        0.0F, 0.0F, 0.0F, 0.0F,
+        0.0F, 0.0F, 0.0F, 0.0F
+    };
+}
+
+matrix4x4 matrix4x4::translation(float dx, float dy, float dz)
+{
+    return matrix4x4{
+        1.0F, 0.0F, 0.0F, dx,
+        0.0F, 1.0F, 0.0F, dy,
+        0.0F, 0.0F, 1.0F, dz,
+        0.0F, 0.0F, 0.0F, 1.0F
+    };
+}
+
+matrix4x4 matrix4x4::scaling(float sx, float sy, float sz)
+{
+    return matrix4x4{
+          sx, 0.0F, 0.0F, 0.0F,
+        0.0F,   sy, 0.0F, 0.0F,
+        0.0F, 0.0F,   sz, 0.0F,
+        0.0F, 0.0F, 0.0F, 1.0F
+    };
+}
+
+matrix4x4 matrix4x4::rotation_x(float angle)
+{
+    const float c = std::cosf(angle);
+    const float s = std::sinf(angle);
+    return matrix4x4{
+        1.0F, 0.0F, 0.0F, 0.0F,
+        0.0F,    c,   -s, 0.0F,
+        0.0F,    s,    c, 0.0F,
+        0.0F, 0.0F, 0.0F, 1.0F
+    };
+}
+
+matrix4x4 matrix4x4::rotation_y(float angle)
+{
+    const float c = std::cosf(angle);
+    const float s = std::sinf(angle);
+    return matrix4x4{
+           c, 0.0F,    s, 0.0F,
+        0.0F, 1.0F, 0.0F, 0.0F,
+          -s, 0.0F,    c, 0.0F,
+        0.0F, 0.0F, 0.0F, 1.0F
+    };
+}
+
+matrix4x4 matrix4x4::rotation_z(float angle)
+{
+    const float c = std::cosf(angle);
+    const float s = std::sinf(angle);
+    return matrix4x4{
+           c,   -s, 0.0F, 0.0F,
+           s,    c, 0.0F, 0.0F,
+        0.0F, 0.0F, 1.0F, 0.0F,
+        0.0F, 0.0F, 0.0F, 1.0F
+    };
 }
 
 float matrix4x4::operator()(unsigned int row, unsigned int column) const

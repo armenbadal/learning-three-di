@@ -3,6 +3,17 @@
 
 using namespace math;
 
+namespace {
+    constexpr float pi = 3.14159265358979323846F;
+
+    void matrix_close(const matrix4x4& a, const matrix4x4& b)
+    {
+        for (unsigned int r = 0; r < 4; ++r)
+            for (unsigned int c = 0; c < 4; ++c)
+                FLOAT_EQ(a(r, c), b(r, c));
+    }
+}
+
 void matrix4x4_test_constructor()
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
@@ -116,4 +127,74 @@ void matrix4x4_test_multiply_vector_general()
     const vector4 expected{10.0F, 26.0F, 42.0F, 58.0F};
 
     EQ(m * v, expected);
+}
+
+void matrix4x4_test_rotation_zero_is_identity()
+{
+    EQ(matrix4x4::rotation_x(0.0F), matrix4x4{});
+    EQ(matrix4x4::rotation_y(0.0F), matrix4x4{});
+    EQ(matrix4x4::rotation_z(0.0F), matrix4x4{});
+}
+
+void matrix4x4_test_rotation_z_quarter_turn()
+{
+    const matrix4x4 r = matrix4x4::rotation_z(pi / 2.0F);
+    const vector4 ex{1.0F, 0.0F, 0.0F, 0.0F};
+    const vector4 ey{0.0F, 1.0F, 0.0F, 0.0F};
+
+    const vector4 rx = r * ex;
+    FLOAT_EQ(rx.x(), 0.0F);
+    FLOAT_EQ(rx.y(), 1.0F);
+
+    const vector4 ry = r * ey;
+    FLOAT_EQ(ry.x(), -1.0F);
+    FLOAT_EQ(ry.y(), 0.0F);
+}
+
+void matrix4x4_test_rotation_x_quarter_turn()
+{
+    const matrix4x4 r = matrix4x4::rotation_x(pi / 2.0F);
+    const vector4 ey{0.0F, 1.0F, 0.0F, 0.0F};
+    const vector4 ez{0.0F, 0.0F, 1.0F, 0.0F};
+
+    const vector4 ry = r * ey;
+    FLOAT_EQ(ry.y(), 0.0F);
+    FLOAT_EQ(ry.z(), 1.0F);
+
+    const vector4 rz = r * ez;
+    FLOAT_EQ(rz.y(), -1.0F);
+    FLOAT_EQ(rz.z(), 0.0F);
+}
+
+void matrix4x4_test_rotation_y_quarter_turn()
+{
+    const matrix4x4 r = matrix4x4::rotation_y(pi / 2.0F);
+    const vector4 ex{1.0F, 0.0F, 0.0F, 0.0F};
+    const vector4 ez{0.0F, 0.0F, 1.0F, 0.0F};
+
+    const vector4 rz = r * ez;
+    FLOAT_EQ(rz.x(), 1.0F);
+    FLOAT_EQ(rz.z(), 0.0F);
+
+    const vector4 rx = r * ex;
+    FLOAT_EQ(rx.x(), 0.0F);
+    FLOAT_EQ(rx.z(), -1.0F);
+}
+
+void matrix4x4_test_rotation_inverse()
+{
+    const float angle = 0.7F;
+    matrix_close(matrix4x4::rotation_x(angle) * matrix4x4::rotation_x(-angle), matrix4x4{});
+    matrix_close(matrix4x4::rotation_y(angle) * matrix4x4::rotation_y(-angle), matrix4x4{});
+    matrix_close(matrix4x4::rotation_z(angle) * matrix4x4::rotation_z(-angle), matrix4x4{});
+}
+
+void matrix4x4_test_rotation_full_turn()
+{
+    const vector4 v{1.0F, 2.0F, 3.0F, 1.0F};
+
+    const vector4 rz = matrix4x4::rotation_z(2.0F * pi) * v;
+    FLOAT_EQ(rz.x(), v.x());
+    FLOAT_EQ(rz.y(), v.y());
+    FLOAT_EQ(rz.z(), v.z());
 }

@@ -15,6 +15,11 @@ public:
 
     static matrix4x4 identity();
     static matrix4x4 zero();
+    static matrix4x4 translation(float dx, float dy, float dz);
+    static matrix4x4 scaling(float sx, float sy, float sz);
+    static matrix4x4 rotation_x(float angle);
+    static matrix4x4 rotation_y(float angle);
+    static matrix4x4 rotation_z(float angle);
 
     float operator()(unsigned int row, unsigned int column) const;
     float& operator()(unsigned int row, unsigned int column);
