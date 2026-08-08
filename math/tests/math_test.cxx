@@ -36,6 +36,15 @@ void matrix4x4_test_transpose_inverse();
 void matrix4x4_test_determinant_basics();
 void matrix4x4_test_determinant_transforms();
 void matrix4x4_test_determinant_singular();
+void matrix4x4_test_inverse_identity();
+void matrix4x4_test_inverse_diagonal();
+void matrix4x4_test_inverse_product_is_identity();
+void matrix4x4_test_inverse_double();
+void matrix4x4_test_inverse_rotation_is_transpose();
+void matrix4x4_test_inverse_singular();
+void matrix4x4_test_inverse_affine();
+void matrix4x4_test_inverse_affine_translation();
+void matrix4x4_test_inverse_non_affine();
 
 void transform_test_identity();
 void transform_test_translation();
@@ -81,6 +90,15 @@ int main()
     matrix4x4_test_determinant_basics();
     matrix4x4_test_determinant_transforms();
     matrix4x4_test_determinant_singular();
+    matrix4x4_test_inverse_identity();
+    matrix4x4_test_inverse_diagonal();
+    matrix4x4_test_inverse_product_is_identity();
+    matrix4x4_test_inverse_double();
+    matrix4x4_test_inverse_rotation_is_transpose();
+    matrix4x4_test_inverse_singular();
+    matrix4x4_test_inverse_affine();
+    matrix4x4_test_inverse_affine_translation();
+    matrix4x4_test_inverse_non_affine();
 
     transform_test_identity();
     transform_test_translation();

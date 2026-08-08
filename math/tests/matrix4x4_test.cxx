@@ -266,3 +266,99 @@ void matrix4x4_test_determinant_singular()
 
     FLOAT_EQ(m.determinant(), 0.0F);
 }
+
+void matrix4x4_test_inverse_identity()
+{
+    matrix_close(matrix4x4{}.inverse(), matrix4x4{});
+}
+
+void matrix4x4_test_inverse_diagonal()
+{
+    const matrix4x4 m{2.0F, 0.0F, 0.0F, 0.0F,
+                      0.0F, 4.0F, 0.0F, 0.0F,
+                      0.0F, 0.0F, 0.5F, 0.0F,
+                      0.0F, 0.0F, 0.0F, 10.0F};
+    const matrix4x4 expected{0.5F, 0.0F, 0.0F, 0.0F,
+                             0.0F, 0.25F, 0.0F, 0.0F,
+                             0.0F, 0.0F, 2.0F, 0.0F,
+                             0.0F, 0.0F, 0.0F, 0.1F};
+
+    matrix_close(m.inverse(), expected);
+}
+
+void matrix4x4_test_inverse_product_is_identity()
+{
+    const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
+                      1.0F, 2.0F, 1.0F, 0.0F,
+                      0.0F, 0.0F, 3.0F, 1.0F,
+                      2.0F, 1.0F, 0.0F, 5.0F};
+
+    matrix_close(m * m.inverse(), matrix4x4{});
+    matrix_close(m.inverse() * m, matrix4x4{});
+}
+
+void matrix4x4_test_inverse_double()
+{
+    const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
+                           1.0F, 2.0F, 1.0F, 0.0F,
+                           0.0F, 0.0F, 3.0F, 1.0F,
+                           2.0F, 1.0F, 0.0F, 5.0F};
+
+    matrix_close(m.inverse().inverse(), m);
+}
+
+void matrix4x4_test_inverse_rotation_is_transpose()
+{
+    matrix_close(matrix4x4::rotation_z(0.7F).inverse(), matrix4x4::rotation_z(0.7F).transpose());
+    matrix_close(matrix4x4::rotation_x(0.9F).inverse(), matrix4x4::rotation_x(0.9F).transpose());
+}
+
+void matrix4x4_test_inverse_singular()
+{
+    EQ(matrix4x4::zero().inverse(), matrix4x4::zero());
+}
+
+void matrix4x4_test_inverse_affine()
+{
+    const matrix4x4 m = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F})
+                      * matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F});
+    const matrix4x4 inv = m.inverse();
+
+    matrix_close(m * inv, matrix4x4{});
+    matrix_close(inv * m, matrix4x4{});
+
+    const vector4 p{3.0F, 4.0F, 5.0F, 1.0F};
+    const vector4 q = m * p;
+    FLOAT_EQ(q.x(), 7.0F);
+    FLOAT_EQ(q.y(), 14.0F);
+    FLOAT_EQ(q.z(), 23.0F);
+
+    const vector4 r = inv * q;
+    FLOAT_EQ(r.x(), 3.0F);
+    FLOAT_EQ(r.y(), 4.0F);
+    FLOAT_EQ(r.z(), 5.0F);
+
+    FLOAT_EQ(inv(3, 0), 0.0F);
+    FLOAT_EQ(inv(3, 1), 0.0F);
+    FLOAT_EQ(inv(3, 2), 0.0F);
+    FLOAT_EQ(inv(3, 3), 1.0F);
+}
+
+void matrix4x4_test_inverse_affine_translation()
+{
+    const matrix4x4 t = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F});
+    const matrix4x4 inv = t.inverse();
+
+    matrix_close(inv, matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
+}
+
+void matrix4x4_test_inverse_non_affine()
+{
+    const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
+                      1.0F, 2.0F, 1.0F, 0.0F,
+                      0.0F, 0.0F, 3.0F, 1.0F,
+                      2.0F, 1.0F, 0.0F, 5.0F};
+
+    matrix_close(m * m.inverse(), matrix4x4{});
+    matrix_close(m.inverse() * m, matrix4x4{});
+}

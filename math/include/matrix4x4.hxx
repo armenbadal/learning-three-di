@@ -29,6 +29,7 @@ public:
     }
 
     float determinant() const;
+    matrix4x4 inverse() const;
 
     static matrix4x4 identity();
     static matrix4x4 zero();
@@ -48,6 +49,9 @@ public:
 
 private:
     float determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) const;
+
+    matrix4x4 inverse_affine() const;
+    matrix4x4 inverse_general() const;
 
     float _m[4][4] = {{1.0F, 0.0F, 0.0F, 0.0F},
                       {0.0F, 1.0F, 0.0F, 0.0F},
