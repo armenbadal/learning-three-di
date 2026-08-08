@@ -1,5 +1,4 @@
 add_library(renderer STATIC
-    src/renderer.cxx
     src/framebuffer.cxx
     src/utility.cxx
 )

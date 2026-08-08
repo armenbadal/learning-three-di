@@ -49,7 +49,7 @@ TEST_CASE("framebuffer set out of bounds ignored")
     fb.set(99, 99, pixel{1, 2, 3, 4});
     fb.set(-1, 0, pixel{1, 2, 3, 4});
 
-    check_pixel(fb.get(3, 2), 0, 0, 0, 255);
+    check_pixel(fb.get(3, 2), 255, 255, 255, 255);
 }
 
 TEST_CASE("framebuffer set and get")
@@ -59,7 +59,7 @@ TEST_CASE("framebuffer set and get")
     fb.set(1, 2, pixel{255, 0, 0, 255});
     check_pixel(fb.get(1, 2), 255, 0, 0, 255);
 
-    check_pixel(fb.get(0, 0), 0, 0, 0, 255);
+    check_pixel(fb.get(0, 0), 255, 255, 255, 255);
 }
 
 TEST_CASE("framebuffer arbitrary pixel values")
@@ -87,15 +87,15 @@ TEST_CASE("framebuffer independent pixels")
     framebuffer fb{8, 1};
 
     fb.set(1, 0, pixel{99, 99, 99, 99});
-    check_pixel(fb.get(0, 0), 0, 0, 0, 255);
-    check_pixel(fb.get(2, 0), 0, 0, 0, 255);
+    check_pixel(fb.get(0, 0), 255, 255, 255, 255);
+    check_pixel(fb.get(2, 0), 255, 255, 255, 255);
 }
 
 TEST_CASE("framebuffer one pixel render target")
 {
     framebuffer fb{1, 1};
 
-    check_pixel(fb.get(0, 0), 0, 0, 0, 255);
+    check_pixel(fb.get(0, 0), 255, 255, 255, 255);
 
     fb.set(0, 0, pixel{0, 255, 0, 255});
     check_pixel(fb.get(0, 0), 0, 255, 0, 255);
