@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vector3.hxx"
 #include "vector4.hxx"
 
 namespace math {
@@ -15,8 +16,8 @@ public:
 
     static matrix4x4 identity();
     static matrix4x4 zero();
-    static matrix4x4 translation(float dx, float dy, float dz);
-    static matrix4x4 scaling(float sx, float sy, float sz);
+    static matrix4x4 translation(vector3 translation);
+    static matrix4x4 scaling(vector3 scaling);
     static matrix4x4 rotation_x(float angle);
     static matrix4x4 rotation_y(float angle);
     static matrix4x4 rotation_z(float angle);

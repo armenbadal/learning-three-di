@@ -32,6 +32,12 @@ void matrix4x4_test_rotation_y_quarter_turn();
 void matrix4x4_test_rotation_inverse();
 void matrix4x4_test_rotation_full_turn();
 
+void transform_test_identity();
+void transform_test_translation();
+void transform_test_scaling();
+void transform_test_rotation();
+void transform_test_trs_order();
+
 int main()
 {
     vector2_test_add();
@@ -65,6 +71,12 @@ int main()
     matrix4x4_test_rotation_y_quarter_turn();
     matrix4x4_test_rotation_inverse();
     matrix4x4_test_rotation_full_turn();
+
+    transform_test_identity();
+    transform_test_translation();
+    transform_test_scaling();
+    transform_test_rotation();
+    transform_test_trs_order();
 
     return test::report();
 }

@@ -3,6 +3,7 @@ add_library(math-3d STATIC
     src/vector3.cxx
     src/vector4.cxx
     src/matrix4x4.cxx
+    src/affine.cxx
 )
 target_include_directories(math-3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -12,6 +13,7 @@ add_executable(math-3d-tests
     tests/vector3_test.cxx
     tests/vector4_test.cxx
     tests/matrix4x4_test.cxx
+    tests/affine_test.cxx
 )
 target_link_libraries(math-3d-tests PRIVATE math-3d)
 

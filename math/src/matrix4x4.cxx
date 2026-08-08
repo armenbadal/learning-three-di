@@ -30,23 +30,23 @@ matrix4x4 matrix4x4::zero()
     };
 }
 
-matrix4x4 matrix4x4::translation(float dx, float dy, float dz)
+matrix4x4 matrix4x4::translation(vector3 tr)
 {
     return matrix4x4{
-        1.0F, 0.0F, 0.0F, dx,
-        0.0F, 1.0F, 0.0F, dy,
-        0.0F, 0.0F, 1.0F, dz,
+        1.0F, 0.0F, 0.0F, tr.x(),
+        0.0F, 1.0F, 0.0F, tr.y(),
+        0.0F, 0.0F, 1.0F, tr.z(),
         0.0F, 0.0F, 0.0F, 1.0F
     };
 }
 
-matrix4x4 matrix4x4::scaling(float sx, float sy, float sz)
+matrix4x4 matrix4x4::scaling(vector3 sc)
 {
     return matrix4x4{
-          sx, 0.0F, 0.0F, 0.0F,
-        0.0F,   sy, 0.0F, 0.0F,
-        0.0F, 0.0F,   sz, 0.0F,
-        0.0F, 0.0F, 0.0F, 1.0F
+        sc.x(),   0.0F,   0.0F, 0.0F,
+          0.0F, sc.y(),   0.0F, 0.0F,
+          0.0F,   0.0F, sc.z(), 0.0F,
+          0.0F,   0.0F,   0.0F, 1.0F
     };
 }
 
