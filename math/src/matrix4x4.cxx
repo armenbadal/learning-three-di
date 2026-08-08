@@ -1,6 +1,7 @@
 #include "matrix4x4.hxx"
 
 #include <cmath>
+#include <format>
 
 namespace math {
 
@@ -221,6 +222,14 @@ vector4 operator*(const matrix4x4& m, const vector4& v)
         m.row(2).dot_product(v),
         m.row(3).dot_product(v)
     };
+}
+
+std::ostream& operator<<(std::ostream& out, const matrix4x4& m)
+{
+    for( unsigned int r = 0; r < 4; ++r )
+        out << std::format("{:7.4f} {:7.4f} {:7.4f} {:7.4f}\n", 
+                           m(r, 0), m(r, 1), m(r, 2), m(r, 3));
+    return out;
 }
 
 } // namespace math

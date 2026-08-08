@@ -45,6 +45,7 @@ void matrix4x4_test_inverse_singular();
 void matrix4x4_test_inverse_affine();
 void matrix4x4_test_inverse_affine_translation();
 void matrix4x4_test_inverse_non_affine();
+void matrix4x4_test_stream_output();
 
 void transform_test_identity();
 void transform_test_translation();
@@ -99,6 +100,7 @@ int main()
     matrix4x4_test_inverse_affine();
     matrix4x4_test_inverse_affine_translation();
     matrix4x4_test_inverse_non_affine();
+    matrix4x4_test_stream_output();
 
     transform_test_identity();
     transform_test_translation();

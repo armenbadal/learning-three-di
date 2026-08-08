@@ -1,6 +1,9 @@
 #include "testing.hxx"
 #include "matrix4x4.hxx"
 
+#include <sstream>
+#include <string>
+
 using namespace math;
 
 namespace {
@@ -361,4 +364,21 @@ void matrix4x4_test_inverse_non_affine()
 
     matrix_close(m * m.inverse(), matrix4x4{});
     matrix_close(m.inverse() * m, matrix4x4{});
+}
+
+void matrix4x4_test_stream_output()
+{
+    const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
+                      5.0F, 6.0F, 7.0F, 8.0F,
+                      9.0F, 10.0F, 11.0F, 12.0F,
+                      13.0F, 14.0F, 15.0F, 16.0F};
+    std::ostringstream out;
+    out << m;
+    const std::string expected =
+        " 1.0000  2.0000  3.0000  4.0000\n"
+        " 5.0000  6.0000  7.0000  8.0000\n"
+        " 9.0000 10.0000 11.0000 12.0000\n"
+        "13.0000 14.0000 15.0000 16.0000\n";
+
+    EQ(out.str(), expected);
 }

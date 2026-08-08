@@ -3,6 +3,8 @@
 #include "vector3.hxx"
 #include "vector4.hxx"
 
+#include <ostream>
+
 namespace math {
 
 class matrix4x4 {
@@ -61,5 +63,7 @@ private:
 
 matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v);
 vector4 operator*(const matrix4x4& m, const vector4& v);
+
+std::ostream& operator<<(std::ostream& out, const matrix4x4& m);
 
 } // namespace math
