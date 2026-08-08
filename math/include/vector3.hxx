@@ -6,9 +6,9 @@ class vector3 {
 public:
     constexpr vector3(float x, float y, float z) : _x{x}, _y{y}, _z{z} {}
 
-    float x() const { return _x; }
-    float y() const { return _y; }
-    float z() const { return _z; }
+    constexpr float x() const { return _x; }
+    constexpr float y() const { return _y; }
+    constexpr float z() const { return _z; }
 
     void operator+=(const vector3& vc);
     void operator-=(const vector3& vc);

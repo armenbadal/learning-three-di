@@ -3,6 +3,7 @@
 #include "vector3.hxx"
 #include "vector4.hxx"
 
+#include <optional>
 #include <ostream>
 
 namespace math {
@@ -31,12 +32,12 @@ public:
     }
 
     float determinant() const;
-    matrix4x4 inverse() const;
+    std::optional<matrix4x4> inverse() const;
 
     static matrix4x4 identity();
     static matrix4x4 zero();
-    static matrix4x4 translation(vector3 translation);
-    static matrix4x4 scaling(vector3 scaling);
+    static matrix4x4 translation(const vector3& translation);
+    static matrix4x4 scaling(const vector3& scaling);
     static matrix4x4 rotation_x(float angle);
     static matrix4x4 rotation_y(float angle);
     static matrix4x4 rotation_z(float angle);
@@ -48,10 +49,10 @@ public:
     vector4 column(unsigned int column) const;
 
 private:
-    float determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) const;
+    static float determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i);
 
-    matrix4x4 inverse_affine() const;
-    matrix4x4 inverse_general() const;
+    std::optional<matrix4x4> inverse_affine() const;
+    std::optional<matrix4x4> inverse_general() const;
 
     float _m[4][4] = {{1.0F, 0.0F, 0.0F, 0.0F},
                       {0.0F, 1.0F, 0.0F, 0.0F},

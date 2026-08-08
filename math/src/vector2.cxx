@@ -1,5 +1,6 @@
 #include "vector2.hxx"
 
+#include <cassert>
 #include <cmath>
 
 namespace math {
@@ -24,8 +25,7 @@ void vector2::operator*=(float c)
 
 void vector2::operator/=(float c)
 {
-    if( c == 0.0F )
-        return;
+    assert(c != 0.0F);
     _x /= c;
     _y /= c;
 }

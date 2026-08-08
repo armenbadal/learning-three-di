@@ -5,10 +5,12 @@
 
 namespace math {
 
+constexpr float epsilon = 1e-5f;
+
 float matrix4x4::determinant3x3(
             float a, float b, float c,
             float d, float e, float f,
-            float g, float h, float i) const
+            float g, float h, float i)
 {
     return a * (e * i - f * h)
          - b * (d * i - f * g)
@@ -40,14 +42,14 @@ float matrix4x4::determinant() const
          - _m[0][3] * minor03;
 }
 
-matrix4x4 matrix4x4::inverse() const
+std::optional<matrix4x4> matrix4x4::inverse() const
 {
     if( _m[3][0] == 0.0F && _m[3][1] == 0.0F && _m[3][2] == 0.0F && _m[3][3] == 1.0F )
         return inverse_affine();
     return inverse_general();
 }
 
-matrix4x4 matrix4x4::inverse_affine() const
+std::optional<matrix4x4> matrix4x4::inverse_affine() const
 {
     const float l00 = _m[0][0], l01 = _m[0][1], l02 = _m[0][2];
     const float l10 = _m[1][0], l11 = _m[1][1], l12 = _m[1][2];
@@ -55,8 +57,8 @@ matrix4x4 matrix4x4::inverse_affine() const
     const float tx = _m[0][3], ty = _m[1][3], tz = _m[2][3];
 
     const float det = determinant3x3(l00, l01, l02, l10, l11, l12, l20, l21, l22);
-    if( det == 0.0F )
-        return matrix4x4::zero();
+    if( std::fabs(det) < epsilon )
+        return std::nullopt;
 
     const float c00 = l11 * l22 - l12 * l21;
     const float c01 = l12 * l20 - l10 * l22;
@@ -84,11 +86,11 @@ matrix4x4 matrix4x4::inverse_affine() const
     };
 }
 
-matrix4x4 matrix4x4::inverse_general() const
+std::optional<matrix4x4> matrix4x4::inverse_general() const
 {
     const float det = determinant();
-    if( det == 0.0F )
-        return matrix4x4::zero();
+    if( std::fabs(det) < epsilon )
+        return std::nullopt;
 
     matrix4x4 result = matrix4x4::zero();
     for( unsigned int r = 0; r < 4; ++r )
@@ -132,7 +134,7 @@ matrix4x4 matrix4x4::zero()
     };
 }
 
-matrix4x4 matrix4x4::translation(vector3 tr)
+matrix4x4 matrix4x4::translation(const vector3& tr)
 {
     return matrix4x4{
         1.0F, 0.0F, 0.0F, tr.x(),
@@ -142,7 +144,7 @@ matrix4x4 matrix4x4::translation(vector3 tr)
     };
 }
 
-matrix4x4 matrix4x4::scaling(vector3 sc)
+matrix4x4 matrix4x4::scaling(const vector3& sc)
 {
     return matrix4x4{
         sc.x(),   0.0F,   0.0F, 0.0F,
@@ -234,7 +236,6 @@ std::ostream& operator<<(std::ostream& out, const matrix4x4& m)
 
 bool operator==(const matrix4x4& mo, const matrix4x4& mi)
 {
-    constexpr float epsilon = 1e-5f;
     for( unsigned int r = 0; r < 4; ++r )
         for( unsigned int c = 0; c < 4; ++c )
             if( fabs(mo(r,c) - mi(r,c)) > epsilon )

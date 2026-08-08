@@ -6,10 +6,10 @@ class vector4 {
 public:
     constexpr vector4(float x, float y, float z, float w) : _x{x}, _y{y}, _z{z}, _w{w} {}
 
-    float x() const { return _x; }
-    float y() const { return _y; }
-    float z() const { return _z; }
-    float w() const { return _w; }
+    constexpr float x() const { return _x; }
+    constexpr float y() const { return _y; }
+    constexpr float z() const { return _z; }
+    constexpr float w() const { return _w; }
 
     void operator+=(const vector4& vc);
     void operator-=(const vector4& vc);

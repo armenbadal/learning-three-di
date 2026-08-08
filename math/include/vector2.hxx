@@ -6,8 +6,8 @@ class vector2 {
 public:
     constexpr vector2(float x, float y) : _x{x}, _y{y} {}
 
-    float x() const { return _x; }
-    float y() const { return _y; }
+    constexpr float x() const { return _x; }
+    constexpr float y() const { return _y; }
 
     void operator+=(const vector2& vc);
     void operator-=(const vector2& vc);

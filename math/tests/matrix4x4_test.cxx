@@ -265,7 +265,9 @@ TEST_CASE("matrix4x4 determinant singular")
 
 TEST_CASE("matrix4x4 inverse identity")
 {
-    CHECK(matrix4x4{}.inverse() == matrix4x4{});
+    const auto inv = matrix4x4{}.inverse();
+    REQUIRE(inv.has_value());
+    CHECK(inv.value() == matrix4x4{});
 }
 
 TEST_CASE("matrix4x4 inverse diagonal")
@@ -279,7 +281,9 @@ TEST_CASE("matrix4x4 inverse diagonal")
                              0.0F, 0.0F, 2.0F, 0.0F,
                              0.0F, 0.0F, 0.0F, 0.1F};
 
-    CHECK(m.inverse() == expected);
+    const auto inv = m.inverse();
+    REQUIRE(inv.has_value());
+    CHECK(inv.value() == expected);
 }
 
 TEST_CASE("matrix4x4 inverse product is identity")
@@ -289,8 +293,10 @@ TEST_CASE("matrix4x4 inverse product is identity")
                       0.0F, 0.0F, 3.0F, 1.0F,
                       2.0F, 1.0F, 0.0F, 5.0F};
 
-    CHECK(m * m.inverse() == matrix4x4{});
-    CHECK(m.inverse() * m == matrix4x4{});
+    const auto inv = m.inverse();
+    REQUIRE(inv.has_value());
+    CHECK(m * inv.value() == matrix4x4{});
+    CHECK(inv.value() * m == matrix4x4{});
 }
 
 TEST_CASE("matrix4x4 inverse double")
@@ -300,25 +306,29 @@ TEST_CASE("matrix4x4 inverse double")
                       0.0F, 0.0F, 3.0F, 1.0F,
                       2.0F, 1.0F, 0.0F, 5.0F};
 
-    CHECK(m.inverse().inverse() == m);
+    const auto inv = m.inverse();
+    REQUIRE(inv.has_value());
+    CHECK(inv.value().inverse().value() == m);
 }
 
 TEST_CASE("matrix4x4 inverse rotation is transpose")
 {
-    CHECK(matrix4x4::rotation_z(0.7F).inverse() == matrix4x4::rotation_z(0.7F).transpose());
-    CHECK(matrix4x4::rotation_x(0.9F).inverse() == matrix4x4::rotation_x(0.9F).transpose());
+    CHECK(matrix4x4::rotation_z(0.7F).inverse().value() == matrix4x4::rotation_z(0.7F).transpose());
+    CHECK(matrix4x4::rotation_x(0.9F).inverse().value() == matrix4x4::rotation_x(0.9F).transpose());
 }
 
 TEST_CASE("matrix4x4 inverse singular")
 {
-    CHECK(matrix4x4::zero().inverse() == matrix4x4::zero());
+    CHECK_FALSE(matrix4x4::zero().inverse().has_value());
 }
 
 TEST_CASE("matrix4x4 inverse affine")
 {
     const matrix4x4 m = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F})
                       * matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F});
-    const matrix4x4 inv = m.inverse();
+    const auto inv_opt = m.inverse();
+    REQUIRE(inv_opt.has_value());
+    const matrix4x4 inv = inv_opt.value();
 
     CHECK(m * inv == matrix4x4{});
     CHECK(inv * m == matrix4x4{});
@@ -344,7 +354,14 @@ TEST_CASE("matrix4x4 inverse affine translation")
 {
     const matrix4x4 t = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F});
 
-    CHECK(t.inverse() == matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
+    CHECK(t.inverse().value() == matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
+}
+
+TEST_CASE("matrix4x4 inverse affine singular")
+{
+    const matrix4x4 m = matrix4x4::scaling(vector3{2.0F, 0.0F, 4.0F});
+
+    CHECK_FALSE(m.inverse().has_value());
 }
 
 TEST_CASE("matrix4x4 inverse non affine")
@@ -354,8 +371,10 @@ TEST_CASE("matrix4x4 inverse non affine")
                       0.0F, 0.0F, 3.0F, 1.0F,
                       2.0F, 1.0F, 0.0F, 5.0F};
 
-    CHECK(m * m.inverse() == matrix4x4{});
-    CHECK(m.inverse() * m == matrix4x4{});
+    const auto inv = m.inverse();
+    REQUIRE(inv.has_value());
+    CHECK(m * inv.value() == matrix4x4{});
+    CHECK(inv.value() * m == matrix4x4{});
 }
 
 TEST_CASE("matrix4x4 equality")
