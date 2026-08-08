@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pixel.hxx"
+#include "colour.hxx"
 
 #include <vector>
 
@@ -13,13 +13,13 @@ public:
     unsigned int width() const { return _width; }
     unsigned int height() const { return _height; }
 
-    pixel get(unsigned int x, unsigned int y) const;
-    void set(unsigned int x, unsigned int y, pixel p);
+    colour get(unsigned int x, unsigned int y) const;
+    void set(unsigned int x, unsigned int y, colour p);
 
 private:
     unsigned int _width;
     unsigned int _height;
-    std::vector<pixel> _pixels;
+    std::vector<colour> _colours;
 };
 
 } // namespace renderer

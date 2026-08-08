@@ -1,6 +1,6 @@
 #include "framebuffer.hxx"
 #include "utility.hxx"
-#include "pixel.hxx"
+#include "colour.hxx"
 
 int main()
 {

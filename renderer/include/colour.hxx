@@ -4,9 +4,9 @@
 
 namespace renderer {
 
-class pixel {
+class colour {
 public:
-    constexpr pixel(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255)
+    constexpr colour(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255)
         : _r{r}, _g{g}, _b{b}, _a{a}
     {}
 
@@ -22,7 +22,7 @@ private:
     std::uint8_t _a;
 };
 
-constexpr pixel white{255, 255, 255};
-constexpr pixel black{0, 0, 0};
+constexpr colour white{255, 255, 255};
+constexpr colour black{0, 0, 0};
 
 } // namespace renderer

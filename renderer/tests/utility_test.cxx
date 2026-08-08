@@ -27,13 +27,13 @@ namespace {
     }
 }
 
-TEST_CASE("save_as_ppm writes pixels row-major")
+TEST_CASE("save_as_ppm writes colours row-major")
 {
     framebuffer fb{2, 2};
-    fb.set(0, 0, pixel{255, 0, 0, 255});
-    fb.set(1, 0, pixel{0, 255, 0, 255});
-    fb.set(0, 1, pixel{0, 0, 255, 255});
-    fb.set(1, 1, pixel{255, 255, 255, 255});
+    fb.set(0, 0, colour{255, 0, 0, 255});
+    fb.set(1, 0, colour{0, 255, 0, 255});
+    fb.set(0, 1, colour{0, 0, 255, 255});
+    fb.set(1, 1, colour{255, 255, 255, 255});
 
     const auto path = temp_path();
     save_as_ppm(fb, path);
