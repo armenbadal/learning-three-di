@@ -4,7 +4,7 @@ namespace math {
 
 class vector2 {
 public:
-    vector2(float x, float y) : _x{x}, _y{y} {}
+    constexpr vector2(float x, float y) : _x{x}, _y{y} {}
 
     float x() const { return _x; }
     float y() const { return _y; }

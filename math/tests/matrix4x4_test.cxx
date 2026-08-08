@@ -14,6 +14,11 @@ namespace {
     }
 }
 
+constexpr matrix4x4 test_constexpr_ctor{1.0F, 2.0F, 3.0F, 4.0F,
+                                        5.0F, 6.0F, 7.0F, 8.0F,
+                                        9.0F, 10.0F, 11.0F, 12.0F,
+                                        13.0F, 14.0F, 15.0F, 16.0F};
+
 void matrix4x4_test_constructor()
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,

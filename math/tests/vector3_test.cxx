@@ -3,6 +3,8 @@
 
 using namespace math;
 
+constexpr vector3 test_constexpr_ctor{1.0F, 2.0F, 3.0F};
+
 void vector3_test_cross_product_basis()
 {
     const vector3 x{1.0F, 0.0F, 0.0F};

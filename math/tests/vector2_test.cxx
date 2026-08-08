@@ -3,6 +3,8 @@
 
 using namespace math;
 
+constexpr vector2 test_constexpr_ctor{3.0F, 4.0F};
+
 void vector2_test_add()
 {
     vector2 v0{1.0F, 2.0F};

@@ -4,7 +4,7 @@ namespace math {
 
 class vector4 {
 public:
-    vector4(float x, float y, float z, float w) : _x{x}, _y{y}, _z{z}, _w{w} {}
+    constexpr vector4(float x, float y, float z, float w) : _x{x}, _y{y}, _z{z}, _w{w} {}
 
     float x() const { return _x; }
     float y() const { return _y; }
