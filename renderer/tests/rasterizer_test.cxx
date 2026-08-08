@@ -158,3 +158,28 @@ TEST_CASE("draw_triangle outline")
     CHECK(within_bounds(fb, 2, 18, 2, 12));
     CHECK(reachable_black(fb, 2, 2) == expected);
 }
+
+TEST_CASE("draw_filled_triangle fills interior")
+{
+    framebuffer fb{20, 20};
+    rasterizer r{fb};
+    r.draw_filled_triangle(math::vector2{0.0F, 0.0F},
+                           math::vector2{10.0F, 0.0F},
+                           math::vector2{5.0F, 10.0F},
+                           black);
+
+    CHECK(is_black(fb.get(0, 0)));
+    CHECK(is_black(fb.get(10, 0)));
+    CHECK(is_black(fb.get(5, 10)));
+
+    for( unsigned int x = 2; x <= 8; ++x )
+        CHECK(is_black(fb.get(x, 4)));
+
+    CHECK(is_black(fb.get(5, 3)));
+    CHECK(is_black(fb.get(5, 9)));
+
+    CHECK_FALSE(is_black(fb.get(0, 4)));
+    CHECK_FALSE(is_black(fb.get(9, 4)));
+    CHECK_FALSE(is_black(fb.get(5, 11)));
+    CHECK_FALSE(is_black(fb.get(10, 10)));
+}

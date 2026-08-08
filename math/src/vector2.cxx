@@ -60,6 +60,11 @@ float vector2::dot_product(const vector2& vc) const
     return _x * vc._x + _y * vc._y;
 }
 
+float vector2::cross_product(const vector2& vc) const
+{
+    return _x * vc._y - _y * vc._x;
+}
+
 vector2 operator+(const vector2& vo, const vector2& vi)
 {
     return vector2{vo.x() + vi.x(), vo.y() + vi.y()};

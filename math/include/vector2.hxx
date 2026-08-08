@@ -21,6 +21,7 @@ public:
     void normalize();
 
     float dot_product(const vector2& vc) const;
+    float cross_product(const vector2& vc) const;
 
 private:
     float _x{0.0F};
