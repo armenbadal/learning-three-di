@@ -26,8 +26,8 @@ TEST_CASE("framebuffer is cleared after construction")
 {
     const framebuffer fb{4, 3};
 
-    check_pixel(fb.get(0, 0), 0, 0, 0, 255);
-    check_pixel(fb.get(3, 2), 0, 0, 0, 255);
+    check_pixel(fb.get(0, 0), 255, 255, 255, 255);
+    check_pixel(fb.get(3, 2), 255, 255, 255, 255);
 }
 
 TEST_CASE("framebuffer get out of bounds")

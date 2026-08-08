@@ -5,7 +5,7 @@ namespace renderer {
 framebuffer::framebuffer(unsigned int width, unsigned int height)
     : _width{width}
     , _height{height}
-    , _pixels(width * height, pixel{0, 0, 0, 255})
+    , _pixels(width * height, white)
 {
 }
 

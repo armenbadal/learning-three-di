@@ -10,3 +10,4 @@ enable_testing()
 
 add_subdirectory(math)
 add_subdirectory(renderer)
+add_subdirectory(demos)

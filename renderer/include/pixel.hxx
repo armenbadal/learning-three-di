@@ -23,5 +23,6 @@ private:
 };
 
 constexpr pixel white{255, 255, 255};
+constexpr pixel black{0, 0, 0};
 
 } // namespace renderer
