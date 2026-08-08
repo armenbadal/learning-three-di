@@ -98,4 +98,17 @@ vector3 operator/(vector3 v, float c)
     return v;
 }
 
+bool operator==(const vector3& vo, const vector3& vi)
+{
+    constexpr float epsilon = 1e-5f;
+    return fabs(vo.x() - vi.x()) <= epsilon
+        && fabs(vo.y() - vi.y()) <= epsilon
+        && fabs(vo.z() - vi.z()) <= epsilon;
+}
+
+bool operator!=(const vector3& vo, const vector3& vi)
+{
+    return !(vo == vi);
+}
+
 } // namespace math

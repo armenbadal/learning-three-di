@@ -232,5 +232,20 @@ std::ostream& operator<<(std::ostream& out, const matrix4x4& m)
     return out;
 }
 
+bool operator==(const matrix4x4& mo, const matrix4x4& mi)
+{
+    constexpr float epsilon = 1e-5f;
+    for( unsigned int r = 0; r < 4; ++r )
+        for( unsigned int c = 0; c < 4; ++c )
+            if( fabs(mo(r,c) - mi(r,c)) > epsilon )
+                return false;
+    return true;
+}
+
+bool operator!=(const matrix4x4& mo, const matrix4x4& mi)
+{
+    return !(mo == mi);
+}
+
 } // namespace math
 

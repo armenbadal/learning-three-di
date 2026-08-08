@@ -40,6 +40,22 @@ void vector2_test_normalize_zero()
     FLOAT_EQ(v1.y(), 0.0F);
 }
 
+void vector2_test_equality()
+{
+    const vector2 a{1.0F, 2.0F};
+    const vector2 same{1.0F, 2.0F};
+    EQ(a == same, true);
+    EQ(a != same, false);
+
+    const vector2 nearby{1.0F + 1e-6F, 2.0F};
+    EQ(a == nearby, true);
+    EQ(a != nearby, false);
+
+    const vector2 far{1.0F + 1e-3F, 2.0F};
+    EQ(a == far, false);
+    EQ(a != far, true);
+}
+
 /*
 int main()
 {

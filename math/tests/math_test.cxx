@@ -4,16 +4,19 @@ void vector2_test_add();
 void vector2_test_length();
 void vector2_test_normalize();
 void vector2_test_normalize_zero();
+void vector2_test_equality();
 
 void vector3_test_cross_product_basis();
 void vector3_test_cross_product_anticommutative();
 void vector3_test_cross_product_parallel_is_zero();
 void vector3_test_cross_product_perpendicular();
+void vector3_test_equality();
 
 void vector4_test_add();
 void vector4_test_length();
 void vector4_test_normalize();
 void vector4_test_dot_product();
+void vector4_test_equality();
 
 void matrix4x4_test_constructor();
 void matrix4x4_test_default_is_identity();
@@ -45,6 +48,7 @@ void matrix4x4_test_inverse_singular();
 void matrix4x4_test_inverse_affine();
 void matrix4x4_test_inverse_affine_translation();
 void matrix4x4_test_inverse_non_affine();
+void matrix4x4_test_equality();
 void matrix4x4_test_stream_output();
 
 void transform_test_identity();
@@ -59,16 +63,19 @@ int main()
     vector2_test_length();
     vector2_test_normalize();
     vector2_test_normalize_zero();
+    vector2_test_equality();
 
     vector3_test_cross_product_basis();
     vector3_test_cross_product_anticommutative();
     vector3_test_cross_product_parallel_is_zero();
     vector3_test_cross_product_perpendicular();
+    vector3_test_equality();
 
     vector4_test_add();
     vector4_test_length();
     vector4_test_normalize();
     vector4_test_dot_product();
+    vector4_test_equality();
 
     matrix4x4_test_constructor();
     matrix4x4_test_default_is_identity();
@@ -100,6 +107,7 @@ int main()
     matrix4x4_test_inverse_affine();
     matrix4x4_test_inverse_affine_translation();
     matrix4x4_test_inverse_non_affine();
+    matrix4x4_test_equality();
     matrix4x4_test_stream_output();
 
     transform_test_identity();

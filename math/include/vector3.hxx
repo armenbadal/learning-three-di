@@ -24,8 +24,6 @@ public:
     float dot_product(const vector3& vc) const;
     vector3 cross_product(const vector3& vc) const;
 
-    bool operator==(const vector3&) const = default;
-
 private:
     float _x{0.0F};
     float _y{0.0F};
@@ -37,5 +35,8 @@ vector3 operator-(const vector3& vo, const vector3& vi);
 vector3 operator-(const vector3& vo);
 vector3 operator*(vector3 v, float c);
 vector3 operator/(vector3 v, float c);
+
+bool operator==(const vector3& vo, const vector3& vi);
+bool operator!=(const vector3& vo, const vector3& vi);
 
 } // namespace math

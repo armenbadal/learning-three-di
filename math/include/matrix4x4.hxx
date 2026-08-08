@@ -47,8 +47,6 @@ public:
     vector4 row(unsigned int row) const;
     vector4 column(unsigned int column) const;
 
-    bool operator==(const matrix4x4&) const = default;
-
 private:
     float determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) const;
 
@@ -65,5 +63,8 @@ matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v);
 vector4 operator*(const matrix4x4& m, const vector4& v);
 
 std::ostream& operator<<(std::ostream& out, const matrix4x4& m);
+
+bool operator==(const matrix4x4& mo, const matrix4x4& mi);
+bool operator!=(const matrix4x4& mo, const matrix4x4& mi);
 
 } // namespace math

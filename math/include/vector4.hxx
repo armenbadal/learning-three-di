@@ -24,8 +24,6 @@ public:
 
     float dot_product(const vector4& vc) const;
 
-    bool operator==(const vector4&) const = default;
-
 private:
     float _x{0.0F};
     float _y{0.0F};
@@ -38,5 +36,8 @@ vector4 operator-(const vector4& vo, const vector4& vi);
 vector4 operator-(const vector4& vo);
 vector4 operator*(vector4 v, float c);
 vector4 operator/(vector4 v, float c);
+
+bool operator==(const vector4& vo, const vector4& vi);
+bool operator!=(const vector4& vo, const vector4& vi);
 
 } // namespace math

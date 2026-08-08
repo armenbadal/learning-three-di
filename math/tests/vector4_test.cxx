@@ -39,3 +39,19 @@ void vector4_test_dot_product()
 
     FLOAT_EQ(v0.dot_product(v1), 70.0F);
 }
+
+void vector4_test_equality()
+{
+    const vector4 a{1.0F, 2.0F, 3.0F, 4.0F};
+    const vector4 same{1.0F, 2.0F, 3.0F, 4.0F};
+    EQ(a == same, true);
+    EQ(a != same, false);
+
+    const vector4 nearby{1.0F + 1e-6F, 2.0F, 3.0F, 4.0F};
+    EQ(a == nearby, true);
+    EQ(a != nearby, false);
+
+    const vector4 far{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F};
+    EQ(a == far, false);
+    EQ(a != far, true);
+}

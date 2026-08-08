@@ -355,6 +355,32 @@ void matrix4x4_test_inverse_affine_translation()
     matrix_close(inv, matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
 }
 
+void matrix4x4_test_equality()
+{
+    const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
+                      5.0F, 6.0F, 7.0F, 8.0F,
+                      9.0F, 10.0F, 11.0F, 12.0F,
+                      13.0F, 14.0F, 15.0F, 16.0F};
+
+    matrix4x4 same = m;
+    EQ(m == same, true);
+    EQ(m != same, false);
+
+    matrix4x4 nearby = m;
+    nearby(0, 0) += 1e-6F;
+    EQ(m == nearby, true);
+    EQ(m != nearby, false);
+
+    matrix4x4 far = m;
+    far(0, 0) += 1e-3F;
+    EQ(m == far, false);
+    EQ(m != far, true);
+
+    const matrix4x4 other = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F});
+    EQ(m == other, false);
+    EQ(m != other, true);
+}
+
 void matrix4x4_test_inverse_non_affine()
 {
     const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
