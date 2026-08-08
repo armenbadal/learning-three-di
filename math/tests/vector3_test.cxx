@@ -1,60 +1,64 @@
-#include "testing.hxx"
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include "vector3.hxx"
 
 using namespace math;
 
+namespace {
+    auto approx = [](float value) { return Catch::Approx(value).margin(1e-5f); };
+}
+
 constexpr vector3 test_constexpr_ctor{1.0F, 2.0F, 3.0F};
 
-void vector3_test_cross_product_basis()
+TEST_CASE("vector3 cross product basis")
 {
     const vector3 x{1.0F, 0.0F, 0.0F};
     const vector3 y{0.0F, 1.0F, 0.0F};
     const vector3 z{0.0F, 0.0F, 1.0F};
 
-    EQ(x.cross_product(y), z);
-    EQ(y.cross_product(z), x);
-    EQ(z.cross_product(x), y);
+    CHECK(x.cross_product(y) == z);
+    CHECK(y.cross_product(z) == x);
+    CHECK(z.cross_product(x) == y);
 }
 
-void vector3_test_cross_product_anticommutative()
+TEST_CASE("vector3 cross product anticommutative")
 {
     const vector3 a{1.0F, 2.0F, 3.0F};
     const vector3 b{4.0F, 5.0F, 6.0F};
 
-    EQ(a.cross_product(b), -b.cross_product(a));
+    CHECK(a.cross_product(b) == -b.cross_product(a));
 }
 
-void vector3_test_cross_product_parallel_is_zero()
+TEST_CASE("vector3 cross product parallel is zero")
 {
     const vector3 a{2.0F, 4.0F, 6.0F};
     const vector3 b{1.0F, 2.0F, 3.0F};
     const vector3 zero{0.0F, 0.0F, 0.0F};
 
-    EQ(a.cross_product(b), zero);
+    CHECK(a.cross_product(b) == zero);
 }
 
-void vector3_test_cross_product_perpendicular()
+TEST_CASE("vector3 cross product perpendicular")
 {
     const vector3 a{1.0F, 2.0F, 3.0F};
     const vector3 b{4.0F, 5.0F, 6.0F};
     const vector3 c = a.cross_product(b);
 
-    FLOAT_EQ(c.dot_product(a), 0.0F);
-    FLOAT_EQ(c.dot_product(b), 0.0F);
+    CHECK(c.dot_product(a) == approx(0.0F));
+    CHECK(c.dot_product(b) == approx(0.0F));
 }
 
-void vector3_test_equality()
+TEST_CASE("vector3 equality")
 {
     const vector3 a{1.0F, 2.0F, 3.0F};
-    const vector3 same{1.0F, 2.0F, 3.0F};
-    EQ(a == same, true);
-    EQ(a != same, false);
 
-    const vector3 nearby{1.0F + 1e-6F, 2.0F, 3.0F};
-    EQ(a == nearby, true);
-    EQ(a != nearby, false);
+    CHECK(a == vector3{1.0F, 2.0F, 3.0F});
+    CHECK_FALSE(a != vector3{1.0F, 2.0F, 3.0F});
 
-    const vector3 far{1.0F + 1e-3F, 2.0F, 3.0F};
-    EQ(a == far, false);
-    EQ(a != far, true);
+    CHECK(a == vector3{1.0F + 1e-6F, 2.0F, 3.0F});
+    CHECK_FALSE(a != vector3{1.0F + 1e-6F, 2.0F, 3.0F});
+
+    CHECK_FALSE(a == vector3{1.0F + 1e-3F, 2.0F, 3.0F});
+    CHECK(a != vector3{1.0F + 1e-3F, 2.0F, 3.0F});
 }

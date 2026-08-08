@@ -1,22 +1,26 @@
-#include "testing.hxx"
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include "affine.hxx"
 
 using namespace math;
 
 namespace {
     constexpr float pi = 3.14159265358979323846F;
+
+    auto approx = [](float value) { return Catch::Approx(value).margin(1e-5f); };
 }
 
-void transform_test_identity()
+TEST_CASE("transform identity")
 {
     const transform t{{0.0F, 0.0F, 0.0F},
                       {0.0F, 0.0F, 0.0F},
                       {1.0F, 1.0F, 1.0F}};
 
-    EQ(t.model_matrix(), matrix4x4{});
+    CHECK(t.model_matrix() == matrix4x4{});
 }
 
-void transform_test_translation()
+TEST_CASE("transform translation")
 {
     const transform t{{1.0F, 2.0F, 3.0F},
                       {0.0F, 0.0F, 0.0F},
@@ -24,12 +28,12 @@ void transform_test_translation()
     const vector4 p{0.0F, 0.0F, 0.0F, 1.0F};
 
     const vector4 result = t.model_matrix() * p;
-    FLOAT_EQ(result.x(), 1.0F);
-    FLOAT_EQ(result.y(), 2.0F);
-    FLOAT_EQ(result.z(), 3.0F);
+    CHECK(result.x() == approx(1.0F));
+    CHECK(result.y() == approx(2.0F));
+    CHECK(result.z() == approx(3.0F));
 }
 
-void transform_test_scaling()
+TEST_CASE("transform scaling")
 {
     const transform t{{0.0F, 0.0F, 0.0F},
                       {0.0F, 0.0F, 0.0F},
@@ -37,12 +41,12 @@ void transform_test_scaling()
     const vector4 p{1.0F, 1.0F, 1.0F, 1.0F};
 
     const vector4 result = t.model_matrix() * p;
-    FLOAT_EQ(result.x(), 2.0F);
-    FLOAT_EQ(result.y(), 3.0F);
-    FLOAT_EQ(result.z(), 4.0F);
+    CHECK(result.x() == approx(2.0F));
+    CHECK(result.y() == approx(3.0F));
+    CHECK(result.z() == approx(4.0F));
 }
 
-void transform_test_rotation()
+TEST_CASE("transform rotation")
 {
     const transform t{{0.0F, 0.0F, 0.0F},
                       {0.0F, 0.0F, pi / 2.0F},
@@ -50,12 +54,12 @@ void transform_test_rotation()
     const vector4 p{1.0F, 0.0F, 0.0F, 1.0F};
 
     const vector4 result = t.model_matrix() * p;
-    FLOAT_EQ(result.x(), 0.0F);
-    FLOAT_EQ(result.y(), 1.0F);
-    FLOAT_EQ(result.z(), 0.0F);
+    CHECK(result.x() == approx(0.0F));
+    CHECK(result.y() == approx(1.0F));
+    CHECK(result.z() == approx(0.0F));
 }
 
-void transform_test_trs_order()
+TEST_CASE("transform trs order")
 {
     const transform t{{1.0F, 0.0F, 0.0F},
                       {0.0F, 0.0F, 0.0F},
@@ -63,12 +67,13 @@ void transform_test_trs_order()
     const vector4 p{1.0F, 1.0F, 1.0F, 1.0F};
 
     const vector4 result = t.model_matrix() * p;
-    FLOAT_EQ(result.x(), 3.0F);
-    FLOAT_EQ(result.y(), 2.0F);
-    FLOAT_EQ(result.z(), 2.0F);
+    CHECK(result.x() == approx(3.0F));
+    CHECK(result.y() == approx(2.0F));
+    CHECK(result.z() == approx(2.0F));
+
     const vector4 direction{1.0F, 1.0F, 1.0F, 0.0F};
     const vector4 dr = t.model_matrix() * direction;
-    FLOAT_EQ(dr.x(), 2.0F);
-    FLOAT_EQ(dr.y(), 2.0F);
-    FLOAT_EQ(dr.z(), 2.0F);
+    CHECK(dr.x() == approx(2.0F));
+    CHECK(dr.y() == approx(2.0F));
+    CHECK(dr.z() == approx(2.0F));
 }

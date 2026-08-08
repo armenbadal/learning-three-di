@@ -8,13 +8,13 @@ add_library(math-3d STATIC
 target_include_directories(math-3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(math-3d-tests
-    tests/math_test.cxx
     tests/vector2_test.cxx
     tests/vector3_test.cxx
     tests/vector4_test.cxx
     tests/matrix4x4_test.cxx
     tests/affine_test.cxx
 )
-target_link_libraries(math-3d-tests PRIVATE math-3d)
+find_package(Catch2 3 REQUIRED)
+target_link_libraries(math-3d-tests PRIVATE math-3d Catch2::Catch2WithMain)
 
 add_test(NAME math-3d-tests COMMAND math-3d-tests)

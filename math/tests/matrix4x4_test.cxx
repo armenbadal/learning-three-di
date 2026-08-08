@@ -1,4 +1,6 @@
-#include "testing.hxx"
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include "matrix4x4.hxx"
 
 #include <sstream>
@@ -9,12 +11,7 @@ using namespace math;
 namespace {
     constexpr float pi = 3.14159265358979323846F;
 
-    void matrix_close(const matrix4x4& a, const matrix4x4& b)
-    {
-        for (unsigned int r = 0; r < 4; ++r)
-            for (unsigned int c = 0; c < 4; ++c)
-                FLOAT_EQ(a(r, c), b(r, c));
-    }
+    auto approx = [](float value) { return Catch::Approx(value).margin(1e-5f); };
 }
 
 constexpr matrix4x4 test_constexpr_ctor{1.0F, 2.0F, 3.0F, 4.0F,
@@ -28,71 +25,69 @@ static_assert(test_constexpr_transpose(1, 0) == 2.0F);
 static_assert(test_constexpr_transpose(3, 0) == 4.0F);
 static_assert(test_constexpr_transpose(0, 3) == 13.0F);
 
-void matrix4x4_test_constructor()
+TEST_CASE("matrix4x4 constructor")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
                       9.0F, 10.0F, 11.0F, 12.0F,
                       13.0F, 14.0F, 15.0F, 16.0F};
 
-    FLOAT_EQ(m(0, 0), 1.0F);
-    FLOAT_EQ(m(0, 3), 4.0F);
-    FLOAT_EQ(m(1, 1), 6.0F);
-    FLOAT_EQ(m(2, 2), 11.0F);
-    FLOAT_EQ(m(3, 2), 15.0F);
-    FLOAT_EQ(m(3, 3), 16.0F);
+    CHECK(m(0, 0) == approx(1.0F));
+    CHECK(m(0, 3) == approx(4.0F));
+    CHECK(m(1, 1) == approx(6.0F));
+    CHECK(m(2, 2) == approx(11.0F));
+    CHECK(m(3, 2) == approx(15.0F));
+    CHECK(m(3, 3) == approx(16.0F));
 }
 
-void matrix4x4_test_default_is_identity()
+TEST_CASE("matrix4x4 default is identity")
 {
-    matrix4x4 m;
-    EQ(m, matrix4x4::identity());
+    CHECK(matrix4x4{} == matrix4x4::identity());
 }
 
-void matrix4x4_test_identity()
+TEST_CASE("matrix4x4 identity")
 {
-    const matrix4x4 value = matrix4x4::identity();
     const matrix4x4 expected{1.0F, 0.0F, 0.0F, 0.0F,
                              0.0F, 1.0F, 0.0F, 0.0F,
                              0.0F, 0.0F, 1.0F, 0.0F,
                              0.0F, 0.0F, 0.0F, 1.0F};
-    EQ(value, expected);
+
+    CHECK(matrix4x4::identity() == expected);
 }
 
-void matrix4x4_test_zero()
+TEST_CASE("matrix4x4 zero")
 {
-    matrix4x4 m = matrix4x4::zero();
     const matrix4x4 expected{0.0F, 0.0F, 0.0F, 0.0F,
                              0.0F, 0.0F, 0.0F, 0.0F,
                              0.0F, 0.0F, 0.0F, 0.0F,
                              0.0F, 0.0F, 0.0F, 0.0F};
-    EQ(m, expected);
+
+    CHECK(matrix4x4::zero() == expected);
 }
 
-void matrix4x4_test_element_access_mutable()
+TEST_CASE("matrix4x4 element access mutable")
 {
     matrix4x4 m;
     m(1, 2) = 5.0F;
-    FLOAT_EQ(m(1, 2), 5.0F);
+    CHECK(m(1, 2) == approx(5.0F));
 
     const matrix4x4& cm = m;
-    FLOAT_EQ(cm(1, 2), 5.0F);
+    CHECK(cm(1, 2) == approx(5.0F));
 }
 
-void matrix4x4_test_multiply_identity()
+TEST_CASE("matrix4x4 multiply identity")
 {
     const matrix4x4 a{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
                       9.0F, 10.0F, 11.0F, 12.0F,
                       13.0F, 14.0F, 15.0F, 16.0F};
-
     const matrix4x4 i;
 
-    EQ(a * i, a);
-    EQ(i * a, a);
+    CHECK(a * i == a);
+    CHECK(i * a == a);
 }
 
-void matrix4x4_test_multiply_scale()
+TEST_CASE("matrix4x4 multiply scale")
 {
     const matrix4x4 a{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
@@ -107,113 +102,111 @@ void matrix4x4_test_multiply_scale()
                              18.0F, 20.0F, 22.0F, 24.0F,
                              26.0F, 28.0F, 30.0F, 32.0F};
 
-    EQ(a * scale2, expected);
-    EQ(scale2 * a, expected);
+    CHECK(a * scale2 == expected);
+    CHECK(scale2 * a == expected);
 }
 
-void matrix4x4_test_multiply_vector_identity()
+TEST_CASE("matrix4x4 multiply vector identity")
 {
     const matrix4x4 m;
     const vector4 v{1.0F, 2.0F, 3.0F, 4.0F};
 
-    EQ(m * v, v);
+    CHECK(m * v == v);
 }
 
-void matrix4x4_test_multiply_vector_scale()
+TEST_CASE("matrix4x4 multiply vector scale")
 {
     const matrix4x4 m{2.0F, 0.0F, 0.0F, 0.0F,
                       0.0F, 3.0F, 0.0F, 0.0F,
                       0.0F, 0.0F, 4.0F, 0.0F,
                       0.0F, 0.0F, 0.0F, 5.0F};
     const vector4 v{1.0F, 2.0F, 3.0F, 4.0F};
-    const vector4 expected{2.0F, 6.0F, 12.0F, 20.0F};
 
-    EQ(m * v, expected);
+    CHECK(m * v == vector4{2.0F, 6.0F, 12.0F, 20.0F});
 }
 
-void matrix4x4_test_multiply_vector_general()
+TEST_CASE("matrix4x4 multiply vector general")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
                       9.0F, 10.0F, 11.0F, 12.0F,
                       13.0F, 14.0F, 15.0F, 16.0F};
     const vector4 v{1.0F, 1.0F, 1.0F, 1.0F};
-    const vector4 expected{10.0F, 26.0F, 42.0F, 58.0F};
 
-    EQ(m * v, expected);
+    CHECK(m * v == vector4{10.0F, 26.0F, 42.0F, 58.0F});
 }
 
-void matrix4x4_test_rotation_zero_is_identity()
+TEST_CASE("matrix4x4 rotation zero is identity")
 {
-    EQ(matrix4x4::rotation_x(0.0F), matrix4x4{});
-    EQ(matrix4x4::rotation_y(0.0F), matrix4x4{});
-    EQ(matrix4x4::rotation_z(0.0F), matrix4x4{});
+    CHECK(matrix4x4::rotation_x(0.0F) == matrix4x4{});
+    CHECK(matrix4x4::rotation_y(0.0F) == matrix4x4{});
+    CHECK(matrix4x4::rotation_z(0.0F) == matrix4x4{});
 }
 
-void matrix4x4_test_rotation_z_quarter_turn()
+TEST_CASE("matrix4x4 rotation z quarter turn")
 {
     const matrix4x4 r = matrix4x4::rotation_z(pi / 2.0F);
     const vector4 ex{1.0F, 0.0F, 0.0F, 0.0F};
     const vector4 ey{0.0F, 1.0F, 0.0F, 0.0F};
 
     const vector4 rx = r * ex;
-    FLOAT_EQ(rx.x(), 0.0F);
-    FLOAT_EQ(rx.y(), 1.0F);
+    CHECK(rx.x() == approx(0.0F));
+    CHECK(rx.y() == approx(1.0F));
 
     const vector4 ry = r * ey;
-    FLOAT_EQ(ry.x(), -1.0F);
-    FLOAT_EQ(ry.y(), 0.0F);
+    CHECK(ry.x() == approx(-1.0F));
+    CHECK(ry.y() == approx(0.0F));
 }
 
-void matrix4x4_test_rotation_x_quarter_turn()
+TEST_CASE("matrix4x4 rotation x quarter turn")
 {
     const matrix4x4 r = matrix4x4::rotation_x(pi / 2.0F);
     const vector4 ey{0.0F, 1.0F, 0.0F, 0.0F};
     const vector4 ez{0.0F, 0.0F, 1.0F, 0.0F};
 
     const vector4 ry = r * ey;
-    FLOAT_EQ(ry.y(), 0.0F);
-    FLOAT_EQ(ry.z(), 1.0F);
+    CHECK(ry.y() == approx(0.0F));
+    CHECK(ry.z() == approx(1.0F));
 
     const vector4 rz = r * ez;
-    FLOAT_EQ(rz.y(), -1.0F);
-    FLOAT_EQ(rz.z(), 0.0F);
+    CHECK(rz.y() == approx(-1.0F));
+    CHECK(rz.z() == approx(0.0F));
 }
 
-void matrix4x4_test_rotation_y_quarter_turn()
+TEST_CASE("matrix4x4 rotation y quarter turn")
 {
     const matrix4x4 r = matrix4x4::rotation_y(pi / 2.0F);
     const vector4 ex{1.0F, 0.0F, 0.0F, 0.0F};
     const vector4 ez{0.0F, 0.0F, 1.0F, 0.0F};
 
     const vector4 rz = r * ez;
-    FLOAT_EQ(rz.x(), 1.0F);
-    FLOAT_EQ(rz.z(), 0.0F);
+    CHECK(rz.x() == approx(1.0F));
+    CHECK(rz.z() == approx(0.0F));
 
     const vector4 rx = r * ex;
-    FLOAT_EQ(rx.x(), 0.0F);
-    FLOAT_EQ(rx.z(), -1.0F);
+    CHECK(rx.x() == approx(0.0F));
+    CHECK(rx.z() == approx(-1.0F));
 }
 
-void matrix4x4_test_rotation_inverse()
+TEST_CASE("matrix4x4 rotation inverse")
 {
     const float angle = 0.7F;
-    matrix_close(matrix4x4::rotation_x(angle) * matrix4x4::rotation_x(-angle), matrix4x4{});
-    matrix_close(matrix4x4::rotation_y(angle) * matrix4x4::rotation_y(-angle), matrix4x4{});
-    matrix_close(matrix4x4::rotation_z(angle) * matrix4x4::rotation_z(-angle), matrix4x4{});
+    CHECK(matrix4x4::rotation_x(angle) * matrix4x4::rotation_x(-angle) == matrix4x4{});
+    CHECK(matrix4x4::rotation_y(angle) * matrix4x4::rotation_y(-angle) == matrix4x4{});
+    CHECK(matrix4x4::rotation_z(angle) * matrix4x4::rotation_z(-angle) == matrix4x4{});
 }
 
-void matrix4x4_test_rotation_full_turn()
+TEST_CASE("matrix4x4 rotation full turn")
 {
     const vector4 v{1.0F, 2.0F, 3.0F, 1.0F};
 
     const vector4 rz = matrix4x4::rotation_z(2.0F * pi) * v;
-    FLOAT_EQ(rz.x(), v.x());
-    FLOAT_EQ(rz.y(), v.y());
-    FLOAT_EQ(rz.z(), v.z());
+    CHECK(rz.x() == approx(v.x()));
+    CHECK(rz.y() == approx(v.y()));
+    CHECK(rz.z() == approx(v.z()));
 }
 
-void matrix4x4_test_transpose()
+TEST_CASE("matrix4x4 transpose")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
@@ -221,61 +214,61 @@ void matrix4x4_test_transpose()
                       13.0F, 14.0F, 15.0F, 16.0F};
     const matrix4x4 t = m.transpose();
 
-    FLOAT_EQ(t(0, 1), 5.0F);
-    FLOAT_EQ(t(1, 0), 2.0F);
-    FLOAT_EQ(t(3, 0), 4.0F);
-    FLOAT_EQ(t(0, 3), 13.0F);
-    FLOAT_EQ(t(2, 2), 11.0F);
+    CHECK(t(0, 1) == approx(5.0F));
+    CHECK(t(1, 0) == approx(2.0F));
+    CHECK(t(3, 0) == approx(4.0F));
+    CHECK(t(0, 3) == approx(13.0F));
+    CHECK(t(2, 2) == approx(11.0F));
 }
 
-void matrix4x4_test_transpose_inverse()
+TEST_CASE("matrix4x4 transpose inverse")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
                       9.0F, 10.0F, 11.0F, 12.0F,
                       13.0F, 14.0F, 15.0F, 16.0F};
 
-    matrix_close(m.transpose().transpose(), m);
-    matrix_close(matrix4x4::identity().transpose(), matrix4x4{});
+    CHECK(m.transpose().transpose() == m);
+    CHECK(matrix4x4::identity().transpose() == matrix4x4{});
 }
 
-void matrix4x4_test_determinant_basics()
+TEST_CASE("matrix4x4 determinant basics")
 {
-    FLOAT_EQ(matrix4x4{}.determinant(), 1.0F);
-    FLOAT_EQ(matrix4x4::zero().determinant(), 0.0F);
+    CHECK(matrix4x4{}.determinant() == approx(1.0F));
+    CHECK(matrix4x4::zero().determinant() == approx(0.0F));
 
     const matrix4x4 diag{2.0F, 0.0F, 0.0F, 0.0F,
                          0.0F, 3.0F, 0.0F, 0.0F,
                          0.0F, 0.0F, 4.0F, 0.0F,
                          0.0F, 0.0F, 0.0F, 5.0F};
-    FLOAT_EQ(diag.determinant(), 120.0F);
+    CHECK(diag.determinant() == approx(120.0F));
 }
 
-void matrix4x4_test_determinant_transforms()
+TEST_CASE("matrix4x4 determinant transforms")
 {
-    FLOAT_EQ(matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F}).determinant(), 24.0F);
-    FLOAT_EQ(matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}).determinant(), 1.0F);
-    FLOAT_EQ(matrix4x4::rotation_z(0.7F).determinant(), 1.0F);
-    FLOAT_EQ(matrix4x4::rotation_x(0.7F).determinant(), 1.0F);
-    FLOAT_EQ(matrix4x4::rotation_y(0.7F).determinant(), 1.0F);
+    CHECK(matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F}).determinant() == approx(24.0F));
+    CHECK(matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}).determinant() == approx(1.0F));
+    CHECK(matrix4x4::rotation_z(0.7F).determinant() == approx(1.0F));
+    CHECK(matrix4x4::rotation_x(0.7F).determinant() == approx(1.0F));
+    CHECK(matrix4x4::rotation_y(0.7F).determinant() == approx(1.0F));
 }
 
-void matrix4x4_test_determinant_singular()
+TEST_CASE("matrix4x4 determinant singular")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
                       9.0F, 10.0F, 11.0F, 12.0F,
                       13.0F, 14.0F, 15.0F, 16.0F};
 
-    FLOAT_EQ(m.determinant(), 0.0F);
+    CHECK(m.determinant() == approx(0.0F));
 }
 
-void matrix4x4_test_inverse_identity()
+TEST_CASE("matrix4x4 inverse identity")
 {
-    matrix_close(matrix4x4{}.inverse(), matrix4x4{});
+    CHECK(matrix4x4{}.inverse() == matrix4x4{});
 }
 
-void matrix4x4_test_inverse_diagonal()
+TEST_CASE("matrix4x4 inverse diagonal")
 {
     const matrix4x4 m{2.0F, 0.0F, 0.0F, 0.0F,
                       0.0F, 4.0F, 0.0F, 0.0F,
@@ -286,76 +279,86 @@ void matrix4x4_test_inverse_diagonal()
                              0.0F, 0.0F, 2.0F, 0.0F,
                              0.0F, 0.0F, 0.0F, 0.1F};
 
-    matrix_close(m.inverse(), expected);
+    CHECK(m.inverse() == expected);
 }
 
-void matrix4x4_test_inverse_product_is_identity()
+TEST_CASE("matrix4x4 inverse product is identity")
 {
     const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
                       1.0F, 2.0F, 1.0F, 0.0F,
                       0.0F, 0.0F, 3.0F, 1.0F,
                       2.0F, 1.0F, 0.0F, 5.0F};
 
-    matrix_close(m * m.inverse(), matrix4x4{});
-    matrix_close(m.inverse() * m, matrix4x4{});
+    CHECK(m * m.inverse() == matrix4x4{});
+    CHECK(m.inverse() * m == matrix4x4{});
 }
 
-void matrix4x4_test_inverse_double()
+TEST_CASE("matrix4x4 inverse double")
 {
     const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
-                           1.0F, 2.0F, 1.0F, 0.0F,
-                           0.0F, 0.0F, 3.0F, 1.0F,
-                           2.0F, 1.0F, 0.0F, 5.0F};
+                      1.0F, 2.0F, 1.0F, 0.0F,
+                      0.0F, 0.0F, 3.0F, 1.0F,
+                      2.0F, 1.0F, 0.0F, 5.0F};
 
-    matrix_close(m.inverse().inverse(), m);
+    CHECK(m.inverse().inverse() == m);
 }
 
-void matrix4x4_test_inverse_rotation_is_transpose()
+TEST_CASE("matrix4x4 inverse rotation is transpose")
 {
-    matrix_close(matrix4x4::rotation_z(0.7F).inverse(), matrix4x4::rotation_z(0.7F).transpose());
-    matrix_close(matrix4x4::rotation_x(0.9F).inverse(), matrix4x4::rotation_x(0.9F).transpose());
+    CHECK(matrix4x4::rotation_z(0.7F).inverse() == matrix4x4::rotation_z(0.7F).transpose());
+    CHECK(matrix4x4::rotation_x(0.9F).inverse() == matrix4x4::rotation_x(0.9F).transpose());
 }
 
-void matrix4x4_test_inverse_singular()
+TEST_CASE("matrix4x4 inverse singular")
 {
-    EQ(matrix4x4::zero().inverse(), matrix4x4::zero());
+    CHECK(matrix4x4::zero().inverse() == matrix4x4::zero());
 }
 
-void matrix4x4_test_inverse_affine()
+TEST_CASE("matrix4x4 inverse affine")
 {
     const matrix4x4 m = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F})
                       * matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F});
     const matrix4x4 inv = m.inverse();
 
-    matrix_close(m * inv, matrix4x4{});
-    matrix_close(inv * m, matrix4x4{});
+    CHECK(m * inv == matrix4x4{});
+    CHECK(inv * m == matrix4x4{});
 
     const vector4 p{3.0F, 4.0F, 5.0F, 1.0F};
     const vector4 q = m * p;
-    FLOAT_EQ(q.x(), 7.0F);
-    FLOAT_EQ(q.y(), 14.0F);
-    FLOAT_EQ(q.z(), 23.0F);
+    CHECK(q.x() == approx(7.0F));
+    CHECK(q.y() == approx(14.0F));
+    CHECK(q.z() == approx(23.0F));
 
     const vector4 r = inv * q;
-    FLOAT_EQ(r.x(), 3.0F);
-    FLOAT_EQ(r.y(), 4.0F);
-    FLOAT_EQ(r.z(), 5.0F);
+    CHECK(r.x() == approx(3.0F));
+    CHECK(r.y() == approx(4.0F));
+    CHECK(r.z() == approx(5.0F));
 
-    FLOAT_EQ(inv(3, 0), 0.0F);
-    FLOAT_EQ(inv(3, 1), 0.0F);
-    FLOAT_EQ(inv(3, 2), 0.0F);
-    FLOAT_EQ(inv(3, 3), 1.0F);
+    CHECK(inv(3, 0) == approx(0.0F));
+    CHECK(inv(3, 1) == approx(0.0F));
+    CHECK(inv(3, 2) == approx(0.0F));
+    CHECK(inv(3, 3) == approx(1.0F));
 }
 
-void matrix4x4_test_inverse_affine_translation()
+TEST_CASE("matrix4x4 inverse affine translation")
 {
     const matrix4x4 t = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F});
-    const matrix4x4 inv = t.inverse();
 
-    matrix_close(inv, matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
+    CHECK(t.inverse() == matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
 }
 
-void matrix4x4_test_equality()
+TEST_CASE("matrix4x4 inverse non affine")
+{
+    const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
+                      1.0F, 2.0F, 1.0F, 0.0F,
+                      0.0F, 0.0F, 3.0F, 1.0F,
+                      2.0F, 1.0F, 0.0F, 5.0F};
+
+    CHECK(m * m.inverse() == matrix4x4{});
+    CHECK(m.inverse() * m == matrix4x4{});
+}
+
+TEST_CASE("matrix4x4 equality")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
@@ -363,36 +366,24 @@ void matrix4x4_test_equality()
                       13.0F, 14.0F, 15.0F, 16.0F};
 
     matrix4x4 same = m;
-    EQ(m == same, true);
-    EQ(m != same, false);
+    CHECK(m == same);
+    CHECK_FALSE(m != same);
 
     matrix4x4 nearby = m;
     nearby(0, 0) += 1e-6F;
-    EQ(m == nearby, true);
-    EQ(m != nearby, false);
+    CHECK(m == nearby);
+    CHECK_FALSE(m != nearby);
 
     matrix4x4 far = m;
     far(0, 0) += 1e-3F;
-    EQ(m == far, false);
-    EQ(m != far, true);
+    CHECK_FALSE(m == far);
+    CHECK(m != far);
 
-    const matrix4x4 other = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F});
-    EQ(m == other, false);
-    EQ(m != other, true);
+    CHECK_FALSE(m == matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}));
+    CHECK(m != matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}));
 }
 
-void matrix4x4_test_inverse_non_affine()
-{
-    const matrix4x4 m{4.0F, 0.0F, 0.0F, 0.0F,
-                      1.0F, 2.0F, 1.0F, 0.0F,
-                      0.0F, 0.0F, 3.0F, 1.0F,
-                      2.0F, 1.0F, 0.0F, 5.0F};
-
-    matrix_close(m * m.inverse(), matrix4x4{});
-    matrix_close(m.inverse() * m, matrix4x4{});
-}
-
-void matrix4x4_test_stream_output()
+TEST_CASE("matrix4x4 stream output")
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
                       5.0F, 6.0F, 7.0F, 8.0F,
@@ -406,5 +397,5 @@ void matrix4x4_test_stream_output()
         " 9.0000 10.0000 11.0000 12.0000\n"
         "13.0000 14.0000 15.0000 16.0000\n";
 
-    EQ(out.str(), expected);
+    CHECK(out.str() == expected);
 }
