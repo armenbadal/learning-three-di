@@ -19,6 +19,12 @@ constexpr matrix4x4 test_constexpr_ctor{1.0F, 2.0F, 3.0F, 4.0F,
                                         9.0F, 10.0F, 11.0F, 12.0F,
                                         13.0F, 14.0F, 15.0F, 16.0F};
 
+constexpr matrix4x4 test_constexpr_transpose = test_constexpr_ctor.transpose();
+static_assert(test_constexpr_transpose(0, 1) == 5.0F);
+static_assert(test_constexpr_transpose(1, 0) == 2.0F);
+static_assert(test_constexpr_transpose(3, 0) == 4.0F);
+static_assert(test_constexpr_transpose(0, 3) == 13.0F);
+
 void matrix4x4_test_constructor()
 {
     const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
@@ -202,4 +208,61 @@ void matrix4x4_test_rotation_full_turn()
     FLOAT_EQ(rz.x(), v.x());
     FLOAT_EQ(rz.y(), v.y());
     FLOAT_EQ(rz.z(), v.z());
+}
+
+void matrix4x4_test_transpose()
+{
+    const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
+                      5.0F, 6.0F, 7.0F, 8.0F,
+                      9.0F, 10.0F, 11.0F, 12.0F,
+                      13.0F, 14.0F, 15.0F, 16.0F};
+    const matrix4x4 t = m.transpose();
+
+    FLOAT_EQ(t(0, 1), 5.0F);
+    FLOAT_EQ(t(1, 0), 2.0F);
+    FLOAT_EQ(t(3, 0), 4.0F);
+    FLOAT_EQ(t(0, 3), 13.0F);
+    FLOAT_EQ(t(2, 2), 11.0F);
+}
+
+void matrix4x4_test_transpose_inverse()
+{
+    const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
+                      5.0F, 6.0F, 7.0F, 8.0F,
+                      9.0F, 10.0F, 11.0F, 12.0F,
+                      13.0F, 14.0F, 15.0F, 16.0F};
+
+    matrix_close(m.transpose().transpose(), m);
+    matrix_close(matrix4x4::identity().transpose(), matrix4x4{});
+}
+
+void matrix4x4_test_determinant_basics()
+{
+    FLOAT_EQ(matrix4x4{}.determinant(), 1.0F);
+    FLOAT_EQ(matrix4x4::zero().determinant(), 0.0F);
+
+    const matrix4x4 diag{2.0F, 0.0F, 0.0F, 0.0F,
+                         0.0F, 3.0F, 0.0F, 0.0F,
+                         0.0F, 0.0F, 4.0F, 0.0F,
+                         0.0F, 0.0F, 0.0F, 5.0F};
+    FLOAT_EQ(diag.determinant(), 120.0F);
+}
+
+void matrix4x4_test_determinant_transforms()
+{
+    FLOAT_EQ(matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F}).determinant(), 24.0F);
+    FLOAT_EQ(matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}).determinant(), 1.0F);
+    FLOAT_EQ(matrix4x4::rotation_z(0.7F).determinant(), 1.0F);
+    FLOAT_EQ(matrix4x4::rotation_x(0.7F).determinant(), 1.0F);
+    FLOAT_EQ(matrix4x4::rotation_y(0.7F).determinant(), 1.0F);
+}
+
+void matrix4x4_test_determinant_singular()
+{
+    const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
+                      5.0F, 6.0F, 7.0F, 8.0F,
+                      9.0F, 10.0F, 11.0F, 12.0F,
+                      13.0F, 14.0F, 15.0F, 16.0F};
+
+    FLOAT_EQ(m.determinant(), 0.0F);
 }

@@ -19,6 +19,17 @@ public:
              {e30, e31, e32, e33}}
     {}
 
+    constexpr matrix4x4 transpose() const
+    {
+        matrix4x4 result{};
+        for (unsigned int r = 0; r < 4; ++r)
+            for (unsigned int c = 0; c < 4; ++c)
+                result._m[c][r] = _m[r][c];
+        return result;
+    }
+
+    float determinant() const;
+
     static matrix4x4 identity();
     static matrix4x4 zero();
     static matrix4x4 translation(vector3 translation);
@@ -27,7 +38,7 @@ public:
     static matrix4x4 rotation_y(float angle);
     static matrix4x4 rotation_z(float angle);
 
-    float operator()(unsigned int row, unsigned int column) const;
+    constexpr float operator()(unsigned int row, unsigned int column) const { return _m[row][column]; }
     float& operator()(unsigned int row, unsigned int column);
 
     vector4 row(unsigned int row) const;
@@ -36,6 +47,8 @@ public:
     bool operator==(const matrix4x4&) const = default;
 
 private:
+    float determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) const;
+
     float _m[4][4] = {{1.0F, 0.0F, 0.0F, 0.0F},
                       {0.0F, 1.0F, 0.0F, 0.0F},
                       {0.0F, 0.0F, 1.0F, 0.0F},
