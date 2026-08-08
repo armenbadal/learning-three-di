@@ -25,10 +25,10 @@ void rasterizer::draw_line_dda(float x0, float y0, float x1, float y1, colour c)
     }
 }
 
-void rasterizer::draw_line(float x0, float y0, float x1, float y1, colour c)
+void rasterizer::draw_line(math::vector2 p0, math::vector2 p1, colour c)
 {
-    auto x0r = std::round(x0), y0r = std::round(y0);
-    auto x1r = std::round(x1), y1r = std::round(y1);
+    auto x0r = std::round(p0.x()), y0r = std::round(p0.y());
+    auto x1r = std::round(p1.x()), y1r = std::round(p1.y());
 
     const int dx = std::abs(x1r - x0r);
     const int slope_x = x0r < x1r ? 1 : -1;
@@ -56,6 +56,13 @@ void rasterizer::draw_line(float x0, float y0, float x1, float y1, colour c)
             y0r += slope_y;
         }
     }
+}
+
+void rasterizer::draw_triangle(math::vector2 p0, math::vector2 p1, math::vector2 p2, colour c)
+{
+    draw_line(p0, p1, c);
+    draw_line(p0, p2, c);
+    draw_line(p1, p2, c);
 }
 
 } // namespace renderer

@@ -81,8 +81,9 @@ namespace {
     {
         framebuffer fb{20, 20};
         rasterizer r{fb};
-        r.draw_line(static_cast<float>(c.x0), static_cast<float>(c.y0),
-                    static_cast<float>(c.x1), static_cast<float>(c.y1), black);
+        r.draw_line(math::vector2{static_cast<float>(c.x0), static_cast<float>(c.y0)},
+                    math::vector2{static_cast<float>(c.x1), static_cast<float>(c.y1)},
+                    black);
 
         INFO(c.name);
         CHECK(is_black(fb.get(c.x0, c.y0)));
@@ -137,4 +138,23 @@ TEST_CASE("draw_line steep negative slope")
 TEST_CASE("draw_line zero length")
 {
     check_line({"zero length", 4, 4, 4, 4, 1});
+}
+
+TEST_CASE("draw_triangle outline")
+{
+    framebuffer fb{20, 20};
+    rasterizer r{fb};
+    r.draw_triangle(math::vector2{2.0F, 2.0F},
+                    math::vector2{18.0F, 2.0F},
+                    math::vector2{6.0F, 12.0F},
+                    black);
+
+    CHECK(is_black(fb.get(2, 2)));
+    CHECK(is_black(fb.get(18, 2)));
+    CHECK(is_black(fb.get(6, 12)));
+
+    const std::size_t expected = 17 + 13 + 11 - 3;
+    CHECK(count_black(fb) == expected);
+    CHECK(within_bounds(fb, 2, 18, 2, 12));
+    CHECK(reachable_black(fb, 2, 2) == expected);
 }
