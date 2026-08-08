@@ -26,8 +26,8 @@ TEST_CASE("framebuffer is cleared after construction")
 {
     const framebuffer fb{4, 3};
 
-    check_colour(fb.get(0, 0), 255, 255, 255, 255);
-    check_colour(fb.get(3, 2), 255, 255, 255, 255);
+    check_colour(fb.get(0, 0), 0, 0, 0, 255);
+    check_colour(fb.get(3, 2), 0, 0, 0, 255);
 }
 
 TEST_CASE("framebuffer get out of bounds")
@@ -49,7 +49,7 @@ TEST_CASE("framebuffer set out of bounds ignored")
     fb.set(99, 99, colour{1, 2, 3, 4});
     fb.set(-1, 0, colour{1, 2, 3, 4});
 
-    check_colour(fb.get(3, 2), 255, 255, 255, 255);
+    check_colour(fb.get(3, 2), 0, 0, 0, 255);
 }
 
 TEST_CASE("framebuffer set and get")
@@ -59,7 +59,7 @@ TEST_CASE("framebuffer set and get")
     fb.set(1, 2, colour{255, 0, 0, 255});
     check_colour(fb.get(1, 2), 255, 0, 0, 255);
 
-    check_colour(fb.get(0, 0), 255, 255, 255, 255);
+    check_colour(fb.get(0, 0), 0, 0, 0, 255);
 }
 
 TEST_CASE("framebuffer arbitrary colour values")
@@ -87,16 +87,30 @@ TEST_CASE("framebuffer independent colours")
     framebuffer fb{8, 1};
 
     fb.set(1, 0, colour{99, 99, 99, 99});
-    check_colour(fb.get(0, 0), 255, 255, 255, 255);
-    check_colour(fb.get(2, 0), 255, 255, 255, 255);
+    check_colour(fb.get(0, 0), 0, 0, 0, 255);
+    check_colour(fb.get(2, 0), 0, 0, 0, 255);
 }
 
 TEST_CASE("framebuffer one colour render target")
 {
     framebuffer fb{1, 1};
 
-    check_colour(fb.get(0, 0), 255, 255, 255, 255);
+    check_colour(fb.get(0, 0), 0, 0, 0, 255);
 
     fb.set(0, 0, colour{0, 255, 0, 255});
     check_colour(fb.get(0, 0), 0, 255, 0, 255);
+}
+
+TEST_CASE("framebuffer clear")
+{
+    framebuffer fb{2, 2};
+    fb.set(0, 0, colour{1, 2, 3, 4});
+
+    fb.clear();
+    check_colour(fb.get(0, 0), 0, 0, 0, 255);
+    check_colour(fb.get(1, 1), 0, 0, 0, 255);
+
+    fb.clear(white);
+    check_colour(fb.get(0, 0), 255, 255, 255, 255);
+    check_colour(fb.get(1, 1), 255, 255, 255, 255);
 }

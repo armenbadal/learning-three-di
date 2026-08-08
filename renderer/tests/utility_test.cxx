@@ -54,7 +54,7 @@ TEST_CASE("save_as_ppm writes colours row-major")
         CHECK(tokens[4 + i] == expected[i]);
 }
 
-TEST_CASE("save_as_ppm cleared framebuffer is all white")
+TEST_CASE("save_as_ppm cleared framebuffer is all black")
 {
     const framebuffer fb{3, 1};
 
@@ -72,5 +72,5 @@ TEST_CASE("save_as_ppm cleared framebuffer is all white")
     CHECK(tokens[3] == "255");
 
     for( std::size_t i = 4; i < tokens.size(); ++i )
-        CHECK(tokens[i] == "255");
+        CHECK(tokens[i] == "0");
 }

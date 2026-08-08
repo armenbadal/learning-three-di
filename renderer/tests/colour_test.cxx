@@ -35,3 +35,21 @@ TEST_CASE("colour explicit alpha")
 
     CHECK(p.a() == 128);
 }
+
+TEST_CASE("colour equality")
+{
+    const colour a{10, 20, 30, 40};
+
+    CHECK(a == colour{10, 20, 30, 40});
+    CHECK_FALSE(a != colour{10, 20, 30, 40});
+
+    CHECK_FALSE(a == colour{11, 20, 30, 40});
+    CHECK(a != colour{11, 20, 30, 40});
+
+    CHECK_FALSE(a == colour{10, 20, 30, 41});
+    CHECK(a != colour{10, 20, 30, 41});
+
+    CHECK(white == colour{255, 255, 255, 255});
+    CHECK(black == colour{0, 0, 0, 255});
+    CHECK_FALSE(white == black);
+}

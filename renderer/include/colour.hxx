@@ -15,6 +15,8 @@ public:
     constexpr std::uint8_t b() const { return _b; }
     constexpr std::uint8_t a() const { return _a; }
 
+    constexpr bool operator==(const colour&) const = default;
+
 private:
     std::uint8_t _r;
     std::uint8_t _g;

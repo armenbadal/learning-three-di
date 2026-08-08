@@ -1,5 +1,6 @@
 #include "rasterizer.hxx"
 #include "vector2.hxx"
+#include "math.hxx"
 
 #include <algorithm>
 #include <cmath>
@@ -10,57 +11,46 @@ rasterizer::rasterizer(framebuffer& fb)
     : _framebuffer{fb}
 {}
 
-void rasterizer::draw_line_dda(float x0, float y0, float x1, float y1, colour c)
-{
-    const auto dx = std::fabs(x0 - x1);
-    const auto dy = std::fabs(y0 - y1);
-    const int samples = std::ceil(std::max(dx, dy));
-    const float xinc = dx / samples;
-    const float yinc = dy / samples;
-
-    float x = x0, y = y0;
-    for( int i = 0; i <= samples; ++i ) {
-        _framebuffer.set(std::round(x), std::round(y), c);
-        x += xinc;
-        y += yinc;
-    }
-}
-
 void rasterizer::draw_line(math::vector2 p0, math::vector2 p1, colour c)
 {
-    auto x0r = std::round(p0.x()), y0r = std::round(p0.y());
-    auto x1r = std::round(p1.x()), y1r = std::round(p1.y());
+    int x0 = static_cast<int>(std::round(p0.x()));
+    int y0 = static_cast<int>(std::round(p0.y()));
+    int x1 = static_cast<int>(std::round(p1.x()));
+    int y1 = static_cast<int>(std::round(p1.y()));
 
-    const int dx = std::abs(x1r - x0r);
-    const int slope_x = x0r < x1r ? 1 : -1;
+    const int dx = std::abs(x1 - x0);
+    const int slope_x = x0 < x1 ? 1 : -1;
 
-    const int dy = -std::abs(y1r - y0r);
-    const int slope_y = y0r < y1r ? 1 : -1;
+    const int dy = -std::abs(y1 - y0);
+    const int slope_y = y0 < y1 ? 1 : -1;
 
     int error = dx + dy;
 
     while( true ) {
-        _framebuffer.set(x0r, y0r, c);
+        _framebuffer.set(x0, y0, c);
 
-        if( x0r == x1r && y0r == y1r )
+        if( x0 == x1 && y0 == y1 )
             break;
 
         const int e2 = 2 * error;
 
         if( e2 >= dy ) {
             error += dy;
-            x0r += slope_x;
+            x0 += slope_x;
         }
 
         if( e2 <= dx ) {
             error += dx;
-            y0r += slope_y;
+            y0 += slope_y;
         }
     }
 }
 
 void rasterizer::draw_triangle(math::vector2 p0, math::vector2 p1, math::vector2 p2, colour c)
 {
+    if( std::abs((p1 - p0).cross_product(p2 - p0)) < math::epsilon )
+        return;
+
     draw_line(p0, p1, c);
     draw_line(p1, p2, c);
     draw_line(p2, p0, c);
@@ -68,8 +58,6 @@ void rasterizer::draw_triangle(math::vector2 p0, math::vector2 p1, math::vector2
 
 void rasterizer::draw_filled_triangle(math::vector2 p0, math::vector2 p1, math::vector2 p2, colour c)
 {
-    draw_triangle(p0, p1, p2, c);
-
     const int ox = static_cast<int>(std::floor(std::min(p0.x(), std::min(p1.x(), p2.x()))));
     const int oy = static_cast<int>(std::floor(std::min(p0.y(), std::min(p1.y(), p2.y()))));
     const int cx = static_cast<int>(std::ceil(std::max(p0.x(), std::max(p1.x(), p2.x()))));

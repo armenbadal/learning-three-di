@@ -1,11 +1,10 @@
 #include "matrix4x4.hxx"
+#include "math.hxx"
 
 #include <cmath>
 #include <format>
 
 namespace math {
-
-constexpr float epsilon = 1e-5f;
 
 float matrix4x4::determinant3x3(
             float a, float b, float c,

@@ -80,6 +80,7 @@ namespace {
     void check_line(const line_case& c)
     {
         framebuffer fb{20, 20};
+        fb.clear(white);
         rasterizer r{fb};
         r.draw_line(math::vector2{static_cast<float>(c.x0), static_cast<float>(c.y0)},
                     math::vector2{static_cast<float>(c.x1), static_cast<float>(c.y1)},
@@ -143,6 +144,7 @@ TEST_CASE("draw_line zero length")
 TEST_CASE("draw_triangle outline")
 {
     framebuffer fb{20, 20};
+    fb.clear(white);
     rasterizer r{fb};
     r.draw_triangle(math::vector2{2.0F, 2.0F},
                     math::vector2{18.0F, 2.0F},
@@ -161,25 +163,37 @@ TEST_CASE("draw_triangle outline")
 
 TEST_CASE("draw_filled_triangle fills interior")
 {
-    framebuffer fb{20, 20};
+    framebuffer fb{6, 5};
+    fb.clear(white);
     rasterizer r{fb};
     r.draw_filled_triangle(math::vector2{0.0F, 0.0F},
-                           math::vector2{10.0F, 0.0F},
-                           math::vector2{5.0F, 10.0F},
+                           math::vector2{4.0F, 0.0F},
+                           math::vector2{0.0F, 4.0F},
                            black);
 
-    CHECK(is_black(fb.get(0, 0)));
-    CHECK(is_black(fb.get(10, 0)));
-    CHECK(is_black(fb.get(5, 10)));
+    const unsigned int black_per_row[] = {4, 3, 2, 1, 0};
+    for( unsigned int y = 0; y < 5; ++y ) {
+        for( unsigned int x = 0; x < 6; ++x ) {
+            const bool expect = x < black_per_row[y];
+            INFO("x=" << x << " y=" << y);
+            CHECK(is_black(fb.get(x, y)) == expect);
+        }
+    }
 
-    for( unsigned int x = 2; x <= 8; ++x )
-        CHECK(is_black(fb.get(x, 4)));
+    CHECK(is_black(fb.get(1, 1)));
+    CHECK_FALSE(is_black(fb.get(5, 5)));
+}
 
-    CHECK(is_black(fb.get(5, 3)));
-    CHECK(is_black(fb.get(5, 9)));
+TEST_CASE("draw_triangle degenerate is skipped")
+{
+    framebuffer fb{20, 20};
+    fb.clear(white);
+    rasterizer r{fb};
 
-    CHECK_FALSE(is_black(fb.get(0, 4)));
-    CHECK_FALSE(is_black(fb.get(9, 4)));
-    CHECK_FALSE(is_black(fb.get(5, 11)));
-    CHECK_FALSE(is_black(fb.get(10, 10)));
+    r.draw_triangle(math::vector2{0.0F, 0.0F},
+                    math::vector2{0.0F, 0.0F},
+                    math::vector2{0.0F, 0.0F},
+                    black);
+
+    CHECK(count_black(fb) == 0);
 }

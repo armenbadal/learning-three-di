@@ -6,6 +6,7 @@
 void example_rectangle()
 {
     renderer::framebuffer fb{40, 20};
+    fb.clear(renderer::white);
     renderer::rasterizer r{fb};
     r.draw_line({0.0F, 0.0F}, {39.0F, 19.0F}, renderer::black);
     r.draw_line({0.0F, 0.0F}, {39.0F, 0.0F}, renderer::black);
@@ -18,6 +19,7 @@ void example_rectangle()
 void example_triangle()
 {
     renderer::framebuffer fb{40, 40};
+    fb.clear(renderer::white);
     renderer::rasterizer r{fb};
     r.draw_triangle(
         {20.0F, 5.0},
@@ -31,6 +33,7 @@ void example_triangle()
 void example_filled_triangle()
 {
     renderer::framebuffer fb{40, 40};
+    fb.clear(renderer::white);
     renderer::rasterizer r{fb};
     r.draw_filled_triangle(
         {20.0F, 5.0},
