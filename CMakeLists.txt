@@ -9,3 +9,4 @@ project(learning-three-di)
 enable_testing()
 
 add_subdirectory(math)
+add_subdirectory(renderer)
