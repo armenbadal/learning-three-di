@@ -19,9 +19,9 @@ TEST_CASE("vector3 cross product basis")
     const vector3 y{0.0F, 1.0F, 0.0F};
     const vector3 z{0.0F, 0.0F, 1.0F};
 
-    CHECK(x.cross_product(y) == z);
-    CHECK(y.cross_product(z) == x);
-    CHECK(z.cross_product(x) == y);
+    CHECK(cross(x, y) == z);
+    CHECK(cross(y, z) == x);
+    CHECK(cross(z, x) == y);
 }
 
 TEST_CASE("vector3 cross product anticommutative")
@@ -29,7 +29,7 @@ TEST_CASE("vector3 cross product anticommutative")
     const vector3 a{1.0F, 2.0F, 3.0F};
     const vector3 b{4.0F, 5.0F, 6.0F};
 
-    CHECK(a.cross_product(b) == -b.cross_product(a));
+    CHECK(cross(a, b) == -cross(b, a));
 }
 
 TEST_CASE("vector3 cross product parallel is zero")
@@ -38,17 +38,17 @@ TEST_CASE("vector3 cross product parallel is zero")
     const vector3 b{1.0F, 2.0F, 3.0F};
     const vector3 zero{0.0F, 0.0F, 0.0F};
 
-    CHECK(a.cross_product(b) == zero);
+    CHECK(cross(a, b) == zero);
 }
 
 TEST_CASE("vector3 cross product perpendicular")
 {
     const vector3 a{1.0F, 2.0F, 3.0F};
     const vector3 b{4.0F, 5.0F, 6.0F};
-    const vector3 c = a.cross_product(b);
+    const vector3 c = cross(a, b);
 
-    CHECK(c.dot_product(a) == approx(0.0F));
-    CHECK(c.dot_product(b) == approx(0.0F));
+    CHECK(dot(c, a) == approx(0.0F));
+    CHECK(dot(c, b) == approx(0.0F));
 }
 
 TEST_CASE("vector3 equality")

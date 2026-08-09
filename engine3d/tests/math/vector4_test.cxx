@@ -44,7 +44,7 @@ TEST_CASE("vector4 dot product")
     const vector4 v0{1.0F, 2.0F, 3.0F, 4.0F};
     const vector4 v1{5.0F, 6.0F, 7.0F, 8.0F};
 
-    CHECK(v0.dot_product(v1) == approx(70.0F));
+    CHECK(dot(v0, v1) == approx(70.0F));
 }
 
 TEST_CASE("vector4 equality")

@@ -22,9 +22,6 @@ public:
     vector2 normalized() const noexcept;
     void normalize() noexcept;
 
-    float dot_product(const vector2& vc) const noexcept;
-    float cross_product(const vector2& vc) const noexcept;
-
 private:
     float _x{0.0F};
     float _y{0.0F};
@@ -35,6 +32,9 @@ vector2 operator-(const vector2& vo, const vector2& vi) noexcept;
 vector2 operator-(const vector2& vo) noexcept;
 vector2 operator*(vector2 v, float c) noexcept;
 vector2 operator/(vector2 v, float c);
+
+float dot(const vector2& vo, const vector2& vi) noexcept;
+float cross(const vector2& vo, const vector2& vi) noexcept;
 
 bool operator==(const vector2& vo, const vector2& vi) noexcept;
 bool operator!=(const vector2& vo, const vector2& vi) noexcept;

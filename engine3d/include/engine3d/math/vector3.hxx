@@ -23,9 +23,6 @@ public:
     vector3 normalized() const noexcept;
     void normalize() noexcept;
 
-    float dot_product(const vector3& vc) const noexcept;
-    vector3 cross_product(const vector3& vc) const noexcept;
-
 private:
     float _x{0.0F};
     float _y{0.0F};
@@ -37,6 +34,9 @@ vector3 operator-(const vector3& vo, const vector3& vi) noexcept;
 vector3 operator-(const vector3& vo) noexcept;
 vector3 operator*(vector3 v, float c) noexcept;
 vector3 operator/(vector3 v, float c);
+
+float dot(const vector3& vo, const vector3& vi) noexcept;
+vector3 cross(const vector3& vo, const vector3& vi) noexcept;
 
 bool operator==(const vector3& vo, const vector3& vi) noexcept;
 bool operator!=(const vector3& vo, const vector3& vi) noexcept;

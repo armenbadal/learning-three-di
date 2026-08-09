@@ -68,11 +68,6 @@ void vector4::normalize() noexcept
         *this /= len;
 }
 
-float vector4::dot_product(const vector4& vc) const noexcept
-{
-    return _x * vc._x + _y * vc._y + _z * vc._z + _w * vc._w;
-}
-
 vector4 operator+(const vector4& vo, const vector4& vi) noexcept
 {
     return vector4{vo.x() + vi.x(), vo.y() + vi.y(), vo.z() + vi.z(), vo.w() + vi.w()};
@@ -98,6 +93,11 @@ vector4 operator/(vector4 v, float c)
 {
     v /= c;
     return v;
+}
+
+float dot(const vector4& vo, const vector4& vi) noexcept
+{
+    return vo.x() * vi.x() + vo.y() * vi.y() + vo.z() * vi.z() + vo.w() * vi.w();
 }
 
 bool operator==(const vector4& vo, const vector4& vi) noexcept

@@ -8,7 +8,7 @@ TEST_CASE("vertex2d fields")
 {
     const vertex2d v{{1.0F, 2.0F}, {10, 20, 30, 40}};
 
-    CHECK(v._position.x() == 1.0F);
-    CHECK(v._position.y() == 2.0F);
-    CHECK(v._colour == colour{10, 20, 30, 40});
+    CHECK(v.position.x() == 1.0F);
+    CHECK(v.position.y() == 2.0F);
+    CHECK(v.colour == colour{10, 20, 30, 40});
 }

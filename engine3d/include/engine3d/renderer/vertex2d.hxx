@@ -6,8 +6,8 @@
 namespace engine3d::renderer {
 
 struct vertex2d {
-    math::vector2 _position;
-    colour _colour;
+    engine3d::math::vector2 position;
+    engine3d::renderer::colour colour;
 };
 
 } // namespace engine3d::renderer

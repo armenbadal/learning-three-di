@@ -64,19 +64,6 @@ void vector3::normalize() noexcept
         *this /= len;
 }
 
-float vector3::dot_product(const vector3& vc) const noexcept
-{
-    return _x * vc._x + _y * vc._y + _z * vc._z;
-}
-
-vector3 vector3::cross_product(const vector3& vc) const noexcept
-{
-    auto x = _y * vc._z - _z * vc._y;
-    auto y = _x * vc._z - _z * vc._x;
-    auto z = _x * vc._y - _y * vc._x;
-    return vector3{x, -y, z};
-}
-
 vector3 operator+(const vector3& vo, const vector3& vi) noexcept
 {
     return vector3{vo.x() + vi.x(), vo.y() + vi.y(), vo.z() + vi.z()};
@@ -102,6 +89,19 @@ vector3 operator/(vector3 v, float c)
 {
     v /= c;
     return v;
+}
+
+float dot(const vector3& vo, const vector3& vi) noexcept
+{
+    return vo.x() * vi.x() + vo.y() * vi.y() + vo.z() * vi.z();
+}
+
+vector3 cross(const vector3& vo, const vector3& vi) noexcept
+{
+    const auto x = vo.y() * vi.z() - vo.z() * vi.y();
+    const auto y = vo.x() * vi.z() - vo.z() * vi.x();
+    const auto z = vo.x() * vi.y() - vo.y() * vi.x();
+    return vector3{x, -y, z};
 }
 
 bool operator==(const vector3& vo, const vector3& vi) noexcept

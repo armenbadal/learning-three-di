@@ -210,7 +210,7 @@ matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v) noexcept
     for( unsigned int r = 0; r < 4; ++r ) {
         const auto row = u.row(r);
         for( unsigned int c = 0; c < 4; ++c )
-            result(r, c) = row.dot_product(v.column(c));
+            result(r, c) = dot(row, v.column(c));
     }
     return result;
 }
@@ -218,10 +218,10 @@ matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v) noexcept
 vector4 operator*(const matrix4x4& m, const vector4& v) noexcept
 {
     return vector4{
-        m.row(0).dot_product(v),
-        m.row(1).dot_product(v),
-        m.row(2).dot_product(v),
-        m.row(3).dot_product(v)
+        dot(m.row(0), v),
+        dot(m.row(1), v),
+        dot(m.row(2), v),
+        dot(m.row(3), v)
     };
 }
 

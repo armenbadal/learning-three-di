@@ -56,15 +56,15 @@ TEST_CASE("vector2 cross product")
     const vector2 x{1.0F, 0.0F};
     const vector2 y{0.0F, 1.0F};
 
-    CHECK(x.cross_product(y) == approx(1.0F));
-    CHECK(y.cross_product(x) == approx(-1.0F));
-    CHECK(x.cross_product(x) == approx(0.0F));
+    CHECK(cross(x, y) == approx(1.0F));
+    CHECK(cross(y, x) == approx(-1.0F));
+    CHECK(cross(x, x) == approx(0.0F));
 
     const vector2 a{3.0F, 4.0F};
     const vector2 b{5.0F, 6.0F};
 
-    CHECK(a.cross_product(b) == approx(-2.0F));
-    CHECK(a.cross_product(b) == -b.cross_product(a));
+    CHECK(cross(a, b) == approx(-2.0F));
+    CHECK(cross(a, b) == -cross(b, a));
 }
 
 TEST_CASE("vector2 equality")

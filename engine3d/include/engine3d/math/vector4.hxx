@@ -24,8 +24,6 @@ public:
     vector4 normalized() const noexcept;
     void normalize() noexcept;
 
-    float dot_product(const vector4& vc) const noexcept;
-
 private:
     float _x{0.0F};
     float _y{0.0F};
@@ -38,6 +36,8 @@ vector4 operator-(const vector4& vo, const vector4& vi) noexcept;
 vector4 operator-(const vector4& vo) noexcept;
 vector4 operator*(vector4 v, float c) noexcept;
 vector4 operator/(vector4 v, float c);
+
+float dot(const vector4& vo, const vector4& vi) noexcept;
 
 bool operator==(const vector4& vo, const vector4& vi) noexcept;
 bool operator!=(const vector4& vo, const vector4& vi) noexcept;

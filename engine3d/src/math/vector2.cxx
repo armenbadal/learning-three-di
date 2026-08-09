@@ -60,16 +60,6 @@ void vector2::normalize() noexcept
         *this /= len;
 }
 
-float vector2::dot_product(const vector2& vc) const noexcept
-{
-    return _x * vc._x + _y * vc._y;
-}
-
-float vector2::cross_product(const vector2& vc) const noexcept
-{
-    return _x * vc._y - _y * vc._x;
-}
-
 vector2 operator+(const vector2& vo, const vector2& vi) noexcept
 {
     return vector2{vo.x() + vi.x(), vo.y() + vi.y()};
@@ -95,6 +85,16 @@ vector2 operator/(vector2 v, float c)
 {
     v /= c;
     return v;
+}
+
+float dot(const vector2& vo, const vector2& vi) noexcept
+{
+    return vo.x() * vi.x() + vo.y() * vi.y();
+}
+
+float cross(const vector2& vo, const vector2& vi) noexcept
+{
+    return vo.x() * vi.y() - vo.y() * vi.x();
 }
 
 bool operator==(const vector2& vo, const vector2& vi) noexcept

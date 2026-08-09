@@ -3,8 +3,10 @@
 #include "engine3d/renderer/rasterizer.hxx"
 #include "engine3d/renderer/utility.hxx"
 #include "engine3d/renderer/vertex2d.hxx"
+#include "engine3d/math/vector2.hxx"
 
 namespace renderer = engine3d::renderer;
+namespace math = engine3d::math;
 
 void example_rectangle()
 {
@@ -61,11 +63,34 @@ void example_coloured_triangle()
     renderer::save_as_ppm(fb, "coloured-triangle.ppm");
 }
 
+void example_rectangle_with_triangles()
+{
+    renderer::framebuffer fb{40, 40};
+    fb.clear(renderer::white);
+    renderer::rasterizer r{fb};
+
+    math::vector2 p0{4.0F, 4.0F};
+    math::vector2 p1{34.0F, 4.0F};
+    math::vector2 p2{34.0F, 34.0F};
+    math::vector2 p3{4.0F, 34.0F};
+
+    renderer::vertex2d v0{p0, {255, 0, 0}};
+    renderer::vertex2d v1{p1, {0, 255, 0}};
+    renderer::vertex2d v2{p2, {255, 0, 0}};
+    renderer::vertex2d v3{p3, {0, 0, 255}};
+
+    r.draw_filled_triangle(v0, v1, v3);
+    r.draw_filled_triangle(v1, v2, v3);
+
+    renderer::save_as_ppm(fb, "rectangle.ppm");
+}
+
 int main()
 {
     example_rectangle();
     example_triangle();
     example_filled_triangle();
     example_coloured_triangle();
+    example_rectangle_with_triangles();
     return 0;
 }

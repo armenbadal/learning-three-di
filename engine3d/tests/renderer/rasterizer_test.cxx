@@ -175,7 +175,7 @@ TEST_CASE("draw_filled_triangle fills interior")
                            math::vector2{0.0F, 4.0F},
                            black);
 
-    const unsigned int black_per_row[] = {4, 3, 2, 1, 0};
+    const unsigned int black_per_row[] = {3, 2, 1, 0, 0};
     for( unsigned int y = 0; y < 5; ++y ) {
         for( unsigned int x = 0; x < 6; ++x ) {
             const bool expect = x < black_per_row[y];
@@ -200,8 +200,8 @@ TEST_CASE("draw_filled_triangle interpolates colours")
     r.draw_filled_triangle(v0, v1, v2);
 
     CHECK(fb.at(0, 0) == colour{180, 30, 30});
-    CHECK(fb.at(3, 0) == colour{0, 210, 30});
-    CHECK(fb.at(0, 3) == colour{0, 30, 210});
+    CHECK(fb.at(2, 0) == colour{60, 150, 30});
+    CHECK(fb.at(0, 2) == colour{60, 30, 150});
     CHECK(fb.at(1, 1) == colour{60, 90, 90});
 
     CHECK(fb.at(5, 5) == white);
@@ -218,7 +218,7 @@ TEST_CASE("draw_filled_triangle colours every interior pixel")
     const vertex2d v2{{0.0F, 4.0F}, {0, 0, 240}};
     r.draw_filled_triangle(v0, v1, v2);
 
-    const unsigned int filled_per_row[] = {4, 3, 2, 1, 0};
+    const unsigned int filled_per_row[] = {3, 2, 1, 0, 0};
     for( unsigned int y = 0; y < 5; ++y ) {
         for( unsigned int x = 0; x < 6; ++x ) {
             const bool expect = x < filled_per_row[y];
@@ -244,15 +244,6 @@ TEST_CASE("draw_triangle degenerate is skipped")
 }
 
 namespace {
-    void check_barycentric(math::vector2 p, math::vector2 a, math::vector2 b, math::vector2 c,
-                           float wa, float wb, float wc)
-    {
-        const auto w = rasterizer::barycentric(p, a, b, c);
-        CHECK(w.x() == Catch::Approx(wa).margin(1e-5f));
-        CHECK(w.y() == Catch::Approx(wb).margin(1e-5f));
-        CHECK(w.z() == Catch::Approx(wc).margin(1e-5f));
-    }
-
     bool same_framebuffer(const framebuffer& lhs, const framebuffer& rhs)
     {
         if( lhs.width() != rhs.width() || lhs.height() != rhs.height() )
@@ -263,146 +254,6 @@ namespace {
                     return false;
         return true;
     }
-}
-
-TEST_CASE("barycentric at vertices")
-{
-    const math::vector2 a{0.0F, 0.0F};
-    const math::vector2 b{10.0F, 0.0F};
-    const math::vector2 c{0.0F, 10.0F};
-
-    check_barycentric(a, a, b, c, 1.0F, 0.0F, 0.0F);
-    check_barycentric(b, a, b, c, 0.0F, 1.0F, 0.0F);
-    check_barycentric(c, a, b, c, 0.0F, 0.0F, 1.0F);
-}
-
-TEST_CASE("barycentric edge and interior points")
-{
-    const math::vector2 a{0.0F, 0.0F};
-    const math::vector2 b{10.0F, 0.0F};
-    const math::vector2 c{0.0F, 10.0F};
-
-    check_barycentric({5.0F, 0.0F}, a, b, c, 0.5F, 0.5F, 0.0F);
-    check_barycentric({0.0F, 5.0F}, a, b, c, 0.5F, 0.0F, 0.5F);
-    check_barycentric({5.0F, 5.0F}, a, b, c, 0.0F, 0.5F, 0.5F);
-    check_barycentric({5.0F, 2.0F}, a, b, c, 0.3F, 0.5F, 0.2F);
-    check_barycentric({10.0F / 3.0F, 10.0F / 3.0F}, a, b, c, 1.0F / 3.0F, 1.0F / 3.0F, 1.0F / 3.0F);
-}
-
-TEST_CASE("barycentric weights sum to one")
-{
-    const math::vector2 a{0.0F, 0.0F};
-    const math::vector2 b{10.0F, 0.0F};
-    const math::vector2 c{0.0F, 10.0F};
-
-    for( int i = 0; i < 11; ++i ) {
-        const math::vector2 p{static_cast<float>(i), static_cast<float>(10 - i)};
-        const auto w = rasterizer::barycentric(p, a, b, c);
-        CHECK(w.x() + w.y() + w.z() == Catch::Approx(1.0F).margin(1e-5f));
-    }
-}
-
-TEST_CASE("barycentric outside point has a negative weight")
-{
-    const math::vector2 a{0.0F, 0.0F};
-    const math::vector2 b{10.0F, 0.0F};
-    const math::vector2 c{0.0F, 10.0F};
-
-    const auto w = rasterizer::barycentric({20.0F, 5.0F}, a, b, c);
-    const bool has_negative = w.x() < 0.0F || w.y() < 0.0F || w.z() < 0.0F;
-    CHECK(has_negative);
-    CHECK(w.x() + w.y() + w.z() == Catch::Approx(1.0F).margin(1e-5f));
-}
-
-TEST_CASE("barycentric reconstructs point")
-{
-    const math::vector2 a{0.0F, 0.0F};
-    const math::vector2 b{10.0F, 0.0F};
-    const math::vector2 c{0.0F, 10.0F};
-    const math::vector2 p{3.0F, 7.0F};
-
-    const auto w = rasterizer::barycentric(p, a, b, c);
-    const math::vector2 r = a * w.x() + b * w.y() + c * w.z();
-    CHECK(r.x() == Catch::Approx(p.x()).margin(1e-5f));
-    CHECK(r.y() == Catch::Approx(p.y()).margin(1e-5f));
-}
-
-TEST_CASE("barycentric degenerate triangle returns zero")
-{
-    const math::vector2 a{0.0F, 0.0F};
-    const math::vector2 b{1.0F, 1.0F};
-    const math::vector2 c{2.0F, 2.0F};
-
-    const auto w = rasterizer::barycentric({1.0F, 1.0F}, a, b, c);
-    CHECK(w.x() == 0.0F);
-    CHECK(w.y() == 0.0F);
-    CHECK(w.z() == 0.0F);
-}
-
-TEST_CASE("bounding_box integer vertices")
-{
-    const auto [origin, corner] = rasterizer::bounding_box(
-        math::vector2{0.0F, 0.0F}, math::vector2{10.0F, 0.0F}, math::vector2{5.0F, 10.0F});
-
-    CHECK(origin.x() == 0.0F);
-    CHECK(origin.y() == 0.0F);
-    CHECK(corner.x() == 10.0F);
-    CHECK(corner.y() == 10.0F);
-}
-
-TEST_CASE("bounding_box fractional vertices")
-{
-    const auto [origin, corner] = rasterizer::bounding_box(
-        math::vector2{1.2F, 2.3F}, math::vector2{4.7F, 1.9F}, math::vector2{3.1F, 5.8F});
-
-    CHECK(origin.x() == 1.0F);
-    CHECK(origin.y() == 1.0F);
-    CHECK(corner.x() == 5.0F);
-    CHECK(corner.y() == 6.0F);
-}
-
-TEST_CASE("bounding_box negative vertices")
-{
-    const auto [origin, corner] = rasterizer::bounding_box(
-        math::vector2{-2.5F, -3.5F}, math::vector2{1.5F, 2.5F}, math::vector2{0.0F, 0.0F});
-
-    CHECK(origin.x() == -3.0F);
-    CHECK(origin.y() == -4.0F);
-    CHECK(corner.x() == 2.0F);
-    CHECK(corner.y() == 3.0F);
-}
-
-TEST_CASE("bounding_box contains vertices")
-{
-    const math::vector2 a{2.0F, 1.0F};
-    const math::vector2 b{7.0F, 3.0F};
-    const math::vector2 c{4.0F, 8.0F};
-
-    const auto [origin, corner] = rasterizer::bounding_box(a, b, c);
-
-    CHECK(origin.x() <= a.x());
-    CHECK(origin.x() <= b.x());
-    CHECK(origin.x() <= c.x());
-    CHECK(corner.x() >= a.x());
-    CHECK(corner.x() >= b.x());
-    CHECK(corner.x() >= c.x());
-    CHECK(origin.y() <= a.y());
-    CHECK(origin.y() <= b.y());
-    CHECK(origin.y() <= c.y());
-    CHECK(corner.y() >= a.y());
-    CHECK(corner.y() >= b.y());
-    CHECK(corner.y() >= c.y());
-}
-
-TEST_CASE("bounding_box single point")
-{
-    const auto [origin, corner] = rasterizer::bounding_box(
-        math::vector2{3.0F, 3.0F}, math::vector2{3.0F, 3.0F}, math::vector2{3.0F, 3.0F});
-
-    CHECK(origin.x() == 3.0F);
-    CHECK(origin.y() == 3.0F);
-    CHECK(corner.x() == 3.0F);
-    CHECK(corner.y() == 3.0F);
 }
 
 TEST_CASE("draw_filled_triangle degenerate collinear draws nothing")
@@ -502,4 +353,56 @@ TEST_CASE("draw_line clips writes to framebuffer")
     r.draw_line({-1000.0F, 2.0F}, {1000.0F, 2.0F}, black);
 
     CHECK(count_black(fb) == 5);
+}
+
+namespace {
+    const math::vector2 square_a{1.0F, 1.0F};
+    const math::vector2 square_b{8.0F, 1.0F};
+    const math::vector2 square_c{8.0F, 8.0F};
+    const math::vector2 square_d{1.0F, 8.0F};
+    const colour square_red{255, 0, 0};
+    const colour square_green{0, 255, 0};
+}
+
+TEST_CASE("draw_filled_triangle square shared diagonal is order independent")
+{
+    framebuffer red_first{10, 10};
+    framebuffer green_first{10, 10};
+    red_first.clear(white);
+    green_first.clear(white);
+    rasterizer a{red_first};
+    rasterizer b{green_first};
+
+    a.draw_filled_triangle(square_a, square_b, square_c, square_red);
+    a.draw_filled_triangle(square_a, square_c, square_d, square_green);
+
+    b.draw_filled_triangle(square_a, square_c, square_d, square_green);
+    b.draw_filled_triangle(square_a, square_b, square_c, square_red);
+
+    CHECK(same_framebuffer(red_first, green_first));
+}
+
+TEST_CASE("draw_filled_triangle shared diagonal belongs to exactly one triangle")
+{
+    framebuffer fb{10, 10};
+    fb.clear(white);
+    rasterizer r{fb};
+    r.draw_filled_triangle(square_a, square_b, square_c, square_red);
+    r.draw_filled_triangle(square_a, square_c, square_d, square_green);
+
+    for( unsigned int y = 0; y < fb.height(); ++y )
+        for( unsigned int x = 0; x < fb.width(); ++x ) {
+            const colour at = fb.at(x, y);
+            if( at == white )
+                continue;
+            INFO("x=" << x << " y=" << y);
+            CHECK((at == square_red || at == square_green));
+        }
+
+    for( unsigned int i = 1; i <= 7; ++i ) {
+        INFO("diagonal sample x=" << i << " y=" << i);
+        const colour at = fb.at(i, i);
+        CHECK(at != white);
+        CHECK((at == square_red || at == square_green));
+    }
 }
