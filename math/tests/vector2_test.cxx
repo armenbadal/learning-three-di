@@ -3,6 +3,8 @@
 
 #include "vector2.hxx"
 
+#include <stdexcept>
+
 using namespace math;
 
 namespace {
@@ -78,4 +80,23 @@ TEST_CASE("vector2 equality")
     CHECK_FALSE(a == vector2{1.0F + 1e-3F, 2.0F});
     CHECK(a != vector2{1.0F + 1e-3F, 2.0F});
     CHECK_FALSE(almost_equal(a, vector2{1.0F + 1e-3F, 2.0F}));
+}
+
+TEST_CASE("vector2 compound operators return the vector")
+{
+    vector2 v{1.0F, 2.0F};
+
+    CHECK(&(v += vector2{1.0F, 1.0F}) == &v);
+    CHECK(&(v -= vector2{1.0F, 1.0F}) == &v);
+    CHECK(&(v *= 2.0F) == &v);
+    CHECK(&(v /= 2.0F) == &v);
+    CHECK(v == vector2{1.0F, 2.0F});
+}
+
+TEST_CASE("vector2 division by zero throws")
+{
+    vector2 v{1.0F, 2.0F};
+
+    CHECK_THROWS_AS(v /= 0.0F, std::domain_error);
+    CHECK_THROWS_AS(v / 0.0F, std::domain_error);
 }

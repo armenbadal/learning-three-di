@@ -5,9 +5,9 @@
 
 namespace math {
 
-constexpr float epsilon = 1e-5f;
+inline constexpr float epsilon = 1e-5f;
 
-inline bool almost_equal(float a, float b, float tolerance = epsilon)
+inline bool almost_equal(float a, float b, float tolerance = epsilon) noexcept
 {
     if( a == b )
         return true;

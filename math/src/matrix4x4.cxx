@@ -9,14 +9,14 @@ namespace math {
 float matrix4x4::determinant3x3(
             float a, float b, float c,
             float d, float e, float f,
-            float g, float h, float i)
+            float g, float h, float i) noexcept
 {
     return a * (e * i - f * h)
          - b * (d * i - f * g)
          + c * (d * h - e * g);
 }
 
-float matrix4x4::determinant() const
+float matrix4x4::determinant() const noexcept
 {
     const float minor00 = determinant3x3(
         _m[1][1], _m[1][2], _m[1][3],
@@ -41,14 +41,14 @@ float matrix4x4::determinant() const
          - _m[0][3] * minor03;
 }
 
-std::optional<matrix4x4> matrix4x4::inverse() const
+std::optional<matrix4x4> matrix4x4::inverse() const noexcept
 {
     if( _m[3][0] == 0.0F && _m[3][1] == 0.0F && _m[3][2] == 0.0F && _m[3][3] == 1.0F )
         return inverse_affine();
     return inverse_general();
 }
 
-std::optional<matrix4x4> matrix4x4::inverse_affine() const
+std::optional<matrix4x4> matrix4x4::inverse_affine() const noexcept
 {
     const float l00 = _m[0][0], l01 = _m[0][1], l02 = _m[0][2];
     const float l10 = _m[1][0], l11 = _m[1][1], l12 = _m[1][2];
@@ -85,7 +85,7 @@ std::optional<matrix4x4> matrix4x4::inverse_affine() const
     };
 }
 
-std::optional<matrix4x4> matrix4x4::inverse_general() const
+std::optional<matrix4x4> matrix4x4::inverse_general() const noexcept
 {
     const float det = determinant();
     if( std::fabs(det) < epsilon )
@@ -118,12 +118,12 @@ std::optional<matrix4x4> matrix4x4::inverse_general() const
     return result;
 }
 
-matrix4x4 matrix4x4::identity()
+matrix4x4 matrix4x4::identity() noexcept
 {
     return matrix4x4{};
 }
 
-matrix4x4 matrix4x4::zero()
+matrix4x4 matrix4x4::zero() noexcept
 {
     return matrix4x4{
         0.0F, 0.0F, 0.0F, 0.0F,
@@ -133,7 +133,7 @@ matrix4x4 matrix4x4::zero()
     };
 }
 
-matrix4x4 matrix4x4::translation(const vector3& tr)
+matrix4x4 matrix4x4::translation(const vector3& tr) noexcept
 {
     return matrix4x4{
         1.0F, 0.0F, 0.0F, tr.x(),
@@ -143,7 +143,7 @@ matrix4x4 matrix4x4::translation(const vector3& tr)
     };
 }
 
-matrix4x4 matrix4x4::scaling(const vector3& sc)
+matrix4x4 matrix4x4::scaling(const vector3& sc) noexcept
 {
     return matrix4x4{
         sc.x(),   0.0F,   0.0F, 0.0F,
@@ -153,10 +153,10 @@ matrix4x4 matrix4x4::scaling(const vector3& sc)
     };
 }
 
-matrix4x4 matrix4x4::rotation_x(float angle)
+matrix4x4 matrix4x4::rotation_x(float angle) noexcept
 {
-    const float c = std::cosf(angle);
-    const float s = std::sinf(angle);
+    const float c = std::cos(angle);
+    const float s = std::sin(angle);
     return matrix4x4{
         1.0F, 0.0F, 0.0F, 0.0F,
         0.0F,    c,   -s, 0.0F,
@@ -165,10 +165,10 @@ matrix4x4 matrix4x4::rotation_x(float angle)
     };
 }
 
-matrix4x4 matrix4x4::rotation_y(float angle)
+matrix4x4 matrix4x4::rotation_y(float angle) noexcept
 {
-    const float c = std::cosf(angle);
-    const float s = std::sinf(angle);
+    const float c = std::cos(angle);
+    const float s = std::sin(angle);
     return matrix4x4{
            c, 0.0F,    s, 0.0F,
         0.0F, 1.0F, 0.0F, 0.0F,
@@ -177,10 +177,10 @@ matrix4x4 matrix4x4::rotation_y(float angle)
     };
 }
 
-matrix4x4 matrix4x4::rotation_z(float angle)
+matrix4x4 matrix4x4::rotation_z(float angle) noexcept
 {
-    const float c = std::cosf(angle);
-    const float s = std::sinf(angle);
+    const float c = std::cos(angle);
+    const float s = std::sin(angle);
     return matrix4x4{
            c,   -s, 0.0F, 0.0F,
            s,    c, 0.0F, 0.0F,
@@ -189,22 +189,22 @@ matrix4x4 matrix4x4::rotation_z(float angle)
     };
 }
 
-float& matrix4x4::operator()(unsigned int row, unsigned int column)
+float& matrix4x4::operator()(unsigned int row, unsigned int column) noexcept
 {
     return _m[row][column];
 }
 
-vector4 matrix4x4::row(unsigned int row) const
+vector4 matrix4x4::row(unsigned int row) const noexcept
 {
     return vector4{_m[row][0], _m[row][1], _m[row][2], _m[row][3]};
 }
 
-vector4 matrix4x4::column(unsigned int column) const
+vector4 matrix4x4::column(unsigned int column) const noexcept
 {
     return vector4{_m[0][column], _m[1][column], _m[2][column], _m[3][column]};
 }
 
-matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v)
+matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v) noexcept
 {
     matrix4x4 result = matrix4x4::zero();
     for( unsigned int r = 0; r < 4; ++r ) {
@@ -215,7 +215,7 @@ matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v)
     return result;
 }
 
-vector4 operator*(const matrix4x4& m, const vector4& v)
+vector4 operator*(const matrix4x4& m, const vector4& v) noexcept
 {
     return vector4{
         m.row(0).dot_product(v),
@@ -233,7 +233,7 @@ std::ostream& operator<<(std::ostream& out, const matrix4x4& m)
     return out;
 }
 
-bool operator==(const matrix4x4& mo, const matrix4x4& mi)
+bool operator==(const matrix4x4& mo, const matrix4x4& mi) noexcept
 {
     for( unsigned int r = 0; r < 4; ++r )
         for( unsigned int c = 0; c < 4; ++c )
@@ -242,12 +242,12 @@ bool operator==(const matrix4x4& mo, const matrix4x4& mi)
     return true;
 }
 
-bool operator!=(const matrix4x4& mo, const matrix4x4& mi)
+bool operator!=(const matrix4x4& mo, const matrix4x4& mi) noexcept
 {
     return !(mo == mi);
 }
 
-bool almost_equal(const matrix4x4& mo, const matrix4x4& mi, float tolerance)
+bool almost_equal(const matrix4x4& mo, const matrix4x4& mi, float tolerance) noexcept
 {
     for( unsigned int r = 0; r < 4; ++r )
         for( unsigned int c = 0; c < 4; ++c )

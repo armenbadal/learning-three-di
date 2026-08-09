@@ -6,25 +6,25 @@ namespace math {
 
 class vector3 {
 public:
-    constexpr vector3(float x, float y, float z) : _x{x}, _y{y}, _z{z} {}
+    constexpr vector3(float x, float y, float z) noexcept : _x{x}, _y{y}, _z{z} {}
 
-    constexpr float x() const { return _x; }
-    constexpr float y() const { return _y; }
-    constexpr float z() const { return _z; }
+    constexpr float x() const noexcept { return _x; }
+    constexpr float y() const noexcept { return _y; }
+    constexpr float z() const noexcept { return _z; }
 
-    void operator+=(const vector3& vc);
-    void operator-=(const vector3& vc);
-    void operator*=(float c);
-    void operator/=(float c);
+    vector3& operator+=(const vector3& vc) noexcept;
+    vector3& operator-=(const vector3& vc) noexcept;
+    vector3& operator*=(float c) noexcept;
+    vector3& operator/=(float c);
 
-    float length_squared() const;
-    float length() const;
+    float length_squared() const noexcept;
+    float length() const noexcept;
 
-    vector3 normalized() const;
-    void normalize();
+    vector3 normalized() const noexcept;
+    void normalize() noexcept;
 
-    float dot_product(const vector3& vc) const;
-    vector3 cross_product(const vector3& vc) const;
+    float dot_product(const vector3& vc) const noexcept;
+    vector3 cross_product(const vector3& vc) const noexcept;
 
 private:
     float _x{0.0F};
@@ -32,14 +32,14 @@ private:
     float _z{0.0F};
 };
 
-vector3 operator+(const vector3& vo, const vector3& vi);
-vector3 operator-(const vector3& vo, const vector3& vi);
-vector3 operator-(const vector3& vo);
-vector3 operator*(vector3 v, float c);
+vector3 operator+(const vector3& vo, const vector3& vi) noexcept;
+vector3 operator-(const vector3& vo, const vector3& vi) noexcept;
+vector3 operator-(const vector3& vo) noexcept;
+vector3 operator*(vector3 v, float c) noexcept;
 vector3 operator/(vector3 v, float c);
 
-bool operator==(const vector3& vo, const vector3& vi);
-bool operator!=(const vector3& vo, const vector3& vi);
-bool almost_equal(const vector3& vo, const vector3& vi, float tolerance = epsilon);
+bool operator==(const vector3& vo, const vector3& vi) noexcept;
+bool operator!=(const vector3& vo, const vector3& vi) noexcept;
+bool almost_equal(const vector3& vo, const vector3& vi, float tolerance = epsilon) noexcept;
 
 } // namespace math

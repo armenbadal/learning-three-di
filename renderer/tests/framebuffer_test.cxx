@@ -134,3 +134,16 @@ TEST_CASE("framebuffer constructor guards against overflow")
     CHECK_THROWS_AS((framebuffer{std::numeric_limits<std::size_t>::max(), 2}), std::invalid_argument);
     CHECK_THROWS_AS((framebuffer{std::numeric_limits<std::size_t>::max(), 0}), std::invalid_argument);
 }
+
+TEST_CASE("framebuffer exposes pixels as a span")
+{
+    framebuffer fb{2, 2};
+    auto pixels = fb.pixels();
+
+    REQUIRE(pixels.size() == 4);
+    pixels[1] = white;
+    CHECK(fb.at(1, 0) == white);
+
+    const auto& const_fb = fb;
+    CHECK(const_fb.pixels()[1] == white);
+}

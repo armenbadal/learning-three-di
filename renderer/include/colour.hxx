@@ -6,18 +6,18 @@ namespace renderer {
 
 class colour {
 public:
-    constexpr colour(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255)
+    constexpr colour(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) noexcept
         : _r{r}, _g{g}, _b{b}, _a{a}
     {}
 
-    constexpr std::uint8_t r() const { return _r; }
-    constexpr std::uint8_t g() const { return _g; }
-    constexpr std::uint8_t b() const { return _b; }
-    constexpr std::uint8_t a() const { return _a; }
+    constexpr std::uint8_t r() const noexcept { return _r; }
+    constexpr std::uint8_t g() const noexcept { return _g; }
+    constexpr std::uint8_t b() const noexcept { return _b; }
+    constexpr std::uint8_t a() const noexcept { return _a; }
 
-    constexpr bool operator==(const colour&) const = default;
+    constexpr bool operator==(const colour&) const noexcept = default;
 
-    constexpr colour operator+(const colour& other) const
+    constexpr colour operator+(const colour& other) const noexcept
     {
         const auto sum = [](std::uint8_t a, std::uint8_t b) {
             const auto s = static_cast<unsigned int>(a) + static_cast<unsigned int>(b);
@@ -26,7 +26,7 @@ public:
         return {sum(_r, other._r), sum(_g, other._g), sum(_b, other._b), sum(_a, other._a)};
     }
 
-    constexpr colour operator*(float scalar) const
+    constexpr colour operator*(float scalar) const noexcept
     {
         const auto scale = [scalar](std::uint8_t c) {
             const float v = static_cast<float>(c) * scalar;
@@ -43,7 +43,7 @@ private:
     std::uint8_t _a;
 };
 
-constexpr colour white{255, 255, 255};
-constexpr colour black{0, 0, 0};
+inline constexpr colour white{255, 255, 255};
+inline constexpr colour black{0, 0, 0};
 
 } // namespace renderer

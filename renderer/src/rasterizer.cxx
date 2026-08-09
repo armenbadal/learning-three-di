@@ -7,7 +7,7 @@
 
 namespace renderer {
 
-rasterizer::rasterizer(framebuffer& fb)
+rasterizer::rasterizer(framebuffer& fb) noexcept
     : _framebuffer{fb}
 {}
 
@@ -71,7 +71,7 @@ void rasterizer::draw_filled_triangle(math::vector2 p0, math::vector2 p1, math::
 
     for( int x = ox; x <= cx; ++x )
         for( int y = oy; y <= cy; ++y ) {
-            math::vector2 p{x + 0.5F, y + 0.5F};
+            math::vector2 p{static_cast<float>(x) + 0.5F, static_cast<float>(y) + 0.5F};
             const auto e0 = (p - p0).cross_product(p1 - p0);
             const auto e1 = (p - p1).cross_product(p2 - p1);
             const auto e2 = (p - p2).cross_product(p0 - p2);
@@ -96,7 +96,7 @@ void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
 
     for( int x = ox; x <= cx; ++x )
         for( int y = oy; y <= cy; ++y ) {
-            math::vector2 p{x + 0.5F, y + 0.5F};
+            math::vector2 p{static_cast<float>(x) + 0.5F, static_cast<float>(y) + 0.5F};
             auto bc = barycentric(p, v0._position, v1._position, v2._position);
             if( bc.x() >= 0.0F && bc.y() >= 0.0F && bc.z() >= 0.0F ) {
                 auto col = v0._colour * bc.x() + v1._colour * bc.y() + v2._colour * bc.z();
@@ -106,7 +106,8 @@ void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
 
 }
 
-std::tuple<math::vector2, math::vector2> rasterizer::bounding_box(math::vector2 p0, math::vector2 p1, math::vector2 p2)
+std::tuple<math::vector2, math::vector2> rasterizer::bounding_box(
+    math::vector2 p0, math::vector2 p1, math::vector2 p2) noexcept
 {
     auto min3 = [](auto a, auto b, auto c) { return std::min(a, std::min(b, c)); };
     auto max3 = [](auto a, auto b, auto c) { return std::max(a, std::max(b, c)); };
@@ -122,7 +123,8 @@ std::tuple<math::vector2, math::vector2> rasterizer::bounding_box(math::vector2 
     return {origin, corner};
 }
 
-math::vector3 rasterizer::barycentric(math::vector2 p, math::vector2 a, math::vector2 b, math::vector2 c)
+math::vector3 rasterizer::barycentric(
+    math::vector2 p, math::vector2 a, math::vector2 b, math::vector2 c) noexcept
 {
     const float area = (c - a).cross_product(b - a);
     if( !std::isfinite(area) || std::fabs(area) < math::epsilon )

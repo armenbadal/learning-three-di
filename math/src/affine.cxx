@@ -2,12 +2,12 @@
 
 namespace math {
 
-transform::transform(const vector3& tr, const vector3& rt, const vector3& sc)
+transform::transform(vector3 tr, vector3 rt, vector3 sc) noexcept
     : _translation{tr}, _rotation{rt}, _scaling{sc}
 {}
 
 
-matrix4x4 transform::model_matrix() const
+matrix4x4 transform::model_matrix() const noexcept
 {   
     auto translation = matrix4x4::translation(_translation);
 

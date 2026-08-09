@@ -6,11 +6,12 @@
 #include <sstream>
 #include <string>
 #include <limits>
+#include <numbers>
 
 using namespace math;
 
 namespace {
-    constexpr float pi = 3.14159265358979323846F;
+    constexpr float pi = std::numbers::pi_v<float>;
 
     auto approx = [](float value) { return Catch::Approx(value).margin(1e-5f); };
 }

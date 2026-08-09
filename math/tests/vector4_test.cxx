@@ -3,6 +3,8 @@
 
 #include "vector4.hxx"
 
+#include <stdexcept>
+
 using namespace math;
 
 namespace {
@@ -58,4 +60,23 @@ TEST_CASE("vector4 equality")
     CHECK_FALSE(a == vector4{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F});
     CHECK(a != vector4{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F});
     CHECK_FALSE(almost_equal(a, vector4{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F}));
+}
+
+TEST_CASE("vector4 compound operators return the vector")
+{
+    vector4 v{1.0F, 2.0F, 3.0F, 4.0F};
+
+    CHECK(&(v += vector4{1.0F, 1.0F, 1.0F, 1.0F}) == &v);
+    CHECK(&(v -= vector4{1.0F, 1.0F, 1.0F, 1.0F}) == &v);
+    CHECK(&(v *= 2.0F) == &v);
+    CHECK(&(v /= 2.0F) == &v);
+    CHECK(v == vector4{1.0F, 2.0F, 3.0F, 4.0F});
+}
+
+TEST_CASE("vector4 division by zero throws")
+{
+    vector4 v{1.0F, 2.0F, 3.0F, 4.0F};
+
+    CHECK_THROWS_AS(v /= 0.0F, std::domain_error);
+    CHECK_THROWS_AS(v / 0.0F, std::domain_error);
 }

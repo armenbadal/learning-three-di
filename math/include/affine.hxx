@@ -7,9 +7,10 @@ namespace math {
 
 class transform {
 public:
-    transform(const vector3& tr, const vector3& rt, const vector3& sc);
+    // Rotation components are radians. model_matrix() applies scale, rotation, then translation.
+    transform(vector3 tr, vector3 rt, vector3 sc) noexcept;
 
-    matrix4x4 model_matrix() const;
+    matrix4x4 model_matrix() const noexcept;
 
 private:
     vector3 _translation;
@@ -18,4 +19,3 @@ private:
 };
 
 } // namespace math
-

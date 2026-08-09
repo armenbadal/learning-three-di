@@ -1,50 +1,55 @@
 #include "vector3.hxx"
 
-#include <cassert>
 #include <cmath>
+#include <stdexcept>
 
 namespace math {
 
-void vector3::operator+=(const vector3& vc)
+vector3& vector3::operator+=(const vector3& vc) noexcept
 {
     _x += vc._x;
     _y += vc._y;
     _z += vc._z;
+    return *this;
 }
 
-void vector3::operator-=(const vector3& vc)
+vector3& vector3::operator-=(const vector3& vc) noexcept
 {
     _x -= vc._x;
     _y -= vc._y;
     _z -= vc._z;
+    return *this;
 }
 
-void vector3::operator*=(float c)
+vector3& vector3::operator*=(float c) noexcept
 {
     _x *= c;
     _y *= c;
     _z *= c;
+    return *this;
 }
 
-void vector3::operator/=(float c)
+vector3& vector3::operator/=(float c)
 {
-    assert(c != 0.0F);
+    if( c == 0.0F )
+        throw std::domain_error("division by zero");
     _x /= c;
     _y /= c;
     _z /= c;
+    return *this;
 }
 
-float vector3::length_squared() const
+float vector3::length_squared() const noexcept
 {
     return _x * _x + _y * _y + _z * _z;
 }
 
-float vector3::length() const
+float vector3::length() const noexcept
 {
     return std::sqrt(length_squared());
 }
 
-vector3 vector3::normalized() const
+vector3 vector3::normalized() const noexcept
 {
     const float len = length();
     if( len == 0.0F )
@@ -52,19 +57,19 @@ vector3 vector3::normalized() const
     return *this / len;
 }
 
-void vector3::normalize()
+void vector3::normalize() noexcept
 {
     const float len = length();
     if( len != 0.0F )
         *this /= len;
 }
 
-float vector3::dot_product(const vector3& vc) const
+float vector3::dot_product(const vector3& vc) const noexcept
 {
     return _x * vc._x + _y * vc._y + _z * vc._z;
 }
 
-vector3 vector3::cross_product(const vector3& vc) const
+vector3 vector3::cross_product(const vector3& vc) const noexcept
 {
     auto x = _y * vc._z - _z * vc._y;
     auto y = _x * vc._z - _z * vc._x;
@@ -72,22 +77,22 @@ vector3 vector3::cross_product(const vector3& vc) const
     return vector3{x, -y, z};
 }
 
-vector3 operator+(const vector3& vo, const vector3& vi)
+vector3 operator+(const vector3& vo, const vector3& vi) noexcept
 {
     return vector3{vo.x() + vi.x(), vo.y() + vi.y(), vo.z() + vi.z()};
 }
 
-vector3 operator-(const vector3& vo, const vector3& vi)
+vector3 operator-(const vector3& vo, const vector3& vi) noexcept
 {
     return vector3{vo.x() - vi.x(), vo.y() - vi.y(), vo.z() - vi.z()};
 }
 
-vector3 operator-(const vector3& vo)
+vector3 operator-(const vector3& vo) noexcept
 {
     return vector3{-vo.x(), -vo.y(), -vo.z()};
 }
 
-vector3 operator*(vector3 v, float c)
+vector3 operator*(vector3 v, float c) noexcept
 {
     v *= c;
     return v;
@@ -99,17 +104,17 @@ vector3 operator/(vector3 v, float c)
     return v;
 }
 
-bool operator==(const vector3& vo, const vector3& vi)
+bool operator==(const vector3& vo, const vector3& vi) noexcept
 {
     return vo.x() == vi.x() && vo.y() == vi.y() && vo.z() == vi.z();
 }
 
-bool operator!=(const vector3& vo, const vector3& vi)
+bool operator!=(const vector3& vo, const vector3& vi) noexcept
 {
     return !(vo == vi);
 }
 
-bool almost_equal(const vector3& vo, const vector3& vi, float tolerance)
+bool almost_equal(const vector3& vo, const vector3& vi, float tolerance) noexcept
 {
     return almost_equal(vo.x(), vi.x(), tolerance)
         && almost_equal(vo.y(), vi.y(), tolerance)

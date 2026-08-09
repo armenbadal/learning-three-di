@@ -40,17 +40,17 @@ const colour& framebuffer::at(std::size_t x, std::size_t y) const
     return _pixels[y * _width + x];
 }
 
-colour& framebuffer::operator()(std::size_t x, std::size_t y)
+colour& framebuffer::operator()(std::size_t x, std::size_t y) noexcept
 {
     return _pixels[y * _width + x];
 }
 
-const colour& framebuffer::operator()(std::size_t x, std::size_t y) const
+const colour& framebuffer::operator()(std::size_t x, std::size_t y) const noexcept
 {
     return _pixels[y * _width + x];
 }
 
-void framebuffer::set_clipped(int x, int y, colour p)
+void framebuffer::set_clipped(int x, int y, colour p) noexcept
 {
     if( x < 0 || y < 0 )
         return;
@@ -63,7 +63,7 @@ void framebuffer::set_clipped(int x, int y, colour p)
     _pixels[uy * _width + ux] = p;
 }
 
-void framebuffer::clear(colour c)
+void framebuffer::clear(colour c) noexcept
 {
     std::fill(_pixels.begin(), _pixels.end(), c);
 }
