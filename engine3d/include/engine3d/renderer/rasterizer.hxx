@@ -1,10 +1,10 @@
 #pragma once
 
-#include <engine3d/math/vector2.hxx>
-#include <engine3d/math/vector3.hxx>
-#include <engine3d/renderer/colour.hxx>
-#include <engine3d/renderer/framebuffer.hxx>
-#include <engine3d/renderer/vertex2d.hxx>
+#include "engine3d/math/vector2.hxx"
+#include "engine3d/math/vector3.hxx"
+#include "engine3d/renderer/colour.hxx"
+#include "engine3d/renderer/framebuffer.hxx"
+#include "engine3d/renderer/vertex2d.hxx"
 
 #include <tuple>
 

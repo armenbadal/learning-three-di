@@ -1,7 +1,7 @@
 #pragma once
 
-#include <engine3d/math/matrix4x4.hxx>
-#include <engine3d/math/vector3.hxx>
+#include "engine3d/math/matrix4x4.hxx"
+#include "engine3d/math/vector3.hxx"
 
 namespace engine3d::math {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine3d/renderer/colour.hxx>
+#include "engine3d/renderer/colour.hxx"
 
 #include <cstddef>
 #include <span>

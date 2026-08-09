@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine3d/math/math.hxx>
+#include "engine3d/math/math.hxx"
 
 namespace engine3d::math {
 

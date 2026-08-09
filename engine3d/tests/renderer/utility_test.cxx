@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <engine3d/renderer/utility.hxx>
+#include "engine3d/renderer/utility.hxx"
 
 #include <cstdint>
 #include <filesystem>
