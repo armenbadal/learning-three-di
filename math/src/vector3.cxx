@@ -101,15 +101,19 @@ vector3 operator/(vector3 v, float c)
 
 bool operator==(const vector3& vo, const vector3& vi)
 {
-    constexpr float epsilon = 1e-5f;
-    return fabs(vo.x() - vi.x()) <= epsilon
-        && fabs(vo.y() - vi.y()) <= epsilon
-        && fabs(vo.z() - vi.z()) <= epsilon;
+    return vo.x() == vi.x() && vo.y() == vi.y() && vo.z() == vi.z();
 }
 
 bool operator!=(const vector3& vo, const vector3& vi)
 {
     return !(vo == vi);
+}
+
+bool almost_equal(const vector3& vo, const vector3& vi, float tolerance)
+{
+    return almost_equal(vo.x(), vi.x(), tolerance)
+        && almost_equal(vo.y(), vi.y(), tolerance)
+        && almost_equal(vo.z(), vi.z(), tolerance);
 }
 
 } // namespace math

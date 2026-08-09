@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math.hxx"
+
 namespace math {
 
 class vector4 {
@@ -39,5 +41,6 @@ vector4 operator/(vector4 v, float c);
 
 bool operator==(const vector4& vo, const vector4& vi);
 bool operator!=(const vector4& vo, const vector4& vi);
+bool almost_equal(const vector4& vo, const vector4& vi, float tolerance = epsilon);
 
 } // namespace math

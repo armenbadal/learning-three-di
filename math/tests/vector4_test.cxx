@@ -52,9 +52,10 @@ TEST_CASE("vector4 equality")
     CHECK(a == vector4{1.0F, 2.0F, 3.0F, 4.0F});
     CHECK_FALSE(a != vector4{1.0F, 2.0F, 3.0F, 4.0F});
 
-    CHECK(a == vector4{1.0F + 1e-6F, 2.0F, 3.0F, 4.0F});
-    CHECK_FALSE(a != vector4{1.0F + 1e-6F, 2.0F, 3.0F, 4.0F});
+    CHECK_FALSE(a == vector4{1.0F + 1e-6F, 2.0F, 3.0F, 4.0F});
+    CHECK(almost_equal(a, vector4{1.0F + 1e-6F, 2.0F, 3.0F, 4.0F}));
 
     CHECK_FALSE(a == vector4{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F});
     CHECK(a != vector4{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F});
+    CHECK_FALSE(almost_equal(a, vector4{1.0F + 1e-3F, 2.0F, 3.0F, 4.0F}));
 }

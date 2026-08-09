@@ -2,6 +2,7 @@
 
 #include "vector3.hxx"
 #include "vector4.hxx"
+#include "math.hxx"
 
 #include <optional>
 #include <ostream>
@@ -67,5 +68,6 @@ std::ostream& operator<<(std::ostream& out, const matrix4x4& m);
 
 bool operator==(const matrix4x4& mo, const matrix4x4& mi);
 bool operator!=(const matrix4x4& mo, const matrix4x4& mi);
+bool almost_equal(const matrix4x4& mo, const matrix4x4& mi, float tolerance = epsilon);
 
 } // namespace math

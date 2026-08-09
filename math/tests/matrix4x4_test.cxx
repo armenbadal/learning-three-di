@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <string>
+#include <limits>
 
 using namespace math;
 
@@ -191,9 +192,9 @@ TEST_CASE("matrix4x4 rotation y quarter turn")
 TEST_CASE("matrix4x4 rotation inverse")
 {
     const float angle = 0.7F;
-    CHECK(matrix4x4::rotation_x(angle) * matrix4x4::rotation_x(-angle) == matrix4x4{});
-    CHECK(matrix4x4::rotation_y(angle) * matrix4x4::rotation_y(-angle) == matrix4x4{});
-    CHECK(matrix4x4::rotation_z(angle) * matrix4x4::rotation_z(-angle) == matrix4x4{});
+    CHECK(almost_equal(matrix4x4::rotation_x(angle) * matrix4x4::rotation_x(-angle), matrix4x4{}));
+    CHECK(almost_equal(matrix4x4::rotation_y(angle) * matrix4x4::rotation_y(-angle), matrix4x4{}));
+    CHECK(almost_equal(matrix4x4::rotation_z(angle) * matrix4x4::rotation_z(-angle), matrix4x4{}));
 }
 
 TEST_CASE("matrix4x4 rotation full turn")
@@ -295,8 +296,8 @@ TEST_CASE("matrix4x4 inverse product is identity")
 
     const auto inv = m.inverse();
     REQUIRE(inv.has_value());
-    CHECK(m * inv.value() == matrix4x4{});
-    CHECK(inv.value() * m == matrix4x4{});
+    CHECK(almost_equal(m * inv.value(), matrix4x4{}));
+    CHECK(almost_equal(inv.value() * m, matrix4x4{}));
 }
 
 TEST_CASE("matrix4x4 inverse double")
@@ -308,13 +309,13 @@ TEST_CASE("matrix4x4 inverse double")
 
     const auto inv = m.inverse();
     REQUIRE(inv.has_value());
-    CHECK(inv.value().inverse().value() == m);
+    CHECK(almost_equal(inv.value().inverse().value(), m));
 }
 
 TEST_CASE("matrix4x4 inverse rotation is transpose")
 {
-    CHECK(matrix4x4::rotation_z(0.7F).inverse().value() == matrix4x4::rotation_z(0.7F).transpose());
-    CHECK(matrix4x4::rotation_x(0.9F).inverse().value() == matrix4x4::rotation_x(0.9F).transpose());
+    CHECK(almost_equal(matrix4x4::rotation_z(0.7F).inverse().value(), matrix4x4::rotation_z(0.7F).transpose()));
+    CHECK(almost_equal(matrix4x4::rotation_x(0.9F).inverse().value(), matrix4x4::rotation_x(0.9F).transpose()));
 }
 
 TEST_CASE("matrix4x4 inverse singular")
@@ -330,8 +331,8 @@ TEST_CASE("matrix4x4 inverse affine")
     REQUIRE(inv_opt.has_value());
     const matrix4x4 inv = inv_opt.value();
 
-    CHECK(m * inv == matrix4x4{});
-    CHECK(inv * m == matrix4x4{});
+    CHECK(almost_equal(m * inv, matrix4x4{}));
+    CHECK(almost_equal(inv * m, matrix4x4{}));
 
     const vector4 p{3.0F, 4.0F, 5.0F, 1.0F};
     const vector4 q = m * p;
@@ -373,8 +374,8 @@ TEST_CASE("matrix4x4 inverse non affine")
 
     const auto inv = m.inverse();
     REQUIRE(inv.has_value());
-    CHECK(m * inv.value() == matrix4x4{});
-    CHECK(inv.value() * m == matrix4x4{});
+    CHECK(almost_equal(m * inv.value(), matrix4x4{}));
+    CHECK(almost_equal(inv.value() * m, matrix4x4{}));
 }
 
 TEST_CASE("matrix4x4 equality")
@@ -390,16 +391,27 @@ TEST_CASE("matrix4x4 equality")
 
     matrix4x4 nearby = m;
     nearby(0, 0) += 1e-6F;
-    CHECK(m == nearby);
-    CHECK_FALSE(m != nearby);
+    CHECK_FALSE(m == nearby);
+    CHECK(m != nearby);
+    CHECK(almost_equal(m, nearby));
 
     matrix4x4 far = m;
     far(0, 0) += 1e-3F;
     CHECK_FALSE(m == far);
     CHECK(m != far);
+    CHECK_FALSE(almost_equal(m, far));
 
     CHECK_FALSE(m == matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}));
     CHECK(m != matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}));
+}
+
+TEST_CASE("matrix4x4 nan is never equal")
+{
+    matrix4x4 nan = matrix4x4{};
+    nan(0, 0) = std::numeric_limits<float>::quiet_NaN();
+
+    CHECK_FALSE(nan == nan);
+    CHECK_FALSE(almost_equal(nan, nan));
 }
 
 TEST_CASE("matrix4x4 stream output")

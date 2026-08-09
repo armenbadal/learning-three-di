@@ -94,9 +94,7 @@ vector2 operator/(vector2 v, float c)
 
 bool operator==(const vector2& vo, const vector2& vi)
 {
-    constexpr float epsilon = 1e-5f;
-    return fabs(vo.x() - vi.x()) <= epsilon
-        && fabs(vo.y() - vi.y()) <= epsilon;
+    return vo.x() == vi.x() && vo.y() == vi.y();
 }
 
 bool operator!=(const vector2& vo, const vector2& vi)
@@ -104,5 +102,10 @@ bool operator!=(const vector2& vo, const vector2& vi)
     return !(vo == vi);
 }
 
-} // namespace math
+bool almost_equal(const vector2& vo, const vector2& vi, float tolerance)
+{
+    return almost_equal(vo.x(), vi.x(), tolerance)
+        && almost_equal(vo.y(), vi.y(), tolerance);
+}
 
+} // namespace math

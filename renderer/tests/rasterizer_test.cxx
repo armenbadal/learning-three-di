@@ -31,7 +31,7 @@ namespace {
         std::size_t n = 0;
         for( unsigned int y = 0; y < fb.height(); ++y )
             for( unsigned int x = 0; x < fb.width(); ++x )
-                if( is_black(fb.get(x, y)) )
+                if( is_black(fb.at(x, y)) )
                     ++n;
         return n;
     }
@@ -41,7 +41,7 @@ namespace {
     {
         for( unsigned int y = 0; y < fb.height(); ++y )
             for( unsigned int x = 0; x < fb.width(); ++x )
-                if( is_black(fb.get(x, y)) && (x < minx || x > maxx || y < miny || y > maxy) )
+                if( is_black(fb.at(x, y)) && (x < minx || x > maxx || y < miny || y > maxy) )
                     return false;
         return true;
     }
@@ -60,7 +60,7 @@ namespace {
         while( !q.empty() ) {
             const auto [cx, cy] = q.front();
             q.pop();
-            if( !is_black(fb.get(cx, cy)) )
+            if( !is_black(fb.at(cx, cy)) )
                 continue;
             ++n;
             for( int i = 0; i < 8; ++i ) {
@@ -69,9 +69,11 @@ namespace {
                 if( nx < 0 || ny < 0 || nx >= static_cast<int>(fb.width())
                     || ny >= static_cast<int>(fb.height()) )
                     continue;
-                if( visited[ny][nx] )
+                const auto ux = static_cast<std::size_t>(nx);
+                const auto uy = static_cast<std::size_t>(ny);
+                if( visited[uy][ux] )
                     continue;
-                visited[ny][nx] = true;
+                visited[uy][ux] = true;
                 q.push({static_cast<unsigned int>(nx), static_cast<unsigned int>(ny)});
             }
         }
@@ -88,8 +90,8 @@ namespace {
                     black);
 
         INFO(c.name);
-        CHECK(is_black(fb.get(c.x0, c.y0)));
-        CHECK(is_black(fb.get(c.x1, c.y1)));
+        CHECK(is_black(fb.at(c.x0, c.y0)));
+        CHECK(is_black(fb.at(c.x1, c.y1)));
 
         const auto minx = std::min(c.x0, c.x1);
         const auto maxx = std::max(c.x0, c.x1);
@@ -152,9 +154,9 @@ TEST_CASE("draw_triangle outline")
                     math::vector2{6.0F, 12.0F},
                     black);
 
-    CHECK(is_black(fb.get(2, 2)));
-    CHECK(is_black(fb.get(18, 2)));
-    CHECK(is_black(fb.get(6, 12)));
+    CHECK(is_black(fb.at(2, 2)));
+    CHECK(is_black(fb.at(18, 2)));
+    CHECK(is_black(fb.at(6, 12)));
 
     const std::size_t expected = 17 + 13 + 11 - 3;
     CHECK(count_black(fb) == expected);
@@ -177,12 +179,12 @@ TEST_CASE("draw_filled_triangle fills interior")
         for( unsigned int x = 0; x < 6; ++x ) {
             const bool expect = x < black_per_row[y];
             INFO("x=" << x << " y=" << y);
-            CHECK(is_black(fb.get(x, y)) == expect);
+            CHECK(is_black(fb.at(x, y)) == expect);
         }
     }
 
-    CHECK(is_black(fb.get(1, 1)));
-    CHECK_FALSE(is_black(fb.get(5, 5)));
+    CHECK(is_black(fb.at(1, 1)));
+    CHECK_FALSE(is_black(fb.at(5, 4)));
 }
 
 TEST_CASE("draw_filled_triangle interpolates colours")
@@ -196,12 +198,12 @@ TEST_CASE("draw_filled_triangle interpolates colours")
     const vertex2d v2{{0.0F, 4.0F}, {0, 0, 240}};
     r.draw_filled_triangle(v0, v1, v2);
 
-    CHECK(fb.get(0, 0) == colour{180, 30, 30});
-    CHECK(fb.get(3, 0) == colour{0, 210, 30});
-    CHECK(fb.get(0, 3) == colour{0, 30, 210});
-    CHECK(fb.get(1, 1) == colour{60, 90, 90});
+    CHECK(fb.at(0, 0) == colour{180, 30, 30});
+    CHECK(fb.at(3, 0) == colour{0, 210, 30});
+    CHECK(fb.at(0, 3) == colour{0, 30, 210});
+    CHECK(fb.at(1, 1) == colour{60, 90, 90});
 
-    CHECK(fb.get(5, 5) == white);
+    CHECK(fb.at(5, 5) == white);
 }
 
 TEST_CASE("draw_filled_triangle colours every interior pixel")
@@ -219,7 +221,7 @@ TEST_CASE("draw_filled_triangle colours every interior pixel")
     for( unsigned int y = 0; y < 5; ++y ) {
         for( unsigned int x = 0; x < 6; ++x ) {
             const bool expect = x < filled_per_row[y];
-            const bool filled = fb.get(x, y) != white;
+            const bool filled = fb.at(x, y) != white;
             INFO("x=" << x << " y=" << y);
             CHECK(filled == expect);
         }
@@ -256,7 +258,7 @@ namespace {
             return false;
         for( unsigned int y = 0; y < lhs.height(); ++y )
             for( unsigned int x = 0; x < lhs.width(); ++x )
-                if( lhs.get(x, y) != rhs.get(x, y) )
+                if( lhs.at(x, y) != rhs.at(x, y) )
                     return false;
         return true;
     }
@@ -415,7 +417,7 @@ TEST_CASE("draw_filled_triangle degenerate collinear draws nothing")
     for( unsigned int y = 0; y < fb.height(); ++y )
         for( unsigned int x = 0; x < fb.width(); ++x ) {
             INFO("x=" << x << " y=" << y);
-            CHECK(fb.get(x, y) == white);
+            CHECK(fb.at(x, y) == white);
         }
 }
 
@@ -432,7 +434,7 @@ TEST_CASE("draw_filled_triangle degenerate closed draws nothing")
     for( unsigned int y = 0; y < fb.height(); ++y )
         for( unsigned int x = 0; x < fb.width(); ++x ) {
             INFO("x=" << x << " y=" << y);
-            CHECK(fb.get(x, y) == white);
+            CHECK(fb.at(x, y) == white);
         }
 }
 
@@ -450,7 +452,7 @@ TEST_CASE("draw_filled_triangle vertex degenerate draws nothing")
     for( unsigned int y = 0; y < fb.height(); ++y )
         for( unsigned int x = 0; x < fb.width(); ++x ) {
             INFO("x=" << x << " y=" << y);
-            CHECK(fb.get(x, y) == white);
+            CHECK(fb.at(x, y) == white);
         }
 }
 
@@ -488,4 +490,15 @@ TEST_CASE("draw_filled_triangle vertex winding does not change pixels or colours
     b.draw_filled_triangle(vc, vb, va);
 
     CHECK(same_framebuffer(cw, ccw));
+}
+
+TEST_CASE("draw_line clips writes to framebuffer")
+{
+    framebuffer fb{5, 5};
+    fb.clear(white);
+    rasterizer r{fb};
+
+    r.draw_line({-1000.0F, 2.0F}, {1000.0F, 2.0F}, black);
+
+    CHECK(count_black(fb) == 5);
 }

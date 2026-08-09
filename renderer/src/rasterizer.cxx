@@ -27,7 +27,7 @@ void rasterizer::draw_line(math::vector2 p0, math::vector2 p1, colour c)
     int error = dx + dy;
 
     while( true ) {
-        _framebuffer.set(x0, y0, c);
+        _framebuffer.set_clipped(x0, y0, c);
 
         if( x0 == x1 && y0 == y1 )
             break;
@@ -48,7 +48,8 @@ void rasterizer::draw_line(math::vector2 p0, math::vector2 p1, colour c)
 
 void rasterizer::draw_triangle(math::vector2 p0, math::vector2 p1, math::vector2 p2, colour c)
 {
-    if( std::abs((p1 - p0).cross_product(p2 - p0)) < math::epsilon )
+    const float area = (p1 - p0).cross_product(p2 - p0);
+    if( !std::isfinite(area) || std::abs(area) < math::epsilon )
         return;
 
     draw_line(p0, p1, c);
@@ -58,7 +59,8 @@ void rasterizer::draw_triangle(math::vector2 p0, math::vector2 p1, math::vector2
 
 void rasterizer::draw_filled_triangle(math::vector2 p0, math::vector2 p1, math::vector2 p2, colour c)
 {
-    if( std::abs((p1 - p0).cross_product(p2 - p0)) < math::epsilon )
+    const float area = (p2 - p0).cross_product(p1 - p0);
+    if( !std::isfinite(area) || std::abs(area) < math::epsilon )
         return;
 
     const auto [origin, corner] = bounding_box(p0, p1, p2);
@@ -74,15 +76,16 @@ void rasterizer::draw_filled_triangle(math::vector2 p0, math::vector2 p1, math::
             const auto e1 = (p - p1).cross_product(p2 - p1);
             const auto e2 = (p - p2).cross_product(p0 - p2);
 
-            if( (e0 >= 0 && e1 >= 0 && e2 >= 0) || (e0 <= 0 && e1 <= 0 && e2 <= 0) )
-                _framebuffer.set(x, y, c);
+            if( (e0 >= 0.0F && e1 >= 0.0F && e2 >= 0.0F)
+                || (e0 <= 0.0F && e1 <= 0.0F && e2 <= 0.0F) )
+                _framebuffer.set_clipped(x, y, c);
         }
 }
 
 void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
 {
     const float area = (v2._position - v0._position).cross_product(v1._position - v0._position);
-    if( std::fabs(area) < math::epsilon )
+    if( !std::isfinite(area) || std::fabs(area) < math::epsilon )
         return;
 
     const auto [origin, corner] = bounding_box(v0._position, v1._position, v2._position);
@@ -97,7 +100,7 @@ void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
             auto bc = barycentric(p, v0._position, v1._position, v2._position);
             if( bc.x() >= 0.0F && bc.y() >= 0.0F && bc.z() >= 0.0F ) {
                 auto col = v0._colour * bc.x() + v1._colour * bc.y() + v2._colour * bc.z();
-                _framebuffer.set(x, y, col);
+                _framebuffer.set_clipped(x, y, col);
             }
         }
 
@@ -122,7 +125,7 @@ std::tuple<math::vector2, math::vector2> rasterizer::bounding_box(math::vector2 
 math::vector3 rasterizer::barycentric(math::vector2 p, math::vector2 a, math::vector2 b, math::vector2 c)
 {
     const float area = (c - a).cross_product(b - a);
-    if( std::fabs(area) < math::epsilon )
+    if( !std::isfinite(area) || std::fabs(area) < math::epsilon )
         return {0.0F, 0.0F, 0.0F};
 
     return {

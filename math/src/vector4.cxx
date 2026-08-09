@@ -97,16 +97,21 @@ vector4 operator/(vector4 v, float c)
 
 bool operator==(const vector4& vo, const vector4& vi)
 {
-    constexpr float epsilon = 1e-5f;
-    return fabs(vo.x() - vi.x()) <= epsilon
-        && fabs(vo.y() - vi.y()) <= epsilon
-        && fabs(vo.z() - vi.z()) <= epsilon
-        && fabs(vo.w() - vi.w()) <= epsilon;
+    return vo.x() == vi.x() && vo.y() == vi.y()
+        && vo.z() == vi.z() && vo.w() == vi.w();
 }
 
 bool operator!=(const vector4& vo, const vector4& vi)
 {
     return !(vo == vi);
+}
+
+bool almost_equal(const vector4& vo, const vector4& vi, float tolerance)
+{
+    return almost_equal(vo.x(), vi.x(), tolerance)
+        && almost_equal(vo.y(), vi.y(), tolerance)
+        && almost_equal(vo.z(), vi.z(), tolerance)
+        && almost_equal(vo.w(), vi.w(), tolerance);
 }
 
 } // namespace math

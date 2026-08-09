@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <stdexcept>
 #include <vector>
 
 using namespace renderer;
@@ -30,10 +31,10 @@ namespace {
 TEST_CASE("save_as_ppm writes colours row-major")
 {
     framebuffer fb{2, 2};
-    fb.set(0, 0, colour{255, 0, 0, 255});
-    fb.set(1, 0, colour{0, 255, 0, 255});
-    fb.set(0, 1, colour{0, 0, 255, 255});
-    fb.set(1, 1, colour{255, 255, 255, 255});
+    fb(0, 0) = colour{255, 0, 0, 255};
+    fb(1, 0) = colour{0, 255, 0, 255};
+    fb(0, 1) = colour{0, 0, 255, 255};
+    fb(1, 1) = colour{255, 255, 255, 255};
 
     const auto path = temp_path();
     save_as_ppm(fb, path);
@@ -73,4 +74,11 @@ TEST_CASE("save_as_ppm cleared framebuffer is all black")
 
     for( std::size_t i = 4; i < tokens.size(); ++i )
         CHECK(tokens[i] == "0");
+}
+
+TEST_CASE("save_as_ppm reports open errors")
+{
+    const framebuffer fb{1, 1};
+
+    CHECK_THROWS_AS(save_as_ppm(fb, std::filesystem::temp_directory_path()), std::runtime_error);
 }

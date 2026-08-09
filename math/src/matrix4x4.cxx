@@ -237,7 +237,7 @@ bool operator==(const matrix4x4& mo, const matrix4x4& mi)
 {
     for( unsigned int r = 0; r < 4; ++r )
         for( unsigned int c = 0; c < 4; ++c )
-            if( fabs(mo(r,c) - mi(r,c)) > epsilon )
+            if( mo(r,c) != mi(r,c) )
                 return false;
     return true;
 }
@@ -247,5 +247,13 @@ bool operator!=(const matrix4x4& mo, const matrix4x4& mi)
     return !(mo == mi);
 }
 
-} // namespace math
+bool almost_equal(const matrix4x4& mo, const matrix4x4& mi, float tolerance)
+{
+    for( unsigned int r = 0; r < 4; ++r )
+        for( unsigned int c = 0; c < 4; ++c )
+            if( !almost_equal(mo(r,c), mi(r,c), tolerance) )
+                return false;
+    return true;
+}
 
+} // namespace math

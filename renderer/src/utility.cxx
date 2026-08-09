@@ -1,29 +1,36 @@
 #include "utility.hxx"
 
 #include <fstream>
+#include <stdexcept>
 
 namespace renderer {
 
 void save_as_ppm(const framebuffer& fb, std::filesystem::path p)
 {
-    if( auto fout = std::ofstream{p}; fout ) {
-        const auto w = fb.width(), h = fb.height();
+    auto fout = std::ofstream{p};
+    if( !fout )
+        throw std::runtime_error("failed to open ppm file");
 
-        fout << "P3\n";
-        fout << w << ' ' << h << '\n';
-        fout << 255 << '\n';
+    const auto w = fb.width(), h = fb.height();
 
-        for( unsigned int r = 0; r < h; ++r ) {
-            for( unsigned int c = 0; c < w; ++c ) {
-                auto px = fb.get(c, r);
-                fout << static_cast<unsigned int>(px.r()) << ' '
-                     << static_cast<unsigned int>(px.g()) << ' '
-                     << static_cast<unsigned int>(px.b()) << ' ';
-            }
-            fout << '\n';
+    fout << "P3\n";
+    fout << w << ' ' << h << '\n';
+    fout << 255 << '\n';
+
+    for( std::size_t r = 0; r < h; ++r ) {
+        for( std::size_t c = 0; c < w; ++c ) {
+            const auto px = fb(c, r);
+            fout << static_cast<unsigned int>(px.r()) << ' '
+                 << static_cast<unsigned int>(px.g()) << ' '
+                 << static_cast<unsigned int>(px.b()) << ' ';
         }
         fout << '\n';
     }
+    fout << '\n';
+
+    fout.close();
+    if( !fout )
+        throw std::runtime_error("failed to write ppm file");
 }
 
 } // namespace renderer

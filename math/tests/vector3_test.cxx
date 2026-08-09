@@ -56,9 +56,10 @@ TEST_CASE("vector3 equality")
     CHECK(a == vector3{1.0F, 2.0F, 3.0F});
     CHECK_FALSE(a != vector3{1.0F, 2.0F, 3.0F});
 
-    CHECK(a == vector3{1.0F + 1e-6F, 2.0F, 3.0F});
-    CHECK_FALSE(a != vector3{1.0F + 1e-6F, 2.0F, 3.0F});
+    CHECK_FALSE(a == vector3{1.0F + 1e-6F, 2.0F, 3.0F});
+    CHECK(almost_equal(a, vector3{1.0F + 1e-6F, 2.0F, 3.0F}));
 
     CHECK_FALSE(a == vector3{1.0F + 1e-3F, 2.0F, 3.0F});
     CHECK(a != vector3{1.0F + 1e-3F, 2.0F, 3.0F});
+    CHECK_FALSE(almost_equal(a, vector3{1.0F + 1e-3F, 2.0F, 3.0F}));
 }
