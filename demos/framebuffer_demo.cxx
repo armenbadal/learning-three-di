@@ -1,8 +1,10 @@
-#include "framebuffer.hxx"
-#include "utility.hxx"
-#include "colour.hxx"
+#include <engine3d/renderer/colour.hxx>
+#include <engine3d/renderer/framebuffer.hxx>
+#include <engine3d/renderer/utility.hxx>
 
 #include <cstddef>
+
+namespace renderer = engine3d::renderer;
 
 int main()
 {

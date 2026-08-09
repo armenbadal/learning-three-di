@@ -8,6 +8,5 @@ project(learning-three-di)
 
 enable_testing()
 
-add_subdirectory(math)
-add_subdirectory(renderer)
+add_subdirectory(engine3d)
 add_subdirectory(demos)
