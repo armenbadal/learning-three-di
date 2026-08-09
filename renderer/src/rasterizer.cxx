@@ -58,6 +58,9 @@ void rasterizer::draw_triangle(math::vector2 p0, math::vector2 p1, math::vector2
 
 void rasterizer::draw_filled_triangle(math::vector2 p0, math::vector2 p1, math::vector2 p2, colour c)
 {
+    if( std::abs((p1 - p0).cross_product(p2 - p0)) < math::epsilon )
+        return;
+
     const auto [origin, corner] = bounding_box(p0, p1, p2);
     const int ox = static_cast<int>(origin.x());
     const int oy = static_cast<int>(origin.y());
@@ -78,6 +81,10 @@ void rasterizer::draw_filled_triangle(math::vector2 p0, math::vector2 p1, math::
 
 void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
 {
+    const float area = (v2._position - v0._position).cross_product(v1._position - v0._position);
+    if( std::fabs(area) < math::epsilon )
+        return;
+
     const auto [origin, corner] = bounding_box(v0._position, v1._position, v2._position);
     const int ox = static_cast<int>(origin.x());
     const int oy = static_cast<int>(origin.y());
@@ -88,9 +95,7 @@ void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
         for( int y = oy; y <= cy; ++y ) {
             math::vector2 p{x + 0.5F, y + 0.5F};
             auto bc = barycentric(p, v0._position, v1._position, v2._position);
-            const auto pos = bc.x() >= 0 && bc.y() >= 0 && bc.z() >= 0;
-            const auto neg = bc.x() <= 0 && bc.y() <= 0 && bc.z() <= 0;
-            if( pos || neg ) {
+            if( bc.x() >= 0.0F && bc.y() >= 0.0F && bc.z() >= 0.0F ) {
                 auto col = v0._colour * bc.x() + v1._colour * bc.y() + v2._colour * bc.z();
                 _framebuffer.set(x, y, col);
             }

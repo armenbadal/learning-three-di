@@ -249,6 +249,17 @@ namespace {
         CHECK(w.y() == Catch::Approx(wb).margin(1e-5f));
         CHECK(w.z() == Catch::Approx(wc).margin(1e-5f));
     }
+
+    bool same_framebuffer(const framebuffer& lhs, const framebuffer& rhs)
+    {
+        if( lhs.width() != rhs.width() || lhs.height() != rhs.height() )
+            return false;
+        for( unsigned int y = 0; y < lhs.height(); ++y )
+            for( unsigned int x = 0; x < lhs.width(); ++x )
+                if( lhs.get(x, y) != rhs.get(x, y) )
+                    return false;
+        return true;
+    }
 }
 
 TEST_CASE("barycentric at vertices")
@@ -270,6 +281,7 @@ TEST_CASE("barycentric edge and interior points")
 
     check_barycentric({5.0F, 0.0F}, a, b, c, 0.5F, 0.5F, 0.0F);
     check_barycentric({0.0F, 5.0F}, a, b, c, 0.5F, 0.0F, 0.5F);
+    check_barycentric({5.0F, 5.0F}, a, b, c, 0.0F, 0.5F, 0.5F);
     check_barycentric({5.0F, 2.0F}, a, b, c, 0.3F, 0.5F, 0.2F);
     check_barycentric({10.0F / 3.0F, 10.0F / 3.0F}, a, b, c, 1.0F / 3.0F, 1.0F / 3.0F, 1.0F / 3.0F);
 }
@@ -388,4 +400,92 @@ TEST_CASE("bounding_box single point")
     CHECK(origin.y() == 3.0F);
     CHECK(corner.x() == 3.0F);
     CHECK(corner.y() == 3.0F);
+}
+
+TEST_CASE("draw_filled_triangle degenerate collinear draws nothing")
+{
+    framebuffer fb{20, 20};
+    fb.clear(white);
+    rasterizer r{fb};
+    r.draw_filled_triangle(math::vector2{1.0F, 1.0F},
+                           math::vector2{5.0F, 5.0F},
+                           math::vector2{9.0F, 9.0F},
+                           black);
+
+    for( unsigned int y = 0; y < fb.height(); ++y )
+        for( unsigned int x = 0; x < fb.width(); ++x ) {
+            INFO("x=" << x << " y=" << y);
+            CHECK(fb.get(x, y) == white);
+        }
+}
+
+TEST_CASE("draw_filled_triangle degenerate closed draws nothing")
+{
+    framebuffer fb{20, 20};
+    fb.clear(white);
+    rasterizer r{fb};
+    r.draw_filled_triangle(math::vector2{4.0F, 4.0F},
+                           math::vector2{4.0F, 4.0F},
+                           math::vector2{4.0F, 4.0F},
+                           black);
+
+    for( unsigned int y = 0; y < fb.height(); ++y )
+        for( unsigned int x = 0; x < fb.width(); ++x ) {
+            INFO("x=" << x << " y=" << y);
+            CHECK(fb.get(x, y) == white);
+        }
+}
+
+TEST_CASE("draw_filled_triangle vertex degenerate draws nothing")
+{
+    framebuffer fb{20, 20};
+    fb.clear(white);
+    rasterizer r{fb};
+
+    const vertex2d v0{{1.0F, 1.0F}, {255, 0, 0}};
+    const vertex2d v1{{5.0F, 5.0F}, {0, 255, 0}};
+    const vertex2d v2{{9.0F, 9.0F}, {0, 0, 255}};
+    r.draw_filled_triangle(v0, v1, v2);
+
+    for( unsigned int y = 0; y < fb.height(); ++y )
+        for( unsigned int x = 0; x < fb.width(); ++x ) {
+            INFO("x=" << x << " y=" << y);
+            CHECK(fb.get(x, y) == white);
+        }
+}
+
+TEST_CASE("draw_filled_triangle winding does not change pixels")
+{
+    const math::vector2 p0{1.0F, 1.0F};
+    const math::vector2 p1{18.0F, 3.0F};
+    const math::vector2 p2{5.0F, 15.0F};
+
+    framebuffer cw{20, 20};
+    framebuffer ccw{20, 20};
+    cw.clear(white);
+    ccw.clear(white);
+    rasterizer a{cw};
+    rasterizer b{ccw};
+    a.draw_filled_triangle(p0, p1, p2, black);
+    b.draw_filled_triangle(p2, p1, p0, black);
+
+    CHECK(same_framebuffer(cw, ccw));
+}
+
+TEST_CASE("draw_filled_triangle vertex winding does not change pixels or colours")
+{
+    const vertex2d va{{1.0F, 1.0F}, {255, 0, 0}};
+    const vertex2d vb{{18.0F, 3.0F}, {0, 255, 0}};
+    const vertex2d vc{{5.0F, 15.0F}, {0, 0, 255}};
+
+    framebuffer cw{20, 20};
+    framebuffer ccw{20, 20};
+    cw.clear(white);
+    ccw.clear(white);
+    rasterizer a{cw};
+    rasterizer b{ccw};
+    a.draw_filled_triangle(va, vb, vc);
+    b.draw_filled_triangle(vc, vb, va);
+
+    CHECK(same_framebuffer(cw, ccw));
 }
