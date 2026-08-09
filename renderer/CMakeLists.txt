@@ -11,6 +11,7 @@ add_executable(renderer-tests
     tests/framebuffer_test.cxx
     tests/utility_test.cxx
     tests/rasterizer_test.cxx
+    tests/vertex2d_test.cxx
 )
 find_package(Catch2 3 REQUIRED)
 target_link_libraries(renderer-tests PRIVATE renderer Catch2::Catch2WithMain)

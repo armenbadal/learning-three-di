@@ -17,6 +17,25 @@ public:
 
     constexpr bool operator==(const colour&) const = default;
 
+    constexpr colour operator+(const colour& other) const
+    {
+        const auto sum = [](std::uint8_t a, std::uint8_t b) {
+            const auto s = static_cast<unsigned int>(a) + static_cast<unsigned int>(b);
+            return static_cast<std::uint8_t>(s < 255U ? s : 255U);
+        };
+        return {sum(_r, other._r), sum(_g, other._g), sum(_b, other._b), sum(_a, other._a)};
+    }
+
+    constexpr colour operator*(float scalar) const
+    {
+        const auto scale = [scalar](std::uint8_t c) {
+            const float v = static_cast<float>(c) * scalar;
+            const float clamped = v < 0.0F ? 0.0F : (v > 255.0F ? 255.0F : v);
+            return static_cast<std::uint8_t>(clamped + 0.5F);
+        };
+        return {scale(_r), scale(_g), scale(_b), scale(_a)};
+    }
+
 private:
     std::uint8_t _r;
     std::uint8_t _g;

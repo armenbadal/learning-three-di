@@ -1,3 +1,4 @@
+#include <catch2/catch_approx.hpp>
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 
@@ -184,6 +185,47 @@ TEST_CASE("draw_filled_triangle fills interior")
     CHECK_FALSE(is_black(fb.get(5, 5)));
 }
 
+TEST_CASE("draw_filled_triangle interpolates colours")
+{
+    framebuffer fb{6, 6};
+    fb.clear(white);
+    rasterizer r{fb};
+
+    const vertex2d v0{{0.0F, 0.0F}, {240, 0, 0}};
+    const vertex2d v1{{4.0F, 0.0F}, {0, 240, 0}};
+    const vertex2d v2{{0.0F, 4.0F}, {0, 0, 240}};
+    r.draw_filled_triangle(v0, v1, v2);
+
+    CHECK(fb.get(0, 0) == colour{180, 30, 30});
+    CHECK(fb.get(3, 0) == colour{0, 210, 30});
+    CHECK(fb.get(0, 3) == colour{0, 30, 210});
+    CHECK(fb.get(1, 1) == colour{60, 90, 90});
+
+    CHECK(fb.get(5, 5) == white);
+}
+
+TEST_CASE("draw_filled_triangle colours every interior pixel")
+{
+    framebuffer fb{6, 5};
+    fb.clear(white);
+    rasterizer r{fb};
+
+    const vertex2d v0{{0.0F, 0.0F}, {240, 0, 0}};
+    const vertex2d v1{{4.0F, 0.0F}, {0, 240, 0}};
+    const vertex2d v2{{0.0F, 4.0F}, {0, 0, 240}};
+    r.draw_filled_triangle(v0, v1, v2);
+
+    const unsigned int filled_per_row[] = {4, 3, 2, 1, 0};
+    for( unsigned int y = 0; y < 5; ++y ) {
+        for( unsigned int x = 0; x < 6; ++x ) {
+            const bool expect = x < filled_per_row[y];
+            const bool filled = fb.get(x, y) != white;
+            INFO("x=" << x << " y=" << y);
+            CHECK(filled == expect);
+        }
+    }
+}
+
 TEST_CASE("draw_triangle degenerate is skipped")
 {
     framebuffer fb{20, 20};
@@ -196,4 +238,154 @@ TEST_CASE("draw_triangle degenerate is skipped")
                     black);
 
     CHECK(count_black(fb) == 0);
+}
+
+namespace {
+    void check_barycentric(math::vector2 p, math::vector2 a, math::vector2 b, math::vector2 c,
+                           float wa, float wb, float wc)
+    {
+        const auto w = rasterizer::barycentric(p, a, b, c);
+        CHECK(w.x() == Catch::Approx(wa).margin(1e-5f));
+        CHECK(w.y() == Catch::Approx(wb).margin(1e-5f));
+        CHECK(w.z() == Catch::Approx(wc).margin(1e-5f));
+    }
+}
+
+TEST_CASE("barycentric at vertices")
+{
+    const math::vector2 a{0.0F, 0.0F};
+    const math::vector2 b{10.0F, 0.0F};
+    const math::vector2 c{0.0F, 10.0F};
+
+    check_barycentric(a, a, b, c, 1.0F, 0.0F, 0.0F);
+    check_barycentric(b, a, b, c, 0.0F, 1.0F, 0.0F);
+    check_barycentric(c, a, b, c, 0.0F, 0.0F, 1.0F);
+}
+
+TEST_CASE("barycentric edge and interior points")
+{
+    const math::vector2 a{0.0F, 0.0F};
+    const math::vector2 b{10.0F, 0.0F};
+    const math::vector2 c{0.0F, 10.0F};
+
+    check_barycentric({5.0F, 0.0F}, a, b, c, 0.5F, 0.5F, 0.0F);
+    check_barycentric({0.0F, 5.0F}, a, b, c, 0.5F, 0.0F, 0.5F);
+    check_barycentric({5.0F, 2.0F}, a, b, c, 0.3F, 0.5F, 0.2F);
+    check_barycentric({10.0F / 3.0F, 10.0F / 3.0F}, a, b, c, 1.0F / 3.0F, 1.0F / 3.0F, 1.0F / 3.0F);
+}
+
+TEST_CASE("barycentric weights sum to one")
+{
+    const math::vector2 a{0.0F, 0.0F};
+    const math::vector2 b{10.0F, 0.0F};
+    const math::vector2 c{0.0F, 10.0F};
+
+    for( int i = 0; i < 11; ++i ) {
+        const math::vector2 p{static_cast<float>(i), static_cast<float>(10 - i)};
+        const auto w = rasterizer::barycentric(p, a, b, c);
+        CHECK(w.x() + w.y() + w.z() == Catch::Approx(1.0F).margin(1e-5f));
+    }
+}
+
+TEST_CASE("barycentric outside point has a negative weight")
+{
+    const math::vector2 a{0.0F, 0.0F};
+    const math::vector2 b{10.0F, 0.0F};
+    const math::vector2 c{0.0F, 10.0F};
+
+    const auto w = rasterizer::barycentric({20.0F, 5.0F}, a, b, c);
+    const bool has_negative = w.x() < 0.0F || w.y() < 0.0F || w.z() < 0.0F;
+    CHECK(has_negative);
+    CHECK(w.x() + w.y() + w.z() == Catch::Approx(1.0F).margin(1e-5f));
+}
+
+TEST_CASE("barycentric reconstructs point")
+{
+    const math::vector2 a{0.0F, 0.0F};
+    const math::vector2 b{10.0F, 0.0F};
+    const math::vector2 c{0.0F, 10.0F};
+    const math::vector2 p{3.0F, 7.0F};
+
+    const auto w = rasterizer::barycentric(p, a, b, c);
+    const math::vector2 r = a * w.x() + b * w.y() + c * w.z();
+    CHECK(r.x() == Catch::Approx(p.x()).margin(1e-5f));
+    CHECK(r.y() == Catch::Approx(p.y()).margin(1e-5f));
+}
+
+TEST_CASE("barycentric degenerate triangle returns zero")
+{
+    const math::vector2 a{0.0F, 0.0F};
+    const math::vector2 b{1.0F, 1.0F};
+    const math::vector2 c{2.0F, 2.0F};
+
+    const auto w = rasterizer::barycentric({1.0F, 1.0F}, a, b, c);
+    CHECK(w.x() == 0.0F);
+    CHECK(w.y() == 0.0F);
+    CHECK(w.z() == 0.0F);
+}
+
+TEST_CASE("bounding_box integer vertices")
+{
+    const auto [origin, corner] = rasterizer::bounding_box(
+        math::vector2{0.0F, 0.0F}, math::vector2{10.0F, 0.0F}, math::vector2{5.0F, 10.0F});
+
+    CHECK(origin.x() == 0.0F);
+    CHECK(origin.y() == 0.0F);
+    CHECK(corner.x() == 10.0F);
+    CHECK(corner.y() == 10.0F);
+}
+
+TEST_CASE("bounding_box fractional vertices")
+{
+    const auto [origin, corner] = rasterizer::bounding_box(
+        math::vector2{1.2F, 2.3F}, math::vector2{4.7F, 1.9F}, math::vector2{3.1F, 5.8F});
+
+    CHECK(origin.x() == 1.0F);
+    CHECK(origin.y() == 1.0F);
+    CHECK(corner.x() == 5.0F);
+    CHECK(corner.y() == 6.0F);
+}
+
+TEST_CASE("bounding_box negative vertices")
+{
+    const auto [origin, corner] = rasterizer::bounding_box(
+        math::vector2{-2.5F, -3.5F}, math::vector2{1.5F, 2.5F}, math::vector2{0.0F, 0.0F});
+
+    CHECK(origin.x() == -3.0F);
+    CHECK(origin.y() == -4.0F);
+    CHECK(corner.x() == 2.0F);
+    CHECK(corner.y() == 3.0F);
+}
+
+TEST_CASE("bounding_box contains vertices")
+{
+    const math::vector2 a{2.0F, 1.0F};
+    const math::vector2 b{7.0F, 3.0F};
+    const math::vector2 c{4.0F, 8.0F};
+
+    const auto [origin, corner] = rasterizer::bounding_box(a, b, c);
+
+    CHECK(origin.x() <= a.x());
+    CHECK(origin.x() <= b.x());
+    CHECK(origin.x() <= c.x());
+    CHECK(corner.x() >= a.x());
+    CHECK(corner.x() >= b.x());
+    CHECK(corner.x() >= c.x());
+    CHECK(origin.y() <= a.y());
+    CHECK(origin.y() <= b.y());
+    CHECK(origin.y() <= c.y());
+    CHECK(corner.y() >= a.y());
+    CHECK(corner.y() >= b.y());
+    CHECK(corner.y() >= c.y());
+}
+
+TEST_CASE("bounding_box single point")
+{
+    const auto [origin, corner] = rasterizer::bounding_box(
+        math::vector2{3.0F, 3.0F}, math::vector2{3.0F, 3.0F}, math::vector2{3.0F, 3.0F});
+
+    CHECK(origin.x() == 3.0F);
+    CHECK(origin.y() == 3.0F);
+    CHECK(corner.x() == 3.0F);
+    CHECK(corner.y() == 3.0F);
 }
