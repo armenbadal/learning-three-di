@@ -4,6 +4,7 @@ add_library(engine3d STATIC
     src/math/vector2.cxx
     src/math/vector3.cxx
     src/math/vector4.cxx
+    src/renderer/camera.cxx
     src/renderer/framebuffer.cxx
     src/renderer/rasterizer.cxx
     src/renderer/utility.cxx
@@ -21,6 +22,7 @@ add_executable(engine3d-tests
     tests/math/vector2_test.cxx
     tests/math/vector3_test.cxx
     tests/math/vector4_test.cxx
+    tests/renderer/camera_test.cxx
     tests/renderer/colour_test.cxx
     tests/renderer/framebuffer_test.cxx
     tests/renderer/rasterizer_test.cxx
