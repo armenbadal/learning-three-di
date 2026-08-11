@@ -2,6 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "engine3d/math/matrix4x4.hxx"
+#include "engine3d/math/transform.hxx"
 
 #include <sstream>
 #include <string>
@@ -140,14 +141,14 @@ TEST_CASE("matrix4x4 multiply vector general")
 
 TEST_CASE("matrix4x4 rotation zero is identity")
 {
-    CHECK(matrix4x4::rotation_x(0.0F) == matrix4x4{});
-    CHECK(matrix4x4::rotation_y(0.0F) == matrix4x4{});
-    CHECK(matrix4x4::rotation_z(0.0F) == matrix4x4{});
+    CHECK(rotation_x(0.0F) == matrix4x4{});
+    CHECK(rotation_y(0.0F) == matrix4x4{});
+    CHECK(rotation_z(0.0F) == matrix4x4{});
 }
 
 TEST_CASE("matrix4x4 rotation z quarter turn")
 {
-    const matrix4x4 r = matrix4x4::rotation_z(pi / 2.0F);
+    const matrix4x4 r = rotation_z(pi / 2.0F);
     const vector4 ex{1.0F, 0.0F, 0.0F, 0.0F};
     const vector4 ey{0.0F, 1.0F, 0.0F, 0.0F};
 
@@ -162,7 +163,7 @@ TEST_CASE("matrix4x4 rotation z quarter turn")
 
 TEST_CASE("matrix4x4 rotation x quarter turn")
 {
-    const matrix4x4 r = matrix4x4::rotation_x(pi / 2.0F);
+    const matrix4x4 r = rotation_x(pi / 2.0F);
     const vector4 ey{0.0F, 1.0F, 0.0F, 0.0F};
     const vector4 ez{0.0F, 0.0F, 1.0F, 0.0F};
 
@@ -177,7 +178,7 @@ TEST_CASE("matrix4x4 rotation x quarter turn")
 
 TEST_CASE("matrix4x4 rotation y quarter turn")
 {
-    const matrix4x4 r = matrix4x4::rotation_y(pi / 2.0F);
+    const matrix4x4 r = rotation_y(pi / 2.0F);
     const vector4 ex{1.0F, 0.0F, 0.0F, 0.0F};
     const vector4 ez{0.0F, 0.0F, 1.0F, 0.0F};
 
@@ -193,16 +194,16 @@ TEST_CASE("matrix4x4 rotation y quarter turn")
 TEST_CASE("matrix4x4 rotation inverse")
 {
     const float angle = 0.7F;
-    CHECK(almost_equal(matrix4x4::rotation_x(angle) * matrix4x4::rotation_x(-angle), matrix4x4{}));
-    CHECK(almost_equal(matrix4x4::rotation_y(angle) * matrix4x4::rotation_y(-angle), matrix4x4{}));
-    CHECK(almost_equal(matrix4x4::rotation_z(angle) * matrix4x4::rotation_z(-angle), matrix4x4{}));
+    CHECK(almost_equal(rotation_x(angle) * rotation_x(-angle), matrix4x4{}));
+    CHECK(almost_equal(rotation_y(angle) * rotation_y(-angle), matrix4x4{}));
+    CHECK(almost_equal(rotation_z(angle) * rotation_z(-angle), matrix4x4{}));
 }
 
 TEST_CASE("matrix4x4 rotation full turn")
 {
     const vector4 v{1.0F, 2.0F, 3.0F, 1.0F};
 
-    const vector4 rz = matrix4x4::rotation_z(2.0F * pi) * v;
+    const vector4 rz = rotation_z(2.0F * pi) * v;
     CHECK(rz.x() == approx(v.x()));
     CHECK(rz.y() == approx(v.y()));
     CHECK(rz.z() == approx(v.z()));
@@ -248,11 +249,11 @@ TEST_CASE("matrix4x4 determinant basics")
 
 TEST_CASE("matrix4x4 determinant transforms")
 {
-    CHECK(matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F}).determinant() == approx(24.0F));
-    CHECK(matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}).determinant() == approx(1.0F));
-    CHECK(matrix4x4::rotation_z(0.7F).determinant() == approx(1.0F));
-    CHECK(matrix4x4::rotation_x(0.7F).determinant() == approx(1.0F));
-    CHECK(matrix4x4::rotation_y(0.7F).determinant() == approx(1.0F));
+    CHECK(scaling(vector3{2.0F, 3.0F, 4.0F}).determinant() == approx(24.0F));
+    CHECK(translation(vector3{1.0F, 2.0F, 3.0F}).determinant() == approx(1.0F));
+    CHECK(rotation_z(0.7F).determinant() == approx(1.0F));
+    CHECK(rotation_x(0.7F).determinant() == approx(1.0F));
+    CHECK(rotation_y(0.7F).determinant() == approx(1.0F));
 }
 
 TEST_CASE("matrix4x4 determinant singular")
@@ -315,8 +316,8 @@ TEST_CASE("matrix4x4 inverse double")
 
 TEST_CASE("matrix4x4 inverse rotation is transpose")
 {
-    CHECK(almost_equal(matrix4x4::rotation_z(0.7F).inverse().value(), matrix4x4::rotation_z(0.7F).transpose()));
-    CHECK(almost_equal(matrix4x4::rotation_x(0.9F).inverse().value(), matrix4x4::rotation_x(0.9F).transpose()));
+    CHECK(almost_equal(rotation_z(0.7F).inverse().value(), rotation_z(0.7F).transpose()));
+    CHECK(almost_equal(rotation_x(0.9F).inverse().value(), rotation_x(0.9F).transpose()));
 }
 
 TEST_CASE("matrix4x4 inverse singular")
@@ -326,8 +327,8 @@ TEST_CASE("matrix4x4 inverse singular")
 
 TEST_CASE("matrix4x4 inverse affine")
 {
-    const matrix4x4 m = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F})
-                      * matrix4x4::scaling(vector3{2.0F, 3.0F, 4.0F});
+    const matrix4x4 m = translation(vector3{1.0F, 2.0F, 3.0F})
+                      * scaling(vector3{2.0F, 3.0F, 4.0F});
     const auto inv_opt = m.inverse();
     REQUIRE(inv_opt.has_value());
     const matrix4x4 inv = inv_opt.value();
@@ -354,14 +355,14 @@ TEST_CASE("matrix4x4 inverse affine")
 
 TEST_CASE("matrix4x4 inverse affine translation")
 {
-    const matrix4x4 t = matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F});
+    const matrix4x4 t = translation(vector3{1.0F, 2.0F, 3.0F});
 
-    CHECK(t.inverse().value() == matrix4x4::translation(vector3{-1.0F, -2.0F, -3.0F}));
+    CHECK(t.inverse().value() == translation(vector3{-1.0F, -2.0F, -3.0F}));
 }
 
 TEST_CASE("matrix4x4 inverse affine singular")
 {
-    const matrix4x4 m = matrix4x4::scaling(vector3{2.0F, 0.0F, 4.0F});
+    const matrix4x4 m = scaling(vector3{2.0F, 0.0F, 4.0F});
 
     CHECK_FALSE(m.inverse().has_value());
 }
@@ -402,8 +403,8 @@ TEST_CASE("matrix4x4 equality")
     CHECK(m != far);
     CHECK_FALSE(almost_equal(m, far));
 
-    CHECK_FALSE(m == matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}));
-    CHECK(m != matrix4x4::translation(vector3{1.0F, 2.0F, 3.0F}));
+    CHECK_FALSE(m == translation(vector3{1.0F, 2.0F, 3.0F}));
+    CHECK(m != translation(vector3{1.0F, 2.0F, 3.0F}));
 }
 
 TEST_CASE("matrix4x4 nan is never equal")

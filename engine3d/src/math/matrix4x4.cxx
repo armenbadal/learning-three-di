@@ -133,62 +133,6 @@ matrix4x4 matrix4x4::zero() noexcept
     };
 }
 
-matrix4x4 matrix4x4::translation(const vector3& tr) noexcept
-{
-    return matrix4x4{
-        1.0F, 0.0F, 0.0F, tr.x(),
-        0.0F, 1.0F, 0.0F, tr.y(),
-        0.0F, 0.0F, 1.0F, tr.z(),
-        0.0F, 0.0F, 0.0F, 1.0F
-    };
-}
-
-matrix4x4 matrix4x4::scaling(const vector3& sc) noexcept
-{
-    return matrix4x4{
-        sc.x(),   0.0F,   0.0F, 0.0F,
-          0.0F, sc.y(),   0.0F, 0.0F,
-          0.0F,   0.0F, sc.z(), 0.0F,
-          0.0F,   0.0F,   0.0F, 1.0F
-    };
-}
-
-matrix4x4 matrix4x4::rotation_x(float angle) noexcept
-{
-    const float c = std::cos(angle);
-    const float s = std::sin(angle);
-    return matrix4x4{
-        1.0F, 0.0F, 0.0F, 0.0F,
-        0.0F,    c,   -s, 0.0F,
-        0.0F,    s,    c, 0.0F,
-        0.0F, 0.0F, 0.0F, 1.0F
-    };
-}
-
-matrix4x4 matrix4x4::rotation_y(float angle) noexcept
-{
-    const float c = std::cos(angle);
-    const float s = std::sin(angle);
-    return matrix4x4{
-           c, 0.0F,    s, 0.0F,
-        0.0F, 1.0F, 0.0F, 0.0F,
-          -s, 0.0F,    c, 0.0F,
-        0.0F, 0.0F, 0.0F, 1.0F
-    };
-}
-
-matrix4x4 matrix4x4::rotation_z(float angle) noexcept
-{
-    const float c = std::cos(angle);
-    const float s = std::sin(angle);
-    return matrix4x4{
-           c,   -s, 0.0F, 0.0F,
-           s,    c, 0.0F, 0.0F,
-        0.0F, 0.0F, 1.0F, 0.0F,
-        0.0F, 0.0F, 0.0F, 1.0F
-    };
-}
-
 float& matrix4x4::operator()(unsigned int row, unsigned int column) noexcept
 {
     return _m[row][column];

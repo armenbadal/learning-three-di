@@ -1,5 +1,5 @@
 add_library(engine3d STATIC
-    src/math/affine.cxx
+    src/math/transform.cxx
     src/math/matrix4x4.cxx
     src/math/vector2.cxx
     src/math/vector3.cxx
@@ -16,7 +16,7 @@ target_include_directories(engine3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(Catch2 3 REQUIRED)
 
 add_executable(engine3d-tests
-    tests/math/affine_test.cxx
+    tests/math/transform_test.cxx
     tests/math/matrix4x4_test.cxx
     tests/math/vector2_test.cxx
     tests/math/vector3_test.cxx

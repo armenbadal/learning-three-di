@@ -1,7 +1,6 @@
 #pragma once
 
 #include "engine3d/math/math.hxx"
-#include "engine3d/math/vector3.hxx"
 #include "engine3d/math/vector4.hxx"
 
 #include <array>
@@ -40,11 +39,6 @@ public:
 
     static matrix4x4 identity() noexcept;
     static matrix4x4 zero() noexcept;
-    static matrix4x4 translation(const vector3& translation) noexcept;
-    static matrix4x4 scaling(const vector3& scaling) noexcept;
-    static matrix4x4 rotation_x(float angle) noexcept;
-    static matrix4x4 rotation_y(float angle) noexcept;
-    static matrix4x4 rotation_z(float angle) noexcept;
 
     constexpr float operator()(unsigned int row, unsigned int column) const noexcept { return _m[row][column]; }
     float& operator()(unsigned int row, unsigned int column) noexcept;
