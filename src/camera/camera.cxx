@@ -1,4 +1,4 @@
-#include "engine3d/renderer/camera.hxx"
+#include "engine3d/camera/camera.hxx"
 #include "engine3d/math/transform.hxx"
 
 namespace engine3d::renderer {

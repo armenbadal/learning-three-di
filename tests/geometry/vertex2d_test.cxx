@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/vertex2d.hxx"
+#include "engine3d/geometry/vertex2d.hxx"
 
 using namespace engine3d::renderer;
 

@@ -1,7 +1,7 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/camera.hxx"
+#include "engine3d/camera/camera.hxx"
 #include "engine3d/math/transform.hxx"
 
 using namespace engine3d::math;
