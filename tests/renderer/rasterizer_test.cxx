@@ -9,9 +9,10 @@
 #include <utility>
 #include <vector>
 
-namespace math = engine3d::math;
-using namespace engine3d::renderer;
-using namespace engine3d::geometry;
+namespace math = e3d::math;
+using namespace e3d::renderer;
+using namespace e3d::geometry;
+using namespace e3d::graphics;
 
 namespace {
     struct line_case {

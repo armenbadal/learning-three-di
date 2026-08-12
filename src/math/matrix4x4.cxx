@@ -4,7 +4,7 @@
 #include <cmath>
 #include <format>
 
-namespace engine3d::math {
+namespace e3d::math {
 
 float matrix4x4::determinant3x3(
             float a, float b, float c,
@@ -200,4 +200,4 @@ bool almost_equal(const matrix4x4& mo, const matrix4x4& mi, float tolerance) noe
     return true;
 }
 
-} // namespace engine3d::math
+} // namespace e3d::math

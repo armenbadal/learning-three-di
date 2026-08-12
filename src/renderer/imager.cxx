@@ -3,7 +3,7 @@
 #include <fstream>
 #include <stdexcept>
 
-namespace engine3d::renderer {
+namespace e3d::renderer {
 
 void save_as_ppm(const framebuffer& fb, std::filesystem::path p)
 {
@@ -33,4 +33,4 @@ void save_as_ppm(const framebuffer& fb, std::filesystem::path p)
         throw std::runtime_error("failed to write ppm file");
 }
 
-} // namespace engine3d::renderer
+} // namespace e3d::renderer

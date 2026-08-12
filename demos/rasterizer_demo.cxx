@@ -4,27 +4,28 @@
 #include "engine3d/geometry/vertex.hxx"
 #include "engine3d/math/vector2.hxx"
 
-namespace renderer = engine3d::renderer;
-namespace geometry = engine3d::geometry;
-namespace math = engine3d::math;
+namespace renderer = e3d::renderer;
+namespace graphics = e3d::graphics;
+namespace geometry = e3d::geometry;
+namespace math = e3d::math;
 
 void example_rectangle()
 {
     renderer::framebuffer fb{40, 20};
-    fb.clear(renderer::white);
+    fb.clear(graphics::white);
     renderer::rasterizer r{fb};
-    r.draw_line({0.0F, 0.0F}, {39.0F, 19.0F}, renderer::black);
-    r.draw_line({0.0F, 0.0F}, {39.0F, 0.0F}, renderer::black);
-    r.draw_line({0.0F, 0.0F}, {0.0F, 19.0F}, renderer::black);
-    r.draw_line({0.0F, 19.0F}, {39.0F, 19.0F}, renderer::black);
-    r.draw_line({39.0F, 0.0F}, {39.0F, 19.0F}, renderer::black);
+    r.draw_line({0.0F, 0.0F}, {39.0F, 19.0F}, graphics::black);
+    r.draw_line({0.0F, 0.0F}, {39.0F, 0.0F}, graphics::black);
+    r.draw_line({0.0F, 0.0F}, {0.0F, 19.0F}, graphics::black);
+    r.draw_line({0.0F, 19.0F}, {39.0F, 19.0F}, graphics::black);
+    r.draw_line({39.0F, 0.0F}, {39.0F, 19.0F}, graphics::black);
     renderer::save_as_ppm(fb, "line.ppm");
 }
 
 void example_triangle()
 {
     renderer::framebuffer fb{40, 40};
-    fb.clear(renderer::white);
+    fb.clear(graphics::white);
     renderer::rasterizer r{fb};
     r.draw_triangle(
         {20.0F, 5.0},
@@ -38,7 +39,7 @@ void example_triangle()
 void example_filled_triangle()
 {
     renderer::framebuffer fb{40, 40};
-    fb.clear(renderer::white);
+    fb.clear(graphics::white);
     renderer::rasterizer r{fb};
     r.draw_filled_triangle(
         {20.0F, 5.0},
@@ -52,7 +53,7 @@ void example_filled_triangle()
 void example_coloured_triangle()
 {
     renderer::framebuffer fb{40, 40};
-    fb.clear(renderer::white);
+    fb.clear(graphics::white);
     renderer::rasterizer r{fb};
 
     geometry::vertex2d v0{{20.0F, 5.0}, {255, 0, 0}};
@@ -66,7 +67,7 @@ void example_coloured_triangle()
 void example_rectangle_with_triangles()
 {
     renderer::framebuffer fb{40, 40};
-    fb.clear(renderer::white);
+    fb.clear(graphics::white);
     renderer::rasterizer r{fb};
 
     math::vector2 p0{4.0F, 4.0F};

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace engine3d::math {
+namespace e3d::math {
 
 matrix4x4 model_matrix(const vector3& t, const vector3& r, const vector3& s) noexcept
 {
@@ -87,4 +87,4 @@ matrix4x4 rotation_z(float angle) noexcept
     };
 }
 
-} // namespace engine3d::math
+} // namespace e3d::math

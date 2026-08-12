@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace engine3d::math {
+namespace e3d::math {
 
 inline constexpr float epsilon = 1e-5f;
 
@@ -18,4 +18,4 @@ inline bool almost_equal(float a, float b, float tolerance = epsilon) noexcept
     return std::fabs(a - b) <= tolerance * scale;
 }
 
-} // namespace engine3d::math
+} // namespace e3d::math

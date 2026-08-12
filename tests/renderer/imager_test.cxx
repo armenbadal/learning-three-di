@@ -9,7 +9,8 @@
 #include <stdexcept>
 #include <vector>
 
-using namespace engine3d::renderer;
+using namespace e3d::renderer;
+using namespace e3d::graphics;
 
 namespace {
     std::vector<std::string> read_tokens(const std::filesystem::path& p)

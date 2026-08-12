@@ -3,7 +3,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace engine3d::math {
+namespace e3d::math {
 
 vector2& vector2::operator+=(const vector2& vc) noexcept
 {
@@ -113,4 +113,4 @@ bool almost_equal(const vector2& vo, const vector2& vi, float tolerance) noexcep
         && almost_equal(vo.y(), vi.y(), tolerance);
 }
 
-} // namespace engine3d::math
+} // namespace e3d::math

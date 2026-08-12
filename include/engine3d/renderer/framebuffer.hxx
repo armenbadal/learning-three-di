@@ -1,12 +1,12 @@
 #pragma once
 
-#include "engine3d/renderer/colour.hxx"
+#include "engine3d/graphics/colour.hxx"
 
 #include <cstddef>
 #include <span>
 #include <vector>
 
-namespace engine3d::renderer {
+namespace e3d::renderer {
 
 class framebuffer {
 public:
@@ -16,25 +16,25 @@ public:
     std::size_t height() const noexcept { return _height; }
 
     // Checked access; throws std::out_of_range for coordinates outside the buffer.
-    colour& at(std::size_t x, std::size_t y);
-    const colour& at(std::size_t x, std::size_t y) const;
+    graphics::colour& at(std::size_t x, std::size_t y);
+    const graphics::colour& at(std::size_t x, std::size_t y) const;
 
     // Unchecked access; caller must keep coordinates in bounds.
-    colour& operator()(std::size_t x, std::size_t y) noexcept;
-    const colour& operator()(std::size_t x, std::size_t y) const noexcept;
+    graphics::colour& operator()(std::size_t x, std::size_t y) noexcept;
+    const graphics::colour& operator()(std::size_t x, std::size_t y) const noexcept;
 
-    std::span<colour> pixels() noexcept { return _pixels; }
-    std::span<const colour> pixels() const noexcept { return _pixels; }
+    std::span<graphics::colour> pixels() noexcept { return _pixels; }
+    std::span<const graphics::colour> pixels() const noexcept { return _pixels; }
 
     // Clipped write; out-of-bounds coordinates are silently ignored.
-    void set_clipped(int x, int y, colour p) noexcept;
+    void set_clipped(int x, int y, graphics::colour p) noexcept;
 
-    void clear(colour c = black) noexcept;
+    void clear(graphics::colour c = graphics::black) noexcept;
 
 private:
     std::size_t _width;
     std::size_t _height;
-    std::vector<colour> _pixels;
+    std::vector<graphics::colour> _pixels;
 };
 
-} // namespace engine3d::renderer
+} // namespace e3d::renderer

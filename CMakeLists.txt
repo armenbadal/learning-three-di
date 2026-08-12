@@ -10,7 +10,7 @@ enable_testing()
 
 add_library(engine3d STATIC
     src/camera/camera.cxx
-    src/geometry/polygon.cxx
+    src/renderer/clipping.cxx
     src/math/transform.cxx
     src/math/matrix4x4.cxx
     src/math/vector2.cxx
@@ -29,14 +29,14 @@ find_package(Catch2 3 REQUIRED)
 
 add_executable(engine3d-tests
     tests/camera/camera_test.cxx
-    tests/geometry/polygon_test.cxx
+    tests/renderer/clipping_test.cxx
     tests/geometry/vertex_test.cxx
     tests/math/transform_test.cxx
     tests/math/matrix4x4_test.cxx
     tests/math/vector2_test.cxx
     tests/math/vector3_test.cxx
     tests/math/vector4_test.cxx
-    tests/renderer/colour_test.cxx
+    tests/graphics/colour_test.cxx
     tests/renderer/framebuffer_test.cxx
     tests/renderer/rasterizer_test.cxx
     tests/renderer/imager_test.cxx

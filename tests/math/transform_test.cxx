@@ -5,7 +5,7 @@
 
 #include <numbers>
 
-using namespace engine3d::math;
+using namespace e3d::math;
 
 namespace {
     constexpr float pi = std::numbers::pi_v<float>;

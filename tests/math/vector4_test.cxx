@@ -5,7 +5,7 @@
 
 #include <stdexcept>
 
-using namespace engine3d::math;
+using namespace e3d::math;
 
 namespace {
     auto approx = [](float value) { return Catch::Approx(value).margin(1e-5f); };

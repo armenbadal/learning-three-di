@@ -1,9 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/colour.hxx"
+#include "engine3d/graphics/colour.hxx"
 
-namespace renderer = engine3d::renderer;
-using namespace engine3d::renderer;
+namespace graphics = e3d::graphics;
+using namespace e3d::graphics;
 
 namespace {
     constexpr colour test_constexpr_colour{255, 128, 0, 64};
@@ -14,9 +14,9 @@ static_assert(test_constexpr_colour.g() == 128);
 static_assert(test_constexpr_colour.b() == 0);
 static_assert(test_constexpr_colour.a() == 64);
 
-static_assert((renderer::colour{100, 50, 25, 10} + renderer::colour{100, 50, 25, 10}) == renderer::colour{200, 100, 50, 20});
-static_assert((renderer::colour{200, 200, 200, 200} + renderer::colour{100, 100, 100, 100}) == renderer::colour{255, 255, 255, 255});
-static_assert((renderer::colour{255, 128, 64, 32} * 0.5F) == renderer::colour{128, 64, 32, 16});
+static_assert((graphics::colour{100, 50, 25, 10} + graphics::colour{100, 50, 25, 10}) == graphics::colour{200, 100, 50, 20});
+static_assert((graphics::colour{200, 200, 200, 200} + graphics::colour{100, 100, 100, 100}) == graphics::colour{255, 255, 255, 255});
+static_assert((graphics::colour{255, 128, 64, 32} * 0.5F) == graphics::colour{128, 64, 32, 16});
 
 TEST_CASE("colour components")
 {

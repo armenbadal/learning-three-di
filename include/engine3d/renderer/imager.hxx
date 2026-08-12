@@ -4,8 +4,8 @@
 
 #include <filesystem>
 
-namespace engine3d::renderer {
+namespace e3d::renderer {
 
 void save_as_ppm(const framebuffer& fb, std::filesystem::path p);
 
-} // namespace engine3d::renderer
+} // namespace e3d::renderer

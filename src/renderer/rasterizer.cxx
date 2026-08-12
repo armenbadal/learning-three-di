@@ -8,10 +8,10 @@
 
 namespace {
 
-using engine3d::math::vector2;
-using engine3d::math::vector3;
-using engine3d::math::cross;
-using engine3d::math::epsilon;
+using e3d::math::vector2;
+using e3d::math::vector3;
+using e3d::math::cross;
+using e3d::math::epsilon;
 
 float edge(const vector2& a, const vector2& b, const vector2& p)
 {
@@ -55,13 +55,13 @@ vector3 barycentric(vector2 p, vector2 a, vector2 b, vector2 c) noexcept
 } // namespace
 
 
-namespace engine3d::renderer {
+namespace e3d::renderer {
 
 rasterizer::rasterizer(framebuffer& fb) noexcept
     : _framebuffer{fb}
 {}
 
-void rasterizer::draw_line(vector2 p0, vector2 p1, colour c)
+void rasterizer::draw_line(vector2 p0, vector2 p1, graphics::colour c)
 {
     int x0 = static_cast<int>(std::round(p0.x()));
     int y0 = static_cast<int>(std::round(p0.y()));
@@ -96,7 +96,7 @@ void rasterizer::draw_line(vector2 p0, vector2 p1, colour c)
     }
 }
 
-void rasterizer::draw_triangle(vector2 p0, vector2 p1, vector2 p2, colour c)
+void rasterizer::draw_triangle(vector2 p0, vector2 p1, vector2 p2, graphics::colour c)
 {
     const float area = edge(p0, p2, p1);
     if( !std::isfinite(area) || std::abs(area) < math::epsilon )
@@ -107,7 +107,7 @@ void rasterizer::draw_triangle(vector2 p0, vector2 p1, vector2 p2, colour c)
     draw_line(p2, p0, c);
 }
 
-void rasterizer::draw_filled_triangle(vector2 p0, vector2 p1, vector2 p2, colour c)
+void rasterizer::draw_filled_triangle(vector2 p0, vector2 p1, vector2 p2, graphics::colour c)
 {
     float area = edge(p0, p1, p2);
     if( !std::isfinite(area) || std::fabs(area) < math::epsilon )
@@ -182,4 +182,4 @@ void rasterizer::draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2)
 
 }
 
-} // namespace engine3d::renderer
+} // namespace e3d::renderer

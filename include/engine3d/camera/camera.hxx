@@ -3,7 +3,7 @@
 #include "engine3d/math/vector3.hxx"
 #include "engine3d/math/matrix4x4.hxx"
 
-namespace engine3d::renderer {
+namespace e3d::camera {
 
 class camera {
 public:
@@ -17,4 +17,4 @@ private:
     math::vector3 _up{0.0F, 1.0F, 0.0F};
 };
 
-} // namespace engine3d::renderer
+} // namespace e3d::camera

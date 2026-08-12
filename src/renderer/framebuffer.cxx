@@ -4,7 +4,7 @@
 #include <limits>
 #include <stdexcept>
 
-namespace engine3d::renderer {
+namespace e3d::renderer {
 
 namespace {
     std::size_t checked_area(std::size_t width, std::size_t height)
@@ -23,16 +23,16 @@ namespace {
 framebuffer::framebuffer(std::size_t width, std::size_t height)
     : _width{width}
     , _height{height}
-    , _pixels(checked_area(width, height), black)
+    , _pixels(checked_area(width, height), graphics::black)
 {
 }
 
-colour& framebuffer::at(std::size_t x, std::size_t y)
+graphics::colour& framebuffer::at(std::size_t x, std::size_t y)
 {
-    return const_cast<colour&>(static_cast<const framebuffer*>(this)->at(x, y));
+    return const_cast<graphics::colour&>(static_cast<const framebuffer*>(this)->at(x, y));
 }
 
-const colour& framebuffer::at(std::size_t x, std::size_t y) const
+const graphics::colour& framebuffer::at(std::size_t x, std::size_t y) const
 {
     if( x >= _width || y >= _height )
         throw std::out_of_range("framebuffer index out of range");
@@ -40,17 +40,17 @@ const colour& framebuffer::at(std::size_t x, std::size_t y) const
     return _pixels[y * _width + x];
 }
 
-colour& framebuffer::operator()(std::size_t x, std::size_t y) noexcept
+graphics::colour& framebuffer::operator()(std::size_t x, std::size_t y) noexcept
 {
     return _pixels[y * _width + x];
 }
 
-const colour& framebuffer::operator()(std::size_t x, std::size_t y) const noexcept
+const graphics::colour& framebuffer::operator()(std::size_t x, std::size_t y) const noexcept
 {
     return _pixels[y * _width + x];
 }
 
-void framebuffer::set_clipped(int x, int y, colour p) noexcept
+void framebuffer::set_clipped(int x, int y, graphics::colour p) noexcept
 {
     if( x < 0 || y < 0 )
         return;
@@ -63,9 +63,9 @@ void framebuffer::set_clipped(int x, int y, colour p) noexcept
     _pixels[uy * _width + ux] = p;
 }
 
-void framebuffer::clear(colour c) noexcept
+void framebuffer::clear(graphics::colour c) noexcept
 {
     std::fill(_pixels.begin(), _pixels.end(), c);
 }
 
-} // namespace engine3d::renderer
+} // namespace e3d::renderer

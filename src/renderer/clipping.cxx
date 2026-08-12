@@ -1,8 +1,8 @@
-#include "engine3d/geometry/polygon.hxx"
+#include "engine3d/renderer/clipping.hxx"
 
 #include <utility>
 
-namespace engine3d::geometry {
+namespace e3d::renderer {
 
 namespace {
 
@@ -91,4 +91,4 @@ std::vector<clip_vertex> clip_polygon(std::span<const clip_vertex> input)
     return clip_against_plane(polygon, clip_plane::far);
 }
 
-} // namespace engine3d::geometry
+} // namespace e3d::renderer

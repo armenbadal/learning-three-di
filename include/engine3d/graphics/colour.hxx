@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace engine3d::renderer {
+namespace e3d::graphics {
 
 class colour {
 public:
@@ -46,4 +46,4 @@ private:
 inline constexpr colour white{255, 255, 255};
 inline constexpr colour black{0, 0, 0};
 
-} // namespace engine3d::renderer
+} // namespace e3d::graphics

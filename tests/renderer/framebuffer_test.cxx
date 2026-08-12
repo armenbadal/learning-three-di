@@ -5,7 +5,8 @@
 #include <limits>
 #include <stdexcept>
 
-using namespace engine3d::renderer;
+using namespace e3d::renderer;
+using namespace e3d::graphics;
 
 namespace {
     void check_colour(const colour& p, std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a)

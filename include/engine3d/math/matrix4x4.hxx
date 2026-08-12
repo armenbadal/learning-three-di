@@ -7,7 +7,7 @@
 #include <optional>
 #include <ostream>
 
-namespace engine3d::math {
+namespace e3d::math {
 
 class matrix4x4 {
     using row_type = std::array<float, 4>;
@@ -69,4 +69,4 @@ bool operator==(const matrix4x4& mo, const matrix4x4& mi) noexcept;
 bool operator!=(const matrix4x4& mo, const matrix4x4& mi) noexcept;
 bool almost_equal(const matrix4x4& mo, const matrix4x4& mi, float tolerance = epsilon) noexcept;
 
-} // namespace engine3d::math
+} // namespace e3d::math

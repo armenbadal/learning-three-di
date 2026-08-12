@@ -2,7 +2,7 @@
 
 #include "engine3d/math/math.hxx"
 
-namespace engine3d::math {
+namespace e3d::math {
 
 class vector2 {
 public:
@@ -40,4 +40,4 @@ bool operator==(const vector2& vo, const vector2& vi) noexcept;
 bool operator!=(const vector2& vo, const vector2& vi) noexcept;
 bool almost_equal(const vector2& vo, const vector2& vi, float tolerance = epsilon) noexcept;
 
-} // namespace engine3d::math
+} // namespace e3d::math
