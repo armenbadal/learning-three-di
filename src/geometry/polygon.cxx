@@ -16,22 +16,22 @@ clip_vertex intersect(const clip_vertex& a, const clip_vertex& b, float da, floa
     return interpolate(a, b, da / (da - db));
 }
 
-float distance_to_plane(plane pl, const clip_vertex& v)
+float distance_to_plane(clip_plane pl, const clip_vertex& v)
 {
     const auto& p = v.position;
 
     switch( pl ) {
-        case plane::left:
+        case clip_plane::left:
             return p.w() + p.x();
-        case plane::right:
+        case clip_plane::right:
             return p.w() - p.x();
-        case plane::bottom:
+        case clip_plane::bottom:
             return p.w() + p.y();
-        case plane::top:
+        case clip_plane::top:
             return p.w() - p.y();
-        case plane::near:
+        case clip_plane::near:
             return p.w() + p.z();
-        case plane::far:
+        case clip_plane::far:
             return p.w() - p.z();
     }
 
@@ -40,7 +40,7 @@ float distance_to_plane(plane pl, const clip_vertex& v)
 
 } // namespace
 
-std::vector<clip_vertex> clip_against_plane(std::span<const clip_vertex> input, plane pl)
+std::vector<clip_vertex> clip_against_plane(std::span<const clip_vertex> input, clip_plane pl)
 {
     std::vector<clip_vertex> output;
     output.reserve(input.size() + 1);
@@ -79,6 +79,16 @@ std::vector<clip_vertex> clip_against_plane(std::span<const clip_vertex> input, 
         output.pop_back();
 
     return output;
+}
+
+std::vector<clip_vertex> clip_polygon(std::span<const clip_vertex> input)
+{
+    auto polygon = clip_against_plane(input, clip_plane::left);
+    polygon = clip_against_plane(polygon, clip_plane::right);
+    polygon = clip_against_plane(polygon, clip_plane::bottom);
+    polygon = clip_against_plane(polygon, clip_plane::top);
+    polygon = clip_against_plane(polygon, clip_plane::near);
+    return clip_against_plane(polygon, clip_plane::far);
 }
 
 } // namespace engine3d::geometry

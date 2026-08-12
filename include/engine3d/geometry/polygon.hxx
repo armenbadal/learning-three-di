@@ -7,7 +7,7 @@
 
 namespace engine3d::geometry {
 
-enum class plane {
+enum class clip_plane {
     left,
     right,
     bottom,
@@ -16,6 +16,7 @@ enum class plane {
     far
 };
 
-std::vector<clip_vertex> clip_against_plane(std::span<const clip_vertex> input, plane pl);
+std::vector<clip_vertex> clip_against_plane(std::span<const clip_vertex> input, clip_plane pl);
+std::vector<clip_vertex> clip_polygon(std::span<const clip_vertex> input);
 
 } // namespace engine3d::geometry
