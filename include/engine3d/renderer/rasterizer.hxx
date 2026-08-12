@@ -4,7 +4,7 @@
 #include "engine3d/math/vector3.hxx"
 #include "engine3d/renderer/colour.hxx"
 #include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/geometry/vertex2d.hxx"
+#include "engine3d/geometry/vertex.hxx"
 
 #include <tuple>
 
@@ -12,6 +12,7 @@ namespace engine3d::renderer {
 
 using math::vector2;
 using math::vector3;
+using geometry::vertex2d;
 
 class rasterizer {
 public:

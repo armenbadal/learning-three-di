@@ -1,11 +1,11 @@
-#include "engine3d/math/vector2.hxx"
 #include "engine3d/renderer/framebuffer.hxx"
 #include "engine3d/renderer/rasterizer.hxx"
 #include "engine3d/renderer/imager.hxx"
-#include "engine3d/geometry/vertex2d.hxx"
+#include "engine3d/geometry/vertex.hxx"
 #include "engine3d/math/vector2.hxx"
 
 namespace renderer = engine3d::renderer;
+namespace geometry = engine3d::geometry;
 namespace math = engine3d::math;
 
 void example_rectangle()
@@ -55,9 +55,9 @@ void example_coloured_triangle()
     fb.clear(renderer::white);
     renderer::rasterizer r{fb};
 
-    renderer::vertex2d v0{{20.0F, 5.0}, {255, 0, 0}};
-    renderer::vertex2d v1{{5.0F, 35.0F}, {0, 255, 0}};
-    renderer::vertex2d v2{{35.0F, 35.0F}, {0, 0, 255}};
+    geometry::vertex2d v0{{20.0F, 5.0}, {255, 0, 0}};
+    geometry::vertex2d v1{{5.0F, 35.0F}, {0, 255, 0}};
+    geometry::vertex2d v2{{35.0F, 35.0F}, {0, 0, 255}};
     r.draw_filled_triangle(v0, v1, v2);
 
     renderer::save_as_ppm(fb, "coloured-triangle.ppm");
@@ -74,10 +74,10 @@ void example_rectangle_with_triangles()
     math::vector2 p2{34.0F, 34.0F};
     math::vector2 p3{4.0F, 34.0F};
 
-    renderer::vertex2d v0{p0, {255, 0, 0}};
-    renderer::vertex2d v1{p1, {0, 255, 0}};
-    renderer::vertex2d v2{p2, {255, 0, 0}};
-    renderer::vertex2d v3{p3, {0, 0, 255}};
+    geometry::vertex2d v0{p0, {255, 0, 0}};
+    geometry::vertex2d v1{p1, {0, 255, 0}};
+    geometry::vertex2d v2{p2, {255, 0, 0}};
+    geometry::vertex2d v3{p3, {0, 0, 255}};
 
     r.draw_filled_triangle(v0, v1, v3);
     r.draw_filled_triangle(v1, v2, v3);

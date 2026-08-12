@@ -11,6 +11,7 @@
 
 namespace math = engine3d::math;
 using namespace engine3d::renderer;
+using namespace engine3d::geometry;
 
 namespace {
     struct line_case {
