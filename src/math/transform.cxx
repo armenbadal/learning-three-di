@@ -1,6 +1,8 @@
 #include "engine3d/math/transform.hxx"
 
+#include <cassert>
 #include <cmath>
+#include <numbers>
 
 namespace e3d::math {
 
@@ -84,6 +86,26 @@ matrix4x4 rotation_z(float angle) noexcept
            s,    c, 0.0F, 0.0F,
         0.0F, 0.0F, 1.0F, 0.0F,
         0.0F, 0.0F, 0.0F, 1.0F
+    };
+}
+
+matrix4x4 perspective(float fov_y, float aspect, float near_plane, float far_plane)
+{
+    assert(fov_y > 0.0F);
+    assert(fov_y < std::numbers::pi_v<float>);
+    assert(aspect > 0.0F);
+    assert(near_plane > 0.0F);
+    assert(far_plane > near_plane);
+
+    const float f = 1.0F / std::tan(fov_y * 0.5F);
+
+    return {
+        f / aspect, 0.0F, 0.0F, 0.0F,
+        0.0F,       f,    0.0F, 0.0F,
+        0.0F,       0.0F,
+        -(far_plane + near_plane) / (far_plane - near_plane),
+        -(2.0F * far_plane * near_plane) / (far_plane - near_plane),
+        0.0F,       0.0F, -1.0F, 0.0F
     };
 }
 

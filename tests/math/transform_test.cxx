@@ -230,3 +230,25 @@ TEST_CASE("look_at diagonal view direction")
     CHECK(result.y() == approx(0.0F));
     CHECK(result.z() == approx(-std::numbers::sqrt3_v<float>));
 }
+
+TEST_CASE("perspective maps near and far planes to normalized device coordinates")
+{
+    constexpr float near_plane = 1.0F;
+    constexpr float far_plane = 10.0F;
+    const auto projection = perspective(pi / 2.0F, 1.0F, near_plane, far_plane);
+
+    const auto near_clip = projection * vector4{0.0F, 0.0F, -near_plane, 1.0F};
+    const auto far_clip = projection * vector4{0.0F, 0.0F, -far_plane, 1.0F};
+
+    CHECK(near_clip.z() / near_clip.w() == approx(-1.0F));
+    CHECK(far_clip.z() / far_clip.w() == approx(1.0F));
+}
+
+TEST_CASE("perspective applies vertical field of view and aspect ratio")
+{
+    const auto projection = perspective(pi / 2.0F, 2.0F, 1.0F, 10.0F);
+
+    CHECK(projection(0, 0) == approx(0.5F));
+    CHECK(projection(1, 1) == approx(1.0F));
+    CHECK(projection(3, 2) == approx(-1.0F));
+}

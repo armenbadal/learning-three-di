@@ -12,5 +12,6 @@ matrix4x4 scaling(const vector3& sc) noexcept;
 matrix4x4 rotation_x(float angle) noexcept;
 matrix4x4 rotation_y(float angle) noexcept;
 matrix4x4 rotation_z(float angle) noexcept;
+matrix4x4 perspective(float fov_y, float aspect, float near_plane, float far_plane);
 
 } // namespace e3d::math

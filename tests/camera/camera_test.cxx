@@ -4,6 +4,8 @@
 #include "engine3d/camera/camera.hxx"
 #include "engine3d/math/transform.hxx"
 
+#include <numbers>
+
 using namespace e3d::math;
 using namespace e3d::camera;
 
@@ -94,4 +96,19 @@ TEST_CASE("view_matrix with custom up vector")
     CHECK(e3d::math::dot(row0, row1) == approx(0.0F));
     CHECK(e3d::math::dot(row0, row2) == approx(0.0F));
     CHECK(e3d::math::dot(row1, row2) == approx(0.0F));
+}
+
+TEST_CASE("projection_matrix uses camera projection settings")
+{
+    const camera cam{
+        {0.0F, 0.0F, 0.0F},
+        {0.0F, 0.0F, -1.0F},
+        {0.0F, 1.0F, 0.0F},
+        std::numbers::pi_v<float> / 2.0F,
+        1.0F,
+        10.0F,
+    };
+
+    CHECK(cam.projection_matrix(2.0F)
+          == perspective(std::numbers::pi_v<float> / 2.0F, 2.0F, 1.0F, 10.0F));
 }

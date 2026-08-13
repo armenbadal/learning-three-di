@@ -19,6 +19,7 @@ add_library(engine3d STATIC
     src/renderer/framebuffer.cxx
     src/renderer/rasterizer.cxx
     src/renderer/imager.cxx
+    src/renderer/viewport.cxx
 )
 add_library(engine3d::engine3d ALIAS engine3d)
 
@@ -40,6 +41,7 @@ add_executable(engine3d-tests
     tests/renderer/framebuffer_test.cxx
     tests/renderer/rasterizer_test.cxx
     tests/renderer/imager_test.cxx
+    tests/renderer/viewport_test.cxx
 )
 target_link_libraries(engine3d-tests PRIVATE engine3d::engine3d Catch2::Catch2WithMain)
 
