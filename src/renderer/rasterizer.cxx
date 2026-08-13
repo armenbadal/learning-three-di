@@ -57,12 +57,15 @@ vector3 barycentric(vector2 p, vector2 a, vector2 b, vector2 c) noexcept
 
 namespace e3d::renderer {
 
-rasterizer::rasterizer(framebuffer& fb) noexcept
+rasterizer::rasterizer(framebuffer& fb)
     : _framebuffer{fb}
+    , _depth_buffer(fb.pixels().size(), 1.0F)
 {}
 
-void rasterizer::draw_line(vector2 p0, vector2 p1, graphics::colour c)
+void rasterizer::draw_line(screen_vertex v0, screen_vertex v1, graphics::colour c)
 {
+    const auto& p0 = v0.position;
+    const auto& p1 = v1.position;
     int x0 = static_cast<int>(std::round(p0.x()));
     int y0 = static_cast<int>(std::round(p0.y()));
     int x1 = static_cast<int>(std::round(p1.x()));
@@ -96,42 +99,42 @@ void rasterizer::draw_line(vector2 p0, vector2 p1, graphics::colour c)
     }
 }
 
-void rasterizer::draw_triangle(vector2 p0, vector2 p1, vector2 p2, graphics::colour c)
+void rasterizer::draw_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, graphics::colour c)
 {
-    const float area = edge(p0, p2, p1);
+    const float area = edge(v0.position, v2.position, v1.position);
     if( !std::isfinite(area) || std::abs(area) < math::epsilon )
         return;
 
-    draw_line(p0, p1, c);
-    draw_line(p1, p2, c);
-    draw_line(p2, p0, c);
+    draw_line(v0, v1, c);
+    draw_line(v1, v2, c);
+    draw_line(v2, v0, c);
 }
 
-void rasterizer::draw_filled_triangle(vector2 p0, vector2 p1, vector2 p2, graphics::colour c)
+void rasterizer::draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, graphics::colour c)
 {
-    float area = edge(p0, p1, p2);
+    float area = edge(v0.position, v1.position, v2.position);
     if( !std::isfinite(area) || std::fabs(area) < math::epsilon )
         return;
 
     if( area < 0.0F ) {
-        std::swap(p1, p2);
+        std::swap(v1, v2);
         area = -area;
     }
 
     auto inside_edge = [](float e, bool top_left) { return e > 0.0F || (e == 0.0F && top_left); };
 
-    const auto tl0 = is_top_left(p1, p2);
-    const auto tl1 = is_top_left(p2, p0);
-    const auto tl2 = is_top_left(p0, p1);
+    const auto tl0 = is_top_left(v1.position, v2.position);
+    const auto tl1 = is_top_left(v2.position, v0.position);
+    const auto tl2 = is_top_left(v0.position, v1.position);
 
-    const auto [ox, oy, cx, cy] = bounding_box(p0, p1, p2);
+    const auto [ox, oy, cx, cy] = bounding_box(v0.position, v1.position, v2.position);
 
     for( int x = ox; x <= cx; ++x )
         for( int y = oy; y <= cy; ++y ) {
             vector2 p{x + 0.5F, y + 0.5F};
-            const auto e0 = edge(p1, p2, p);
-            const auto e1 = edge(p2, p0, p);
-            const auto e2 = edge(p0, p1, p);
+            const auto e0 = edge(v1.position, v2.position, p);
+            const auto e1 = edge(v2.position, v0.position, p);
+            const auto e2 = edge(v0.position, v1.position, p);
 
             if( !inside_edge(e0, tl0) || !inside_edge(e1, tl1) || !inside_edge(e2, tl2) )
                 continue;

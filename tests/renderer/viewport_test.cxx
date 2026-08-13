@@ -3,6 +3,8 @@
 
 #include "engine3d/renderer/viewport.hxx"
 
+#include <array>
+
 namespace math = e3d::math;
 namespace renderer = e3d::renderer;
 
@@ -89,4 +91,32 @@ TEST_CASE("perspective_divide is invariant under homogeneous scaling")
         math::vector4{4.0F, -8.0F, 12.0F, 8.0F});
 
     CHECK(math::almost_equal(original, scaled));
+}
+
+TEST_CASE("perspective divide and viewport transform map the NDC bounds")
+{
+    constexpr float width = 800.0F;
+    constexpr float height = 600.0F;
+
+    struct mapping {
+        math::vector4 clip;
+        math::vector3 ndc;
+        math::vector3 screen;
+    };
+
+    const std::array mappings{
+        mapping{{-2.0F, 2.0F, -2.0F, 2.0F}, {-1.0F, 1.0F, -1.0F}, {0.0F, 0.0F, 0.0F}},
+        mapping{{0.0F, 0.0F, 0.0F, 2.0F}, {0.0F, 0.0F, 0.0F}, {width / 2.0F, height / 2.0F, 0.5F}},
+        mapping{{2.0F, -2.0F, 2.0F, 2.0F}, {1.0F, -1.0F, 1.0F}, {width, height, 1.0F}},
+    };
+
+    for( const auto& expected : mappings ) {
+        const auto ndc = renderer::perspective_divide(expected.clip);
+        CHECK(math::almost_equal(ndc, expected.ndc));
+
+        const auto screen = renderer::viewport_transform(ndc, width, height);
+        CHECK(screen.position.x() == approx(expected.screen.x()));
+        CHECK(screen.position.y() == approx(expected.screen.y()));
+        CHECK(screen.depth == approx(expected.screen.z()));
+    }
 }

@@ -15,6 +15,16 @@ using namespace e3d::geometry;
 using namespace e3d::graphics;
 
 namespace {
+    screen_vertex screen(float x, float y, float depth = 0.5F)
+    {
+        return {{x, y}, depth};
+    }
+
+    screen_vertex screen(math::vector2 position, float depth = 0.5F)
+    {
+        return {position, depth};
+    }
+
     struct line_case {
         const char* name;
         unsigned int x0;
@@ -88,8 +98,8 @@ namespace {
         framebuffer fb{20, 20};
         fb.clear(white);
         rasterizer r{fb};
-        r.draw_line(math::vector2{static_cast<float>(c.x0), static_cast<float>(c.y0)},
-                    math::vector2{static_cast<float>(c.x1), static_cast<float>(c.y1)},
+        r.draw_line(screen(static_cast<float>(c.x0), static_cast<float>(c.y0)),
+                    screen(static_cast<float>(c.x1), static_cast<float>(c.y1)),
                     black);
 
         INFO(c.name);
@@ -152,9 +162,9 @@ TEST_CASE("draw_triangle outline")
     framebuffer fb{20, 20};
     fb.clear(white);
     rasterizer r{fb};
-    r.draw_triangle(math::vector2{2.0F, 2.0F},
-                    math::vector2{18.0F, 2.0F},
-                    math::vector2{6.0F, 12.0F},
+    r.draw_triangle(screen(2.0F, 2.0F),
+                    screen(18.0F, 2.0F),
+                    screen(6.0F, 12.0F),
                     black);
 
     CHECK(is_black(fb.at(2, 2)));
@@ -172,9 +182,9 @@ TEST_CASE("draw_filled_triangle fills interior")
     framebuffer fb{6, 5};
     fb.clear(white);
     rasterizer r{fb};
-    r.draw_filled_triangle(math::vector2{0.0F, 0.0F},
-                           math::vector2{4.0F, 0.0F},
-                           math::vector2{0.0F, 4.0F},
+    r.draw_filled_triangle(screen(0.0F, 0.0F),
+                           screen(4.0F, 0.0F),
+                           screen(0.0F, 4.0F),
                            black);
 
     const unsigned int black_per_row[] = {3, 2, 1, 0, 0};
@@ -237,9 +247,9 @@ TEST_CASE("draw_triangle degenerate is skipped")
     fb.clear(white);
     rasterizer r{fb};
 
-    r.draw_triangle(math::vector2{0.0F, 0.0F},
-                    math::vector2{0.0F, 0.0F},
-                    math::vector2{0.0F, 0.0F},
+    r.draw_triangle(screen(0.0F, 0.0F),
+                    screen(0.0F, 0.0F),
+                    screen(0.0F, 0.0F),
                     black);
 
     CHECK(count_black(fb) == 0);
@@ -263,9 +273,9 @@ TEST_CASE("draw_filled_triangle degenerate collinear draws nothing")
     framebuffer fb{20, 20};
     fb.clear(white);
     rasterizer r{fb};
-    r.draw_filled_triangle(math::vector2{1.0F, 1.0F},
-                           math::vector2{5.0F, 5.0F},
-                           math::vector2{9.0F, 9.0F},
+    r.draw_filled_triangle(screen(1.0F, 1.0F),
+                           screen(5.0F, 5.0F),
+                           screen(9.0F, 9.0F),
                            black);
 
     for( unsigned int y = 0; y < fb.height(); ++y )
@@ -280,9 +290,9 @@ TEST_CASE("draw_filled_triangle degenerate closed draws nothing")
     framebuffer fb{20, 20};
     fb.clear(white);
     rasterizer r{fb};
-    r.draw_filled_triangle(math::vector2{4.0F, 4.0F},
-                           math::vector2{4.0F, 4.0F},
-                           math::vector2{4.0F, 4.0F},
+    r.draw_filled_triangle(screen(4.0F, 4.0F),
+                           screen(4.0F, 4.0F),
+                           screen(4.0F, 4.0F),
                            black);
 
     for( unsigned int y = 0; y < fb.height(); ++y )
@@ -322,8 +332,8 @@ TEST_CASE("draw_filled_triangle winding does not change pixels")
     ccw.clear(white);
     rasterizer a{cw};
     rasterizer b{ccw};
-    a.draw_filled_triangle(p0, p1, p2, black);
-    b.draw_filled_triangle(p2, p1, p0, black);
+    a.draw_filled_triangle(screen(p0), screen(p1), screen(p2), black);
+    b.draw_filled_triangle(screen(p2), screen(p1), screen(p0), black);
 
     CHECK(same_framebuffer(cw, ccw));
 }
@@ -352,16 +362,16 @@ TEST_CASE("draw_line clips writes to framebuffer")
     fb.clear(white);
     rasterizer r{fb};
 
-    r.draw_line({-1000.0F, 2.0F}, {1000.0F, 2.0F}, black);
+    r.draw_line(screen(-1000.0F, 2.0F), screen(1000.0F, 2.0F), black);
 
     CHECK(count_black(fb) == 5);
 }
 
 namespace {
-    const math::vector2 square_a{1.0F, 1.0F};
-    const math::vector2 square_b{8.0F, 1.0F};
-    const math::vector2 square_c{8.0F, 8.0F};
-    const math::vector2 square_d{1.0F, 8.0F};
+    const screen_vertex square_a{{1.0F, 1.0F}, 0.5F};
+    const screen_vertex square_b{{8.0F, 1.0F}, 0.5F};
+    const screen_vertex square_c{{8.0F, 8.0F}, 0.5F};
+    const screen_vertex square_d{{1.0F, 8.0F}, 0.5F};
     const colour square_red{255, 0, 0};
     const colour square_green{0, 255, 0};
 }
