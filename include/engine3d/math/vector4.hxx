@@ -1,12 +1,14 @@
 #pragma once
 
 #include "engine3d/math/math.hxx"
+#include "engine3d/math/vector3.hxx"
 
 namespace e3d::math {
 
 class vector4 {
 public:
     constexpr vector4(float x, float y, float z, float w) noexcept : _x{x}, _y{y}, _z{z}, _w{w} {}
+    constexpr vector4(const vector3& v, float w) noexcept : vector4{v.x(), v.y(), v.z(), w} {}
 
     constexpr float x() const noexcept { return _x; }
     constexpr float y() const noexcept { return _y; }

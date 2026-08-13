@@ -84,3 +84,20 @@ TEST_CASE("colour multiplication clamps and rounds")
     CHECK((white * 2.0F) == colour{255, 255, 255, 255});
     CHECK((colour{1, 2, 3, 4} * -1.0F) == colour{0, 0, 0, 0});
 }
+
+TEST_CASE("colourf keeps floating-point components during arithmetic")
+{
+    const colourf a{10.0F, 20.0F, 30.0F, 40.0F};
+    const colourf b{2.0F, 4.0F, 6.0F, 8.0F};
+
+    CHECK(a + b == colourf{12.0F, 24.0F, 36.0F, 48.0F});
+    CHECK(a - b == colourf{8.0F, 16.0F, 24.0F, 32.0F});
+    CHECK(b * 0.25F == colourf{0.5F, 1.0F, 1.5F, 2.0F});
+    CHECK(a / 2.0F == colourf{5.0F, 10.0F, 15.0F, 20.0F});
+}
+
+TEST_CASE("colour converts to and from floating-point components")
+{
+    CHECK(to_colourf(colour{10, 20, 30, 40}) == colourf{10.0F, 20.0F, 30.0F, 40.0F});
+    CHECK(to_colour(colourf{10.4F, 20.5F, -1.0F, 300.0F}) == colour{10, 21, 0, 255});
+}

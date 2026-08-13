@@ -24,6 +24,7 @@ framebuffer::framebuffer(std::size_t width, std::size_t height)
     : _width{width}
     , _height{height}
     , _pixels(checked_area(width, height), graphics::black)
+    , _depth_buffer(_pixels.size(), 1.0F)
 {
 }
 
@@ -34,10 +35,25 @@ graphics::colour& framebuffer::at(std::size_t x, std::size_t y)
 
 const graphics::colour& framebuffer::at(std::size_t x, std::size_t y) const
 {
+    return _pixels[checked_index(x, y)];
+}
+
+float& framebuffer::depth_at(std::size_t x, std::size_t y)
+{
+    return const_cast<float&>(static_cast<const framebuffer*>(this)->depth_at(x, y));
+}
+
+const float& framebuffer::depth_at(std::size_t x, std::size_t y) const
+{
+    return _depth_buffer[checked_index(x, y)];
+}
+
+std::size_t framebuffer::checked_index(std::size_t x, std::size_t y) const
+{
     if( x >= _width || y >= _height )
         throw std::out_of_range("framebuffer index out of range");
 
-    return _pixels[y * _width + x];
+    return y * _width + x;
 }
 
 graphics::colour& framebuffer::operator()(std::size_t x, std::size_t y) noexcept
@@ -63,9 +79,20 @@ void framebuffer::set_clipped(int x, int y, graphics::colour p) noexcept
     _pixels[uy * _width + ux] = p;
 }
 
-void framebuffer::clear(graphics::colour c) noexcept
+void framebuffer::clear_colour(graphics::colour c) noexcept
 {
     std::fill(_pixels.begin(), _pixels.end(), c);
+}
+
+void framebuffer::clear_depth() noexcept
+{
+    std::fill(_depth_buffer.begin(), _depth_buffer.end(), 1.0F);
+}
+
+void framebuffer::clear(graphics::colour c) noexcept
+{
+    clear_colour(c);
+    clear_depth();
 }
 
 } // namespace e3d::renderer

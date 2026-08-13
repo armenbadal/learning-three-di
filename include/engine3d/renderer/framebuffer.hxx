@@ -18,6 +18,8 @@ public:
     // Checked access; throws std::out_of_range for coordinates outside the buffer.
     graphics::colour& at(std::size_t x, std::size_t y);
     const graphics::colour& at(std::size_t x, std::size_t y) const;
+    float& depth_at(std::size_t x, std::size_t y);
+    const float& depth_at(std::size_t x, std::size_t y) const;
 
     // Unchecked access; caller must keep coordinates in bounds.
     graphics::colour& operator()(std::size_t x, std::size_t y) noexcept;
@@ -25,16 +27,23 @@ public:
 
     std::span<graphics::colour> pixels() noexcept { return _pixels; }
     std::span<const graphics::colour> pixels() const noexcept { return _pixels; }
+    std::span<float> depths() noexcept { return _depth_buffer; }
+    std::span<const float> depths() const noexcept { return _depth_buffer; }
 
     // Clipped write; out-of-bounds coordinates are silently ignored.
     void set_clipped(int x, int y, graphics::colour p) noexcept;
 
+    void clear_colour(graphics::colour c = graphics::black) noexcept;
+    void clear_depth() noexcept;
     void clear(graphics::colour c = graphics::black) noexcept;
 
 private:
+    std::size_t checked_index(std::size_t x, std::size_t y) const;
+
     std::size_t _width;
     std::size_t _height;
     std::vector<graphics::colour> _pixels;
+    std::vector<float> _depth_buffer;
 };
 
 } // namespace e3d::renderer

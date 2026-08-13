@@ -43,6 +43,67 @@ private:
     std::uint8_t _a;
 };
 
+class colourf {
+public:
+    constexpr colourf() noexcept = default;
+    constexpr colourf(float r, float g, float b, float a = 255.0F) noexcept
+        : _r{r}, _g{g}, _b{b}, _a{a}
+    {}
+
+    constexpr float r() const noexcept { return _r; }
+    constexpr float g() const noexcept { return _g; }
+    constexpr float b() const noexcept { return _b; }
+    constexpr float a() const noexcept { return _a; }
+
+    constexpr bool operator==(const colourf&) const noexcept = default;
+
+private:
+    float _r{255.0F};
+    float _g{255.0F};
+    float _b{255.0F};
+    float _a{255.0F};
+};
+
+constexpr colourf operator+(const colourf& lhs, const colourf& rhs) noexcept
+{
+    return {lhs.r() + rhs.r(), lhs.g() + rhs.g(), lhs.b() + rhs.b(), lhs.a() + rhs.a()};
+}
+
+constexpr colourf operator-(const colourf& lhs, const colourf& rhs) noexcept
+{
+    return {lhs.r() - rhs.r(), lhs.g() - rhs.g(), lhs.b() - rhs.b(), lhs.a() - rhs.a()};
+}
+
+constexpr colourf operator*(const colourf& c, float scalar) noexcept
+{
+    return {c.r() * scalar, c.g() * scalar, c.b() * scalar, c.a() * scalar};
+}
+
+constexpr colourf operator/(const colourf& c, float scalar) noexcept
+{
+    return {c.r() / scalar, c.g() / scalar, c.b() / scalar, c.a() / scalar};
+}
+
+constexpr colourf to_colourf(const colour& c) noexcept
+{
+    return {
+        static_cast<float>(c.r()),
+        static_cast<float>(c.g()),
+        static_cast<float>(c.b()),
+        static_cast<float>(c.a())
+    };
+}
+
+constexpr colour to_colour(const colourf& c) noexcept
+{
+    const auto channel = [](float value) {
+        const float clamped = value < 0.0F ? 0.0F : (value > 255.0F ? 255.0F : value);
+        return static_cast<std::uint8_t>(clamped + 0.5F);
+    };
+
+    return {channel(c.r()), channel(c.g()), channel(c.b()), channel(c.a())};
+}
+
 inline constexpr colour white{255, 255, 255};
 inline constexpr colour black{0, 0, 0};
 

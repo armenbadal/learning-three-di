@@ -17,6 +17,7 @@ add_library(engine3d STATIC
     src/math/vector3.cxx
     src/math/vector4.cxx
     src/renderer/framebuffer.cxx
+    src/renderer/pipeline.cxx
     src/renderer/rasterizer.cxx
     src/renderer/imager.cxx
     src/renderer/viewport.cxx
@@ -39,6 +40,8 @@ add_executable(engine3d-tests
     tests/math/vector4_test.cxx
     tests/graphics/colour_test.cxx
     tests/renderer/framebuffer_test.cxx
+    tests/renderer/pipeline_integration_test.cxx
+    tests/renderer/pipeline_test.cxx
     tests/renderer/rasterizer_test.cxx
     tests/renderer/imager_test.cxx
     tests/renderer/viewport_test.cxx

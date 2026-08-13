@@ -1,5 +1,6 @@
 #pragma once
 
+#include "engine3d/graphics/colour.hxx"
 #include "engine3d/math/vector4.hxx"
 
 #include <span>
@@ -9,7 +10,10 @@ namespace e3d::renderer {
 
 struct clip_vertex {
     e3d::math::vector4 position;
+    graphics::colourf colour{};
 };
+
+clip_vertex interpolate(const clip_vertex& a, const clip_vertex& b, float t) noexcept;
 
 enum class clip_plane {
     left,

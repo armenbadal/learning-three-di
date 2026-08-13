@@ -32,6 +32,8 @@ TEST_CASE("framebuffer is cleared after construction")
 
     check_colour(fb.at(0, 0), 0, 0, 0, 255);
     check_colour(fb.at(3, 2), 0, 0, 0, 255);
+    CHECK(fb.depth_at(0, 0) == 1.0F);
+    CHECK(fb.depth_at(3, 2) == 1.0F);
 }
 
 TEST_CASE("framebuffer at throws on out of bounds")
@@ -42,6 +44,8 @@ TEST_CASE("framebuffer at throws on out of bounds")
     CHECK_THROWS_AS(fb.at(0, 3), std::out_of_range);
     CHECK_THROWS_AS(fb.at(99, 99), std::out_of_range);
     CHECK_THROWS_AS(fb.at(std::numeric_limits<std::size_t>::max(), 0), std::out_of_range);
+    CHECK_THROWS_AS(fb.depth_at(4, 0), std::out_of_range);
+    CHECK_THROWS_AS(fb.depth_at(0, 3), std::out_of_range);
 }
 
 TEST_CASE("framebuffer at read and write")
@@ -120,14 +124,36 @@ TEST_CASE("framebuffer clear")
 {
     framebuffer fb{2, 2};
     fb.at(0, 0) = colour{1, 2, 3, 4};
+    fb.depth_at(0, 0) = 0.25F;
 
     fb.clear();
     check_colour(fb.at(0, 0), 0, 0, 0, 255);
     check_colour(fb.at(1, 1), 0, 0, 0, 255);
+    CHECK(fb.depth_at(0, 0) == 1.0F);
 
+    fb.depth_at(1, 1) = 0.5F;
     fb.clear(white);
     check_colour(fb.at(0, 0), 255, 255, 255, 255);
     check_colour(fb.at(1, 1), 255, 255, 255, 255);
+    for( const float depth : fb.depths() )
+        CHECK(depth == 1.0F);
+}
+
+TEST_CASE("framebuffer clears colour and depth independently")
+{
+    framebuffer fb{2, 2};
+    fb.at(0, 0) = white;
+    fb.depth_at(0, 0) = 0.25F;
+
+    fb.clear_colour();
+    CHECK(fb.at(0, 0) == black);
+    CHECK(fb.depth_at(0, 0) == 0.25F);
+
+    fb.at(0, 0) = white;
+    fb.clear_depth();
+    CHECK(fb.at(0, 0) == white);
+    for( const float depth : fb.depths() )
+        CHECK(depth == 1.0F);
 }
 
 TEST_CASE("framebuffer constructor guards against overflow")
@@ -147,4 +173,17 @@ TEST_CASE("framebuffer exposes pixels as a span")
 
     const auto& const_fb = fb;
     CHECK(const_fb.pixels()[1] == white);
+}
+
+TEST_CASE("framebuffer exposes depth as a span")
+{
+    framebuffer fb{2, 2};
+    auto depths = fb.depths();
+
+    REQUIRE(depths.size() == 4);
+    depths[1] = 0.25F;
+    CHECK(fb.depth_at(1, 0) == 0.25F);
+
+    const auto& const_fb = fb;
+    CHECK(const_fb.depths()[1] == 0.25F);
 }

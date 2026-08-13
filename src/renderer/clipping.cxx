@@ -4,19 +4,22 @@
 
 namespace e3d::renderer {
 
-namespace {
-
-clip_vertex interpolate(const clip_vertex& a, const clip_vertex& b, float t)
+clip_vertex interpolate(const clip_vertex& a, const clip_vertex& b, float t) noexcept
 {
-    return {.position = a.position + (b.position - a.position) * t};
+    return {
+        .position = a.position + (b.position - a.position) * t,
+        .colour = a.colour + (b.colour - a.colour) * t
+    };
 }
 
-clip_vertex intersect(const clip_vertex& a, const clip_vertex& b, float da, float db)
+namespace {
+
+clip_vertex intersect(const clip_vertex& a, const clip_vertex& b, float da, float db) noexcept
 {
     return interpolate(a, b, da / (da - db));
 }
 
-float distance_to_plane(clip_plane pl, const clip_vertex& v)
+float distance_to_plane(clip_plane pl, const clip_vertex& v) noexcept
 {
     const auto& p = v.position;
 

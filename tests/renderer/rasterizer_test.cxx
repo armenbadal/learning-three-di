@@ -25,6 +25,21 @@ namespace {
         return {position, depth};
     }
 
+    screen_vertex coloured_screen(
+        float x,
+        float y,
+        float inv_w,
+        colour c,
+        float depth = 0.5F)
+    {
+        return {
+            .position = {x, y},
+            .depth = depth,
+            .inv_w = inv_w,
+            .colour_over_w = to_colourf(c) * inv_w
+        };
+    }
+
     struct line_case {
         const char* name;
         unsigned int x0;
@@ -198,6 +213,129 @@ TEST_CASE("draw_filled_triangle fills interior")
 
     CHECK(is_black(fb.at(1, 1)));
     CHECK_FALSE(is_black(fb.at(5, 4)));
+}
+
+TEST_CASE("draw_filled_triangle depth is independent of draw order")
+{
+    const screen_vertex v0_near = screen(0.0F, 0.0F, 0.2F);
+    const screen_vertex v1_near = screen(4.0F, 0.0F, 0.2F);
+    const screen_vertex v2_near = screen(0.0F, 4.0F, 0.2F);
+    const screen_vertex v0_far = screen(0.0F, 0.0F, 0.8F);
+    const screen_vertex v1_far = screen(4.0F, 0.0F, 0.8F);
+    const screen_vertex v2_far = screen(0.0F, 4.0F, 0.8F);
+    const colour near_colour{255, 0, 0};
+    const colour far_colour{0, 0, 255};
+
+    framebuffer near_first{5, 5};
+    framebuffer far_first{5, 5};
+    near_first.clear(white);
+    far_first.clear(white);
+    rasterizer a{near_first};
+    rasterizer b{far_first};
+
+    a.draw_filled_triangle(v0_near, v1_near, v2_near, near_colour);
+    a.draw_filled_triangle(v0_far, v1_far, v2_far, far_colour);
+    b.draw_filled_triangle(v0_far, v1_far, v2_far, far_colour);
+    b.draw_filled_triangle(v0_near, v1_near, v2_near, near_colour);
+
+    CHECK(std::ranges::equal(near_first.pixels(), far_first.pixels()));
+    CHECK(std::ranges::equal(near_first.depths(), far_first.depths()));
+    CHECK(near_first.at(1, 1) == near_colour);
+    CHECK(near_first.depth_at(1, 1) == Catch::Approx(0.2F));
+}
+
+TEST_CASE("draw_filled_triangle rejects a farther fragment")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+    const colour stored_colour{255, 0, 0};
+    const colour far_colour{0, 0, 255};
+    fb.at(1, 1) = stored_colour;
+    fb.depth_at(1, 1) = 0.3F;
+
+    r.draw_filled_triangle(
+        screen(0.0F, 0.0F, 0.7F),
+        screen(4.0F, 0.0F, 0.7F),
+        screen(0.0F, 4.0F, 0.7F),
+        far_colour);
+
+    CHECK(fb.at(1, 1) == stored_colour);
+    CHECK(fb.depth_at(1, 1) == Catch::Approx(0.3F));
+}
+
+TEST_CASE("draw_filled_triangle accepts a nearer fragment")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+    const colour stored_colour{255, 0, 0};
+    const colour near_colour{0, 0, 255};
+    fb.at(1, 1) = stored_colour;
+    fb.depth_at(1, 1) = 0.7F;
+
+    r.draw_filled_triangle(
+        screen(0.0F, 0.0F, 0.3F),
+        screen(4.0F, 0.0F, 0.3F),
+        screen(0.0F, 4.0F, 0.3F),
+        near_colour);
+
+    CHECK(fb.at(1, 1) == near_colour);
+    CHECK(fb.depth_at(1, 1) == Catch::Approx(0.3F));
+}
+
+TEST_CASE("draw_filled_triangle interpolates depth with barycentric weights")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+
+    r.draw_filled_triangle(
+        screen(0.0F, 0.0F, 0.1F),
+        screen(4.0F, 0.0F, 0.5F),
+        screen(0.0F, 4.0F, 0.9F),
+        white);
+
+    CHECK(fb.depth_at(0, 0) == Catch::Approx(0.25F));
+}
+
+TEST_CASE("perspective colour interpolation reduces to affine interpolation for equal W")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+
+    r.draw_filled_triangle(
+        coloured_screen(0.0F, 0.0F, 0.5F, {240, 0, 0}),
+        coloured_screen(4.0F, 0.0F, 0.5F, {0, 240, 0}),
+        coloured_screen(0.0F, 4.0F, 0.5F, {0, 0, 240}));
+
+    CHECK(fb.at(0, 0) == colour{180, 30, 30});
+}
+
+TEST_CASE("perspective colour interpolation accounts for unequal W")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+
+    r.draw_filled_triangle(
+        coloured_screen(0.0F, 0.0F, 1.0F, {0, 0, 0}),
+        coloured_screen(4.0F, 0.0F, 0.5F, {200, 0, 0}),
+        coloured_screen(0.0F, 4.0F, 0.25F, {200, 0, 0}));
+
+    CHECK(fb.at(0, 0) == colour{22, 0, 0});
+    CHECK(fb.at(0, 0) != colour{50, 0, 0});
+}
+
+TEST_CASE("perspective colour interpolation preserves equal attributes for unequal W")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+    const colour expected{12, 34, 56, 78};
+
+    r.draw_filled_triangle(
+        coloured_screen(0.0F, 0.0F, 1.0F, expected),
+        coloured_screen(4.0F, 0.0F, 0.5F, expected),
+        coloured_screen(0.0F, 4.0F, 0.25F, expected));
+
+    CHECK(fb.at(0, 0) == expected);
+    CHECK(fb.at(1, 1) == expected);
 }
 
 TEST_CASE("draw_filled_triangle interpolates colours")

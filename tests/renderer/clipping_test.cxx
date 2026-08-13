@@ -51,6 +51,39 @@ TEST_CASE("clip_vertex fields")
     CHECK(vertex.position.w() == 4.0F);
 }
 
+TEST_CASE("clip_vertex interpolation uses the same parameter for position and colour")
+{
+    const renderer::clip_vertex a{
+        {-1.0F, 2.0F, 0.0F, 1.0F},
+        {0.0F, 40.0F, 80.0F, 120.0F}
+    };
+    const renderer::clip_vertex b{
+        {3.0F, -2.0F, 4.0F, 3.0F},
+        {200.0F, 120.0F, 160.0F, 200.0F}
+    };
+
+    const auto result = renderer::interpolate(a, b, 0.25F);
+
+    CHECK(math::almost_equal(result.position, math::vector4{0.0F, 1.0F, 1.0F, 1.5F}));
+    CHECK(result.colour == e3d::graphics::colourf{50.0F, 60.0F, 100.0F, 140.0F});
+}
+
+TEST_CASE("clip_against_plane interpolates colour on generated vertices")
+{
+    const renderer::clip_vertex inside_a{{0.0F, 0.0F, 0.0F, 1.0F}, {0.0F, 0.0F, 0.0F}};
+    const renderer::clip_vertex outside{{2.0F, 0.0F, 0.0F, 1.0F}, {200.0F, 100.0F, 50.0F}};
+    const renderer::clip_vertex inside_b{{0.0F, 1.0F, 0.0F, 1.0F}, {0.0F, 200.0F, 250.0F}};
+    const std::array input{inside_a, outside, inside_b};
+
+    const auto output = renderer::clip_against_plane(input, renderer::clip_plane::right);
+
+    REQUIRE(output.size() == 4);
+    CHECK(math::almost_equal(output[1].position, math::vector4{1.0F, 0.0F, 0.0F, 1.0F}));
+    CHECK(output[1].colour == e3d::graphics::colourf{100.0F, 50.0F, 25.0F});
+    CHECK(math::almost_equal(output[2].position, math::vector4{1.0F, 0.5F, 0.0F, 1.0F}));
+    CHECK(output[2].colour == e3d::graphics::colourf{100.0F, 150.0F, 150.0F});
+}
+
 TEST_CASE("clip_against_plane returns an empty polygon for empty input")
 {
     const std::vector<renderer::clip_vertex> input;
