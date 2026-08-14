@@ -1,10 +1,10 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-import e3d;
-
 #include <algorithm>
 #include <numbers>
+
+import e3d;
 
 namespace camera = e3d::camera;
 namespace graphics = e3d::graphics;

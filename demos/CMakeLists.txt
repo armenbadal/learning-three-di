@@ -1,11 +1,9 @@
-add_executable(framebuffer-demo framebuffer_demo.cxx)
-target_link_libraries(framebuffer-demo PRIVATE engine3d::engine3d)
+function(add_engine3d_demo target source)
+    add_executable(${target} ${source})
+    target_link_libraries(${target} PRIVATE engine3d::engine3d)
+endfunction()
 
-add_executable(rasterizer-demo rasterizer_demo.cxx)
-target_link_libraries(rasterizer-demo PRIVATE engine3d::engine3d)
-
-add_executable(pipeline-demo pipeline_demo.cxx)
-target_link_libraries(pipeline-demo PRIVATE engine3d::engine3d)
-
-add_executable(cube-demo cube_demo.cxx)
-target_link_libraries(cube-demo PRIVATE engine3d::engine3d)
+add_engine3d_demo(framebuffer-demo framebuffer_demo.cxx)
+add_engine3d_demo(rasterizer-demo rasterizer_demo.cxx)
+add_engine3d_demo(pipeline-demo pipeline_demo.cxx)
+add_engine3d_demo(cube-demo cube_demo.cxx)

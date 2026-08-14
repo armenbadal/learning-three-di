@@ -2,12 +2,12 @@
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-import e3d;
-
 #include <algorithm>
 #include <queue>
 #include <utility>
 #include <vector>
+
+import e3d;
 
 namespace math = e3d::math;
 using namespace e3d::renderer;

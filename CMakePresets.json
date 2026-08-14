@@ -1,0 +1,36 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 2,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "clang-ninja",
+      "displayName": "Clang + Ninja",
+      "description": "Preferred local configuration for C++23 modules and import std support.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/clang-ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "clang-ninja",
+      "configurePreset": "clang-ninja"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "clang-ninja",
+      "configurePreset": "clang-ninja",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

@@ -7,6 +7,14 @@
 
 ## Կոդը
 
+Նախընտրելի build միջավայրը `clang++` + `Ninja`-ն է, որովհետև նախագիծը օգտագործում է C++23 modules և `import std`.
+
+```bash
+cmake --preset clang-ninja
+cmake --build --preset clang-ninja
+ctest --preset clang-ninja
+```
+
 ## Թեսթերը
 
 Բոլոր թեսթերը ստեղծված են DeepSeek V4 Flash Free մոդելով։ 

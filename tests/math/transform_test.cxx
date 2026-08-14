@@ -1,9 +1,9 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-import e3d;
-
 #include <numbers>
+
+import e3d;
 
 using namespace e3d::math;
 

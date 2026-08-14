@@ -1,13 +1,13 @@
 #include <catch2/catch_test_macros.hpp>
 
-import e3d;
-
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <string>
 #include <stdexcept>
 #include <vector>
+
+import e3d;
 
 using namespace e3d::renderer;
 using namespace e3d::graphics;

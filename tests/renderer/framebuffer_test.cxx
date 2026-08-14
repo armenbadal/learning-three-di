@@ -1,9 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
-import e3d;
-
 #include <limits>
 #include <stdexcept>
+
+import e3d;
 
 using namespace e3d::renderer;
 using namespace e3d::graphics;
