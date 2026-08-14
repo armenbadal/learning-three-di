@@ -2,7 +2,7 @@
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/rasterizer.hxx"
+import e3d;
 
 #include <algorithm>
 #include <queue>

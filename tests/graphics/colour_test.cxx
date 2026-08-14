@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/graphics/colour.hxx"
+import e3d;
 
 namespace graphics = e3d::graphics;
 using namespace e3d::graphics;

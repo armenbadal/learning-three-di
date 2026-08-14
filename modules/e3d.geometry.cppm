@@ -1,10 +1,9 @@
-#pragma once
+export module e3d.geometry;
 
-#include "engine3d/math/vector2.hxx"
-#include "engine3d/math/vector3.hxx"
-#include "engine3d/graphics/colour.hxx"
+export import e3d.math;
+export import e3d.graphics;
 
-namespace e3d::geometry {
+export namespace e3d::geometry {
 
 struct vertex2d {
     e3d::math::vector2 position;

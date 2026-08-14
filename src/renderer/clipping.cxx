@@ -1,6 +1,7 @@
-#include "engine3d/renderer/clipping.hxx"
+module e3d.renderer;
 
-#include <utility>
+import std;
+import e3d.math;
 
 namespace e3d::renderer {
 

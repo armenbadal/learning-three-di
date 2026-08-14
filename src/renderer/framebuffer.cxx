@@ -1,8 +1,6 @@
-#include "engine3d/renderer/framebuffer.hxx"
+module e3d.renderer;
 
-#include <algorithm>
-#include <limits>
-#include <stdexcept>
+import std;
 
 namespace e3d::renderer {
 

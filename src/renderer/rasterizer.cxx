@@ -1,10 +1,7 @@
-#include "engine3d/math/math.hxx"
-#include "engine3d/math/vector2.hxx"
-#include "engine3d/renderer/rasterizer.hxx"
+module e3d.renderer;
 
-#include <algorithm>
-#include <cmath>
-#include <tuple>
+import std;
+import e3d.math;
 
 namespace {
 

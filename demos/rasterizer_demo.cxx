@@ -1,8 +1,4 @@
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/rasterizer.hxx"
-#include "engine3d/renderer/imager.hxx"
-#include "engine3d/geometry/vertex.hxx"
-#include "engine3d/math/vector2.hxx"
+import e3d;
 
 namespace renderer = e3d::renderer;
 namespace graphics = e3d::graphics;

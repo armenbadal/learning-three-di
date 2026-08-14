@@ -1,7 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/geometry/vertex.hxx"
-#include "engine3d/math/vector4.hxx"
+import e3d;
 
 using namespace e3d::geometry;
 using namespace e3d::graphics;

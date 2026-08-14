@@ -1,4 +1,7 @@
-#include "engine3d/renderer/viewport.hxx"
+module e3d.renderer;
+
+import std;
+import e3d.math;
 
 namespace e3d::renderer {
 

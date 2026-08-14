@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/framebuffer.hxx"
+import e3d;
 
 #include <limits>
 #include <stdexcept>

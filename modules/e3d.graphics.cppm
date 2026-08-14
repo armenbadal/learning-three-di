@@ -1,8 +1,8 @@
-#pragma once
+export module e3d.graphics;
 
-#include <cstdint>
+import std;
 
-namespace e3d::graphics {
+export namespace e3d::graphics {
 
 class colour {
 public:

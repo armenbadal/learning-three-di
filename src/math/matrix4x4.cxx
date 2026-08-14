@@ -1,8 +1,6 @@
-#include "engine3d/math/math.hxx"
-#include "engine3d/math/matrix4x4.hxx"
+module e3d.math;
 
-#include <cmath>
-#include <format>
+import std;
 
 namespace e3d::math {
 

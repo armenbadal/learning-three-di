@@ -1,7 +1,6 @@
-#include "engine3d/math/vector3.hxx"
+module e3d.math;
 
-#include <cmath>
-#include <stdexcept>
+import std;
 
 namespace e3d::math {
 

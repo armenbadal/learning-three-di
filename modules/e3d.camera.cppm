@@ -1,11 +1,10 @@
-#pragma once
+export module e3d.camera;
 
-#include "engine3d/math/transform.hxx"
-#include "engine3d/math/vector3.hxx"
+export import e3d.math;
 
-#include <numbers>
+import std;
 
-namespace e3d::camera {
+export namespace e3d::camera {
 
 struct camera {
     math::vector3 _position;

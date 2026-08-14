@@ -1,8 +1,4 @@
-#include "engine3d/graphics/colour.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/imager.hxx"
-
-#include <cstddef>
+import e3d;
 
 namespace renderer = e3d::renderer;
 namespace graphics = e3d::graphics;

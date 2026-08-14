@@ -1,8 +1,9 @@
-#include "engine3d/math/transform.hxx"
-
+module;
 #include <cassert>
-#include <cmath>
-#include <numbers>
+
+module e3d.math;
+
+import std;
 
 namespace e3d::math {
 

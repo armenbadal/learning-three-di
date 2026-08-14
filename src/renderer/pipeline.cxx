@@ -1,6 +1,8 @@
-#include "engine3d/renderer/pipeline.hxx"
+module e3d.renderer;
 
-#include "engine3d/renderer/clipping.hxx"
+import std;
+import e3d.math;
+import e3d.camera;
 
 namespace e3d::renderer {
 

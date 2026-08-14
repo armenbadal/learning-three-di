@@ -1,7 +1,6 @@
-#include "engine3d/renderer/imager.hxx"
+module e3d.renderer;
 
-#include <fstream>
-#include <stdexcept>
+import std;
 
 namespace e3d::renderer {
 

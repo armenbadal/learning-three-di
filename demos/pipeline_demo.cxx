@@ -1,10 +1,4 @@
-#include "engine3d/camera/camera.hxx"
-#include "engine3d/math/transform.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/imager.hxx"
-#include "engine3d/renderer/pipeline.hxx"
-
-#include <numbers>
+import e3d;
 
 namespace camera = e3d::camera;
 namespace graphics = e3d::graphics;
