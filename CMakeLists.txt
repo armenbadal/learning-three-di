@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 4.2)
 
+set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_CXX_EXTENSIONS off)
@@ -27,7 +29,10 @@ add_library(engine3d::engine3d ALIAS engine3d)
 target_compile_features(engine3d PUBLIC cxx_std_23)
 target_include_directories(engine3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-find_package(Catch2 3 REQUIRED)
+find_package(Catch2 3 CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
 
 add_executable(engine3d-tests
     tests/camera/camera_test.cxx

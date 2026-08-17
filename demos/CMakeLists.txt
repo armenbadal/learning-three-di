@@ -9,3 +9,5 @@ target_link_libraries(pipeline-demo PRIVATE engine3d::engine3d)
 
 add_executable(cube-demo cube_demo.cxx)
 target_link_libraries(cube-demo PRIVATE engine3d::engine3d)
+
+add_subdirectory(opengl)
