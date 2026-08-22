@@ -19,41 +19,41 @@ float matrix4x4::determinant3x3(
 float matrix4x4::determinant() const noexcept
 {
     const float minor00 = determinant3x3(
-        _m[1][1], _m[1][2], _m[1][3],
-        _m[2][1], _m[2][2], _m[2][3],
-        _m[3][1], _m[3][2], _m[3][3]);
+        (*this)(1, 1), (*this)(1, 2), (*this)(1, 3),
+        (*this)(2, 1), (*this)(2, 2), (*this)(2, 3),
+        (*this)(3, 1), (*this)(3, 2), (*this)(3, 3));
     const float minor01 = determinant3x3(
-        _m[1][0], _m[1][2], _m[1][3],
-        _m[2][0], _m[2][2], _m[2][3],
-        _m[3][0], _m[3][2], _m[3][3]);
+        (*this)(1, 0), (*this)(1, 2), (*this)(1, 3),
+        (*this)(2, 0), (*this)(2, 2), (*this)(2, 3),
+        (*this)(3, 0), (*this)(3, 2), (*this)(3, 3));
     const float minor02 = determinant3x3(
-        _m[1][0], _m[1][1], _m[1][3],
-        _m[2][0], _m[2][1], _m[2][3],
-        _m[3][0], _m[3][1], _m[3][3]);
+        (*this)(1, 0), (*this)(1, 1), (*this)(1, 3),
+        (*this)(2, 0), (*this)(2, 1), (*this)(2, 3),
+        (*this)(3, 0), (*this)(3, 1), (*this)(3, 3));
     const float minor03 = determinant3x3(
-        _m[1][0], _m[1][1], _m[1][2],
-        _m[2][0], _m[2][1], _m[2][2],
-        _m[3][0], _m[3][1], _m[3][2]);
+        (*this)(1, 0), (*this)(1, 1), (*this)(1, 2),
+        (*this)(2, 0), (*this)(2, 1), (*this)(2, 2),
+        (*this)(3, 0), (*this)(3, 1), (*this)(3, 2));
 
-    return _m[0][0] * minor00
-         - _m[0][1] * minor01
-         + _m[0][2] * minor02
-         - _m[0][3] * minor03;
+    return (*this)(0, 0) * minor00
+         - (*this)(0, 1) * minor01
+         + (*this)(0, 2) * minor02
+         - (*this)(0, 3) * minor03;
 }
 
 std::optional<matrix4x4> matrix4x4::inverse() const noexcept
 {
-    if( _m[3][0] == 0.0F && _m[3][1] == 0.0F && _m[3][2] == 0.0F && _m[3][3] == 1.0F )
+    if( (*this)(3, 0) == 0.0F && (*this)(3, 1) == 0.0F && (*this)(3, 2) == 0.0F && (*this)(3, 3) == 1.0F )
         return inverse_affine();
     return inverse_general();
 }
 
 std::optional<matrix4x4> matrix4x4::inverse_affine() const noexcept
 {
-    const float l00 = _m[0][0], l01 = _m[0][1], l02 = _m[0][2];
-    const float l10 = _m[1][0], l11 = _m[1][1], l12 = _m[1][2];
-    const float l20 = _m[2][0], l21 = _m[2][1], l22 = _m[2][2];
-    const float tx = _m[0][3], ty = _m[1][3], tz = _m[2][3];
+    const float l00 = (*this)(0, 0), l01 = (*this)(0, 1), l02 = (*this)(0, 2);
+    const float l10 = (*this)(1, 0), l11 = (*this)(1, 1), l12 = (*this)(1, 2);
+    const float l20 = (*this)(2, 0), l21 = (*this)(2, 1), l22 = (*this)(2, 2);
+    const float tx = (*this)(0, 3), ty = (*this)(1, 3), tz = (*this)(2, 3);
 
     const float det = determinant3x3(l00, l01, l02, l10, l11, l12, l20, l21, l22);
     if( std::fabs(det) < epsilon )
@@ -103,7 +103,7 @@ std::optional<matrix4x4> matrix4x4::inverse_general() const noexcept
                 for( unsigned int j = 0; j < 4; ++j ) {
                     if( j == c )
                         continue;
-                    minor[mi][mj] = _m[i][j];
+                    minor[mi][mj] = (*this)(i, j);
                     ++mj;
                 }
                 ++mi;
@@ -135,17 +135,17 @@ matrix4x4 matrix4x4::zero() noexcept
 
 float& matrix4x4::operator()(unsigned int row, unsigned int column) noexcept
 {
-    return _m[row][column];
+    return _m[row * 4 + column];
 }
 
 vector4 matrix4x4::row(unsigned int row) const noexcept
 {
-    return vector4{_m[row][0], _m[row][1], _m[row][2], _m[row][3]};
+    return vector4{(*this)(row, 0), (*this)(row, 1), (*this)(row, 2), (*this)(row, 3)};
 }
 
 vector4 matrix4x4::column(unsigned int column) const noexcept
 {
-    return vector4{_m[0][column], _m[1][column], _m[2][column], _m[3][column]};
+    return vector4{(*this)(0, column), (*this)(1, column), (*this)(2, column), (*this)(3, column)};
 }
 
 matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v) noexcept

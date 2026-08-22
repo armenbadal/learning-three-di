@@ -43,6 +43,20 @@ TEST_CASE("matrix4x4 constructor")
     CHECK(m(3, 3) == approx(16.0F));
 }
 
+TEST_CASE("matrix4x4 data is contiguous row-major storage")
+{
+    const matrix4x4 m{1.0F, 2.0F, 3.0F, 4.0F,
+                      5.0F, 6.0F, 7.0F, 8.0F,
+                      9.0F, 10.0F, 11.0F, 12.0F,
+                      13.0F, 14.0F, 15.0F, 16.0F};
+
+    float* values = m.data();
+    CHECK(values[0] == approx(1.0F));
+    CHECK(values[5] == approx(6.0F));
+    CHECK(values[10] == approx(11.0F));
+    CHECK(values[15] == approx(16.0F));
+}
+
 TEST_CASE("matrix4x4 default is identity")
 {
     CHECK(matrix4x4{} == matrix4x4::identity());

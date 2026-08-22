@@ -3,15 +3,12 @@
 #include "engine3d/math/math.hxx"
 #include "engine3d/math/vector4.hxx"
 
-#include <array>
 #include <optional>
 #include <ostream>
 
 namespace e3d::math {
 
 class matrix4x4 {
-    using row_type = std::array<float, 4>;
-
 public:
     constexpr matrix4x4() noexcept = default;
     
@@ -19,10 +16,10 @@ public:
                         float e10, float e11, float e12, float e13,
                         float e20, float e21, float e22, float e23,
                         float e30, float e31, float e32, float e33) noexcept
-        : _m{{row_type{e00, e01, e02, e03},
-              row_type{e10, e11, e12, e13},
-              row_type{e20, e21, e22, e23},
-              row_type{e30, e31, e32, e33}}}
+        : _m{e00, e01, e02, e03,
+             e10, e11, e12, e13,
+             e20, e21, e22, e23,
+             e30, e31, e32, e33}
     {}
 
     constexpr matrix4x4 transpose() const noexcept
@@ -30,7 +27,7 @@ public:
         matrix4x4 result{};
         for (unsigned int r = 0; r < 4; ++r)
             for (unsigned int c = 0; c < 4; ++c)
-                result._m[c][r] = _m[r][c];
+                result._m[c * 4 + r] = _m[r * 4 + c];
         return result;
     }
 
@@ -40,8 +37,9 @@ public:
     static matrix4x4 identity() noexcept;
     static matrix4x4 zero() noexcept;
 
-    constexpr float operator()(unsigned int row, unsigned int column) const noexcept { return _m[row][column]; }
+    constexpr float operator()(unsigned int row, unsigned int column) const noexcept { return _m[row * 4 + column]; }
     float& operator()(unsigned int row, unsigned int column) noexcept;
+    float* data() const noexcept { return const_cast<float*>(_m); }
 
     vector4 row(unsigned int row) const noexcept;
     vector4 column(unsigned int column) const noexcept;
@@ -54,10 +52,10 @@ private:
     std::optional<matrix4x4> inverse_general() const noexcept;
 
     // Row-major storage. Matrices multiply column vectors on the left.
-    std::array<row_type, 4> _m{{row_type{1.0F, 0.0F, 0.0F, 0.0F},
-                                row_type{0.0F, 1.0F, 0.0F, 0.0F},
-                                row_type{0.0F, 0.0F, 1.0F, 0.0F},
-                                row_type{0.0F, 0.0F, 0.0F, 1.0F}}};
+    float _m[16]{1.0F, 0.0F, 0.0F, 0.0F,
+                 0.0F, 1.0F, 0.0F, 0.0F,
+                 0.0F, 0.0F, 1.0F, 0.0F,
+                 0.0F, 0.0F, 0.0F, 1.0F};
 };
 
 matrix4x4 operator*(const matrix4x4& u, const matrix4x4& v) noexcept;

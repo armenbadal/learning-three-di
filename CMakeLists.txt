@@ -10,6 +10,20 @@ project(learning-three-di)
 
 enable_testing()
 
+include(FetchContent)
+
+FetchContent_Declare(
+    glad2
+    GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+    GIT_TAG v2.0.6
+    GIT_SHALLOW TRUE
+    SOURCE_SUBDIR cmake
+)
+FetchContent_MakeAvailable(glad2)
+
+# Generate GLAD 2 for the OpenGL core profile used by the GLFW demo.
+glad_add_library(glad_gl_core_46 STATIC REPRODUCIBLE LOADER API gl:core=4.6)
+
 add_library(engine3d STATIC
     src/camera/camera.cxx
     src/renderer/clipping.cxx
@@ -31,7 +45,6 @@ target_include_directories(engine3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 find_package(Catch2 3 CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
-find_package(glad CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_executable(engine3d-tests
