@@ -22,12 +22,13 @@ auto approx(float value)
 camera::camera forward_camera()
 {
     return {
-        ._position = {0.0F, 0.0F, 0.0F},
-        ._target = {0.0F, 0.0F, -1.0F},
-        ._up = {0.0F, 1.0F, 0.0F},
-        ._fov_y = std::numbers::pi_v<float> / 2.0F,
-        ._near_plane = 1.0F,
-        ._far_plane = 20.0F
+        {0.0F, 0.0F, 0.0F},
+        {0.0F, 0.0F, -1.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 20.0F,
+        },
     };
 }
 
@@ -83,8 +84,8 @@ TEST_CASE("3D pipeline composes projection view and model in column-vector order
     fb.clear(graphics::white);
     renderer::pipeline pipeline{fb};
     auto camera = forward_camera();
-    camera._position = {0.0F, 0.0F, 1.0F};
-    camera._target = {0.0F, 0.0F, 0.0F};
+    camera.position({0.0F, 0.0F, 1.0F});
+    camera.look_at({0.0F, 0.0F, 0.0F});
     const auto model = math::model_matrix(
         {0.0F, 0.0F, 0.0F},
         {0.0F, 0.0F, 0.0F},
@@ -204,18 +205,22 @@ TEST_CASE("3D pipeline applies camera movement through the view matrix")
     renderer::pipeline shifted_pipeline{shifted_fb};
     const auto triangle = triangle_at_depth(0.0F);
     const camera::camera centred_camera{
-        ._position = {0.0F, 0.0F, 5.0F},
-        ._target = {0.0F, 0.0F, 0.0F},
-        ._fov_y = std::numbers::pi_v<float> / 2.0F,
-        ._near_plane = 1.0F,
-        ._far_plane = 20.0F
+        {0.0F, 0.0F, 5.0F},
+        {0.0F, 0.0F, 0.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 20.0F,
+        },
     };
     const camera::camera shifted_camera{
-        ._position = {1.0F, 0.0F, 5.0F},
-        ._target = {1.0F, 0.0F, 4.0F},
-        ._fov_y = std::numbers::pi_v<float> / 2.0F,
-        ._near_plane = 1.0F,
-        ._far_plane = 20.0F
+        {1.0F, 0.0F, 5.0F},
+        {1.0F, 0.0F, 4.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 20.0F,
+        },
     };
     const auto identity = math::matrix4x4::identity();
 

@@ -2,29 +2,39 @@
 
 #include "engine3d/math/transform.hxx"
 #include "engine3d/math/vector3.hxx"
+#include "engine3d/camera/projection.hxx"
 
 #include <numbers>
 
 namespace e3d::camera {
 
-struct camera {
-    math::vector3 _position;
-    math::vector3 _target;
+class camera final {
+public:
+    camera(math::vector3 position, math::vector3 target, projection projection);
+
+    [[nodiscard]]
+    math::matrix4x4 view_matrix() const;
+
+    [[nodiscard]]
+    math::matrix4x4 projection_matrix(float aspect) const;
+
+    [[nodiscard]]
+    const math::vector3& position() const noexcept;
+
+    void position(math::vector3 value) noexcept;
+    void look_at(math::vector3 target) noexcept;
+
+    [[nodiscard]]
+    const projection& projection() const noexcept;
+
+    void projection(e3d::camera::projection value);
+
+private:
+    math::vector3 _position{};
+    math::vector3 _target{};
     math::vector3 _up{0.0F, 1.0F, 0.0F};
 
-    float _fov_y{std::numbers::pi_v<float> / 3.0F};
-    float _near_plane{0.1F};
-    float _far_plane{1000.0F};
-
-    math::matrix4x4 view_matrix() const
-    {
-        return math::look_at(_position, _target, _up);
-    }
-
-    math::matrix4x4 projection_matrix(float aspect) const
-    {
-        return math::perspective(_fov_y, aspect, _near_plane, _far_plane);
-    }
+    e3d::camera::projection _projection;
 };
 
 } // namespace e3d::camera

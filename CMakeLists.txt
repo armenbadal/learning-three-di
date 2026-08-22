@@ -37,6 +37,14 @@ add_library(engine3d STATIC
     src/renderer/rasterizer.cxx
     src/renderer/imager.cxx
     src/renderer/viewport.cxx
+    src/renderer/software_renderer.cxx
+    src/renderer/opengl/opengl_renderer.cxx
+    src/renderer/opengl/shader.cxx
+    src/renderer/opengl/shader_program.cxx
+    src/renderer/opengl/buffer.cxx
+    src/renderer/opengl/vertex_array.cxx
+    src/renderer/opengl/gpu_mesh.cxx
+    src/platform/window.cxx
 )
 add_library(engine3d::engine3d ALIAS engine3d)
 
