@@ -1,7 +1,7 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/viewport.hxx"
+#include "engine3d/renderer/software/viewport.hxx"
 
 #include <array>
 

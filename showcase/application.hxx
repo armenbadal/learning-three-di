@@ -1,0 +1,64 @@
+#pragma once
+
+#include <array>
+#include <chrono>
+#include <cstddef>
+#include <memory>
+
+#include <engine3d/camera/camera.hxx>
+#include <engine3d/platform/window.hxx>
+#include <engine3d/renderer/render_settings.hxx>
+#include <engine3d/renderer/renderer.hxx>
+#include <engine3d/scene/scene.hxx>
+
+namespace showcase {
+
+class application final {
+public:
+    application();
+
+    application(const application&) = delete;
+    application& operator=(const application&) = delete;
+
+    application(application&&) = delete;
+    application& operator=(application&&) = delete;
+
+    ~application();
+
+    int run();
+
+private:
+    using clock = std::chrono::steady_clock;
+    using duration = std::chrono::duration<float>;
+
+    using renderer_ptr =
+        std::unique_ptr<e3d::renderer::renderer>;
+
+    static constexpr std::size_t renderer_count = 2;
+
+    void process_input();
+    void update(duration delta_time);
+    void render();
+
+    void switch_renderer();
+
+    [[nodiscard]]
+    e3d::renderer::renderer& active_renderer() noexcept;
+
+    [[nodiscard]]
+    const e3d::renderer::renderer&
+    active_renderer() const noexcept;
+
+private:
+    e3d::platform::window _window;
+
+    e3d::scene _scene;
+    e3d::camera::camera _camera;
+
+    e3d::renderer::render_settings _render_settings{};
+
+    std::array<renderer_ptr, renderer_count> _renderers;
+    std::size_t _active_renderer_index{};
+};
+
+} // namespace showcase

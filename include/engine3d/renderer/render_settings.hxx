@@ -15,7 +15,7 @@ struct render_settings {
     bool depth_test{true};
     cull_mode culling{cull_mode::back};
 
-    graphics::colour clear_colour{0.05F, 0.05F, 0.08F, 1.0F};
+    graphics::colour clear_colour{13, 13, 20, 255};
 };
 
 } // namespace e3d::renderer

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "engine3d/renderer/renderer.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/pipeline.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/pipeline.hxx"
 
 #include <cstddef>
 #include <string_view>
@@ -25,10 +25,10 @@ public:
     void render(const scene& scene, const camera::camera& camera, const render_settings& settings) override;
 
     [[nodiscard]]
-    const framebuffer& framebuffer() const noexcept;
+    const e3d::renderer::framebuffer& framebuffer() const noexcept;
 
 private:
-    framebuffer _framebuffer;
+    e3d::renderer::framebuffer _framebuffer;
     pipeline _pipeline;
 };
 

@@ -22,10 +22,10 @@ math::matrix4x4 camera::projection_matrix(float aspect) const
         [aspect](const auto& projection) -> math::matrix4x4 {
             using projection_type = std::decay_t<decltype(projection)>;
 
-            if constexpr (std::is_same_v<projection_type, perspective_projection>) {
-                return math::perspective(
-                    projection.fov_y, aspect, projection.near_plane, projection.far_plane);
-            } else {
+            if constexpr ( std::is_same_v<projection_type, perspective_projection> ) {
+                return math::perspective(projection.fov_y, aspect, projection.near_plane, projection.far_plane);
+            }
+            else {
                 assert(aspect > 0.0F);
                 assert(projection.height > 0.0F);
                 assert(projection.near_plane > 0.0F);

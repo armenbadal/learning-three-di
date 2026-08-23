@@ -2,7 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "engine3d/math/transform.hxx"
-#include "engine3d/renderer/pipeline.hxx"
+#include "engine3d/renderer/software/pipeline.hxx"
 
 #include <numbers>
 

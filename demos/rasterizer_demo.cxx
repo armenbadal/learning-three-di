@@ -1,6 +1,6 @@
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/rasterizer.hxx"
-#include "engine3d/renderer/imager.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/rasterizer.hxx"
+#include "engine3d/renderer/software/imager.hxx"
 #include "engine3d/geometry/vertex.hxx"
 #include "engine3d/math/vector2.hxx"
 

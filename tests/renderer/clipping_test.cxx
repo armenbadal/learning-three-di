@@ -1,7 +1,7 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/clipping.hxx"
+#include "engine3d/renderer/software/clipping.hxx"
 #include "engine3d/math/vector4.hxx"
 
 #include <array>

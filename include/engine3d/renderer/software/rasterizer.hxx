@@ -1,8 +1,8 @@
 #pragma once
 
 #include "engine3d/graphics/colour.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/viewport.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/viewport.hxx"
 #include "engine3d/geometry/vertex.hxx"
 
 namespace e3d::renderer {

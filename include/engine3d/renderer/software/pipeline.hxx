@@ -5,9 +5,9 @@
 #include "engine3d/graphics/colour.hxx"
 #include "engine3d/math/matrix4x4.hxx"
 #include "engine3d/math/vector3.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/rasterizer.hxx"
-#include "engine3d/renderer/viewport.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/rasterizer.hxx"
+#include "engine3d/renderer/software/viewport.hxx"
 
 #include <array>
 #include <vector>

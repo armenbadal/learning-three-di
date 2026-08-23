@@ -2,7 +2,7 @@
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "engine3d/renderer/rasterizer.hxx"
+#include "engine3d/renderer/software/rasterizer.hxx"
 
 #include <algorithm>
 #include <queue>

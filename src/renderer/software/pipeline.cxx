@@ -1,6 +1,6 @@
-#include "engine3d/renderer/pipeline.hxx"
+#include "engine3d/renderer/software/pipeline.hxx"
 
-#include "engine3d/renderer/clipping.hxx"
+#include "engine3d/renderer/software/clipping.hxx"
 
 namespace e3d::renderer {
 

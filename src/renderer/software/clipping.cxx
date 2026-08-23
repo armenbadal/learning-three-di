@@ -1,4 +1,4 @@
-#include "engine3d/renderer/clipping.hxx"
+#include "engine3d/renderer/software/clipping.hxx"
 
 #include <utility>
 

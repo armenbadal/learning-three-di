@@ -1,4 +1,4 @@
-#include "engine3d/renderer/imager.hxx"
+#include "engine3d/renderer/software/imager.hxx"
 
 #include <fstream>
 #include <stdexcept>

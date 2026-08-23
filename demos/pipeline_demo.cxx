@@ -1,8 +1,8 @@
 #include "engine3d/camera/camera.hxx"
 #include "engine3d/math/transform.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/imager.hxx"
-#include "engine3d/renderer/pipeline.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/imager.hxx"
+#include "engine3d/renderer/software/pipeline.hxx"
 
 #include <numbers>
 

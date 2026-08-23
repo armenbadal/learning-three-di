@@ -3,6 +3,7 @@
 #include "vertex.hxx"
 
 #include <cstddef>
+#include <cstdint>
 #include <span>
 #include <vector>
 
@@ -16,7 +17,7 @@ public:
     std::span<const vertex> vertices() const noexcept;
 
     [[nodiscard]]
-    std::span<const index_type> indices() const noexcept;
+    std::span<const std::uint32_t> indices() const noexcept;
 
     [[nodiscard]]
     std::size_t triangle_count() const noexcept;

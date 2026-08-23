@@ -28,6 +28,9 @@ public:
     void set_uniform(std::string_view name, float value);
 
 private:
+    void create_and_link(std::string_view vertex_source, std::string_view fragment_source);
+    GLint uniform_location(std::string_view name) const;
+
     GLuint _id{};
 };
 

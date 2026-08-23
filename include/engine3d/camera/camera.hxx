@@ -25,7 +25,7 @@ public:
     void look_at(math::vector3 target) noexcept;
 
     [[nodiscard]]
-    const projection& projection() const noexcept;
+    const e3d::camera::projection& projection() const noexcept;
 
     void projection(e3d::camera::projection value);
 
