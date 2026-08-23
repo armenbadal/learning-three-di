@@ -1,6 +1,34 @@
 #include "engine3d/renderer/software/pipeline.hxx"
-
 #include "engine3d/renderer/software/clipping.hxx"
+
+namespace {
+
+using e3d::renderer::screen_triangle;
+using e3d::renderer::cull_mode;
+
+bool is_front_facing(const screen_triangle& triangle) noexcept
+{
+    const auto& p0 = triangle[0].position;
+    const auto& p1 = triangle[1].position;
+    const auto& p2 = triangle[2].position;
+
+    return 0.0F > e3d::math::cross(p1 - p0, p2 - p0);
+}
+
+bool should_cull(const screen_triangle& triangle, cull_mode mode) noexcept
+{
+    if( mode == cull_mode::none )
+        return false;
+
+    const bool front_facing = is_front_facing(triangle);
+
+    if( mode == cull_mode::back )
+        return !front_facing;
+
+    return front_facing;
+}
+
+} // namespace
 
 namespace e3d::renderer {
 
@@ -59,10 +87,13 @@ void pipeline::draw_filled_triangle(const triangle3d& triangle, const math::matr
         _rasterizer.draw_filled_triangle(screen[0], screen[1], screen[2], colour);
 }
 
-void pipeline::draw_filled_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera, bool depth_test)
+void pipeline::draw_filled_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera, const pipeline_settings& settings)
 {
-    for( const auto& screen : transform_triangle(triangle, model, camera) )
-        _rasterizer.draw_filled_triangle(screen[0], screen[1], screen[2], depth_test);
+    for( const auto& tr : transform_triangle(triangle, model, camera) ) {
+        if( should_cull(tr, settings.culling) )
+            continue;
+        _rasterizer.draw_filled_triangle(tr[0], tr[1], tr[2], settings.depth_test);
+    }
 }
 
 } // namespace e3d::renderer

@@ -23,6 +23,10 @@ const e3d::renderer::framebuffer& software_renderer::framebuffer() const noexcep
 void software_renderer::render(const scene::scene& world, const camera::camera& camera, const render_settings& settings)
 {
     _framebuffer.clear(settings.clear_colour);
+    pipeline_settings ps{
+        .depth_test = settings.depth_test,
+        .culling = settings.culling
+    };
 
     for( const auto& object : world.objects() ) {
         const auto& mesh = object.mesh();
@@ -39,7 +43,7 @@ void software_renderer::render(const scene::scene& world, const camera::camera& 
                 vertices[indices[i + 2]]
             };
 
-            _pipeline.draw_filled_triangle(triangle, model, camera, settings.depth_test);
+            _pipeline.draw_filled_triangle(triangle, model, camera, ps);
         }
     }
 }

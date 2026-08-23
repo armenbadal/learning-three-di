@@ -171,6 +171,43 @@ TEST_CASE("3D pipeline depth testing makes overlapping geometry draw-order indep
     CHECK(near_first.at(50, 50) == near_colour);
 }
 
+TEST_CASE("3D pipeline culls triangles according to their winding")
+{
+    const renderer::triangle3d front{{
+        {{-0.5F, -0.5F, 0.0F}},
+        {{0.5F, -0.5F, 0.0F}},
+        {{0.0F, 0.5F, 0.0F}}
+    }};
+    const renderer::triangle3d back{{
+        front[0],
+        front[2],
+        front[1]
+    }};
+    const camera::camera camera{
+        {0.0F, 0.0F, 5.0F},
+        {0.0F, 0.0F, 0.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 20.0F,
+        },
+    };
+    const auto identity = math::matrix4x4::identity();
+    const auto rendered_pixels = [&](const renderer::triangle3d& triangle, renderer::cull_mode culling) {
+        renderer::framebuffer fb{100, 100};
+        renderer::pipeline pipeline{fb};
+        pipeline.draw_filled_triangle(triangle, identity, camera, {.culling = culling});
+        return count_drawn(fb, graphics::black);
+    };
+
+    CHECK(rendered_pixels(front, renderer::cull_mode::none) > 0);
+    CHECK(rendered_pixels(back, renderer::cull_mode::none) > 0);
+    CHECK(rendered_pixels(front, renderer::cull_mode::back) > 0);
+    CHECK(rendered_pixels(back, renderer::cull_mode::back) == 0);
+    CHECK(rendered_pixels(front, renderer::cull_mode::front) == 0);
+    CHECK(rendered_pixels(back, renderer::cull_mode::front) > 0);
+}
+
 TEST_CASE("3D pipeline perspective projection makes farther geometry smaller")
 {
     renderer::framebuffer near_fb{100, 100};

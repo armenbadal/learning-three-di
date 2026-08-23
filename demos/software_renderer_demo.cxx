@@ -49,9 +49,21 @@ int main()
         }};
 
     renderer::software_renderer software_renderer{640, 480};
-    renderer::render_settings settings{ .depth_test = true, .clear_colour = {18, 22, 32} };
-    software_renderer.render(world, view, settings);
 
-    renderer::save_as_ppm(software_renderer.framebuffer(), "software_renderer_demo.ppm");
+    renderer::render_settings settings{
+        .depth_test = true,
+        .culling = renderer::cull_mode::front,
+        .clear_colour = {18, 22, 32} };
+    software_renderer.render(world, view, settings);
+    renderer::save_as_ppm(software_renderer.framebuffer(), "software_renderer_demo_1.ppm");
+
+    settings.culling = renderer::cull_mode::front;
+    software_renderer.render(world, view, settings);
+    renderer::save_as_ppm(software_renderer.framebuffer(), "software_renderer_demo_2.ppm");
+
+    settings.culling = renderer::cull_mode::back;
+    software_renderer.render(world, view, settings);
+    renderer::save_as_ppm(software_renderer.framebuffer(), "software_renderer_demo_3.ppm");
+
     return 0;
 }
