@@ -9,10 +9,7 @@ pipeline::pipeline(framebuffer& fb)
     , _rasterizer{fb}
 {}
 
-std::vector<screen_triangle> pipeline::transform_triangle(
-    const triangle3d& triangle,
-    const math::matrix4x4& model,
-    const camera::camera& camera) const
+std::vector<screen_triangle> pipeline::transform_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera) const
 {
     if( _framebuffer.width() == 0 || _framebuffer.height() == 0 )
         return {};
@@ -56,23 +53,16 @@ std::vector<screen_triangle> pipeline::transform_triangle(
     return triangles;
 }
 
-void pipeline::draw_filled_triangle(
-    const triangle3d& triangle,
-    const math::matrix4x4& model,
-    const camera::camera& camera,
-    graphics::colour colour)
+void pipeline::draw_filled_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera, graphics::colour colour)
 {
     for( const auto& screen : transform_triangle(triangle, model, camera) )
         _rasterizer.draw_filled_triangle(screen[0], screen[1], screen[2], colour);
 }
 
-void pipeline::draw_filled_triangle(
-    const triangle3d& triangle,
-    const math::matrix4x4& model,
-    const camera::camera& camera)
+void pipeline::draw_filled_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera, bool depth_test)
 {
     for( const auto& screen : transform_triangle(triangle, model, camera) )
-        _rasterizer.draw_filled_triangle(screen[0], screen[1], screen[2]);
+        _rasterizer.draw_filled_triangle(screen[0], screen[1], screen[2], depth_test);
 }
 
 } // namespace e3d::renderer

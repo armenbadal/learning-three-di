@@ -117,19 +117,15 @@ void rasterizer::draw_triangle(screen_vertex v0, screen_vertex v1, screen_vertex
 
 void rasterizer::draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, graphics::colour c)
 {
-    rasterize_filled_triangle(v0, v1, v2, &c);
+    rasterize_filled_triangle(v0, v1, v2, &c, true);
 }
 
-void rasterizer::draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2)
+void rasterizer::draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, bool depth_test)
 {
-    rasterize_filled_triangle(v0, v1, v2, nullptr);
+    rasterize_filled_triangle(v0, v1, v2, nullptr, depth_test);
 }
 
-void rasterizer::rasterize_filled_triangle(
-    screen_vertex v0,
-    screen_vertex v1,
-    screen_vertex v2,
-    const graphics::colour* fill_colour)
+void rasterizer::rasterize_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, const graphics::colour* fill_colour, bool depth_test)
 {
     float area = edge(v0.position, v1.position, v2.position);
     if( !std::isfinite(area) || std::fabs(area) < math::epsilon )
@@ -174,11 +170,12 @@ void rasterizer::rasterize_filled_triangle(
                               + lambda2 * v2.depth;
 
             auto& stored_depth = _framebuffer.depth_at(ux, uy);
-            if( !(depth < stored_depth) )
+            if( depth_test && !(depth < stored_depth) )
                 continue;
 
             if( fill_colour != nullptr ) {
-                stored_depth = depth;
+                if( depth_test )
+                    stored_depth = depth;
                 _framebuffer(ux, uy) = *fill_colour;
                 continue;
             }
@@ -194,7 +191,8 @@ void rasterizer::rasterize_filled_triangle(
                                      + v1.colour_over_w * lambda1
                                      + v2.colour_over_w * lambda2;
 
-            stored_depth = depth;
+            if( depth_test )
+                stored_depth = depth;
             _framebuffer(ux, uy) = graphics::to_colour(colour_over_w / weighted_inv_w);
         }
 }

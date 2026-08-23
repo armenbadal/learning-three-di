@@ -263,6 +263,25 @@ TEST_CASE("draw_filled_triangle rejects a farther fragment")
     CHECK(fb.depth_at(1, 1) == Catch::Approx(0.3F));
 }
 
+TEST_CASE("draw_filled_triangle without depth testing overwrites farther fragments")
+{
+    framebuffer fb{5, 5};
+    rasterizer r{fb};
+    const colour stored_colour{255, 0, 0};
+    const colour far_colour{0, 0, 255};
+    fb.at(1, 1) = stored_colour;
+    fb.depth_at(1, 1) = 0.3F;
+
+    r.draw_filled_triangle(
+        coloured_screen(0.0F, 0.0F, 1.0F, far_colour, 0.7F),
+        coloured_screen(4.0F, 0.0F, 1.0F, far_colour, 0.7F),
+        coloured_screen(0.0F, 4.0F, 1.0F, far_colour, 0.7F),
+        false);
+
+    CHECK(fb.at(1, 1) == far_colour);
+    CHECK(fb.depth_at(1, 1) == Catch::Approx(0.3F));
+}
+
 TEST_CASE("draw_filled_triangle accepts a nearer fragment")
 {
     framebuffer fb{5, 5};

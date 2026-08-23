@@ -39,7 +39,7 @@ void software_renderer::render(const scene::scene& world, const camera::camera& 
                 vertices[indices[i + 2]]
             };
 
-            _pipeline.draw_filled_triangle(triangle, model, camera);
+            _pipeline.draw_filled_triangle(triangle, model, camera, settings.depth_test);
         }
     }
 }

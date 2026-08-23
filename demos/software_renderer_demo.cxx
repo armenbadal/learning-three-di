@@ -49,7 +49,7 @@ int main()
         }};
 
     renderer::software_renderer software_renderer{640, 480};
-    renderer::render_settings settings{ .clear_colour = {18, 22, 32} };
+    renderer::render_settings settings{ .depth_test = true, .clear_colour = {18, 22, 32} };
     software_renderer.render(world, view, settings);
 
     renderer::save_as_ppm(software_renderer.framebuffer(), "software_renderer_demo.ppm");

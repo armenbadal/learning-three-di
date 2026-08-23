@@ -15,16 +15,12 @@ public:
 
     void draw_line(screen_vertex v0, screen_vertex v1, graphics::colour c);
     void draw_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, graphics::colour c);
-    void draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2);
+    void draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, bool depth_test = true);
     void draw_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, graphics::colour c);
     void draw_filled_triangle(vertex2d v0, vertex2d v1, vertex2d v2);
 
 private:
-    void rasterize_filled_triangle(
-        screen_vertex v0,
-        screen_vertex v1,
-        screen_vertex v2,
-        const graphics::colour* fill_colour);
+    void rasterize_filled_triangle(screen_vertex v0, screen_vertex v1, screen_vertex v2, const graphics::colour* fill_colour, bool depth_test);
 
     framebuffer& _framebuffer;
 };

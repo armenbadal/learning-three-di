@@ -21,21 +21,9 @@ class pipeline {
 public:
     explicit pipeline(framebuffer& fb);
 
-    std::vector<screen_triangle> transform_triangle(
-        const triangle3d& triangle,
-        const math::matrix4x4& model,
-        const camera::camera& camera) const;
-
-    void draw_filled_triangle(
-        const triangle3d& triangle,
-        const math::matrix4x4& model,
-        const camera::camera& camera,
-        graphics::colour colour);
-
-    void draw_filled_triangle(
-        const triangle3d& triangle,
-        const math::matrix4x4& model,
-        const camera::camera& camera);
+    std::vector<screen_triangle> transform_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera) const;
+    void draw_filled_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera, graphics::colour colour);
+    void draw_filled_triangle(const triangle3d& triangle, const math::matrix4x4& model, const camera::camera& camera, bool depth_test = true);
 
 private:
     framebuffer& _framebuffer;
