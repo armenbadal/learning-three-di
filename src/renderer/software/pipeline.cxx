@@ -22,7 +22,7 @@ std::vector<screen_triangle> pipeline::transform_triangle(
     const float aspect = width / height;
     const auto transform = camera.projection_matrix(aspect) * camera.view_matrix() * model;
 
-    const auto to_clip_vertex = [&transform](const geometry::vertex3d& vertex) {
+    const auto to_clip_vertex = [&transform](const auto& vertex) {
         return clip_vertex{
             .position = transform * math::vector4{vertex.position, 1.0F},
             .colour = graphics::to_colourf(vertex.colour)

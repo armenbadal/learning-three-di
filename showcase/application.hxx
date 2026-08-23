@@ -52,7 +52,7 @@ private:
 private:
     e3d::platform::window _window;
 
-    e3d::scene _scene;
+    e3d::scene::scene _scene;
     e3d::camera::camera _camera;
 
     e3d::renderer::render_settings _render_settings{};

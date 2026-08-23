@@ -36,6 +36,37 @@ TEST_CASE("framebuffer is cleared after construction")
     CHECK(fb.depth_at(3, 2) == 1.0F);
 }
 
+TEST_CASE("framebuffer resize updates dimensions and clears its buffers")
+{
+    framebuffer fb{2, 3};
+    fb.at(1, 2) = white;
+    fb.depth_at(1, 2) = 0.25F;
+
+    fb.resize(4, 1);
+
+    CHECK(fb.width() == 4);
+    CHECK(fb.height() == 1);
+    REQUIRE(fb.pixels().size() == 4);
+    REQUIRE(fb.depths().size() == 4);
+    for( const colour pixel : fb.pixels() )
+        CHECK(pixel == black);
+    for( const float depth : fb.depths() )
+        CHECK(depth == 1.0F);
+    CHECK_THROWS_AS(fb.at(1, 2), std::out_of_range);
+}
+
+TEST_CASE("framebuffer resize accepts zero dimensions")
+{
+    framebuffer fb{2, 2};
+
+    fb.resize(0, 8);
+
+    CHECK(fb.width() == 0);
+    CHECK(fb.height() == 8);
+    CHECK(fb.pixels().empty());
+    CHECK(fb.depths().empty());
+}
+
 TEST_CASE("framebuffer at throws on out of bounds")
 {
     framebuffer fb{4, 3};
@@ -160,6 +191,17 @@ TEST_CASE("framebuffer constructor guards against overflow")
 {
     CHECK_THROWS_AS((framebuffer{std::numeric_limits<std::size_t>::max(), 2}), std::invalid_argument);
     CHECK_THROWS_AS((framebuffer{std::numeric_limits<std::size_t>::max(), 0}), std::invalid_argument);
+}
+
+TEST_CASE("framebuffer resize guards against overflow without changing the buffer")
+{
+    framebuffer fb{2, 2};
+    fb.at(1, 1) = white;
+
+    CHECK_THROWS_AS(fb.resize(std::numeric_limits<std::size_t>::max(), 2), std::invalid_argument);
+    CHECK(fb.width() == 2);
+    CHECK(fb.height() == 2);
+    CHECK(fb.at(1, 1) == white);
 }
 
 TEST_CASE("framebuffer exposes pixels as a span")

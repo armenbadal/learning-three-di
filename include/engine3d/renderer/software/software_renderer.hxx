@@ -22,7 +22,7 @@ public:
 
     void resize(std::uint32_t width, std::uint32_t height) override;
 
-    void render(const scene& scene, const camera::camera& camera, const render_settings& settings) override;
+    void render(const scene::scene& scene, const camera::camera& camera, const render_settings& settings) override;
 
     [[nodiscard]]
     const e3d::renderer::framebuffer& framebuffer() const noexcept;

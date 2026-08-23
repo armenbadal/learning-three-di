@@ -3,8 +3,9 @@
 #include "engine3d/scene/scene_object.hxx"
 
 #include <span>
+#include <vector>
 
-namespace e3d {
+namespace e3d::scene {
 
 class scene final {
 public:
@@ -22,4 +23,4 @@ private:
     std::vector<scene_object> _objects;
 };
 
-} // namespace e3d
+} // namespace e3d::scene

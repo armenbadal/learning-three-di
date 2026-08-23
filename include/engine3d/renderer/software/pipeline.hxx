@@ -14,7 +14,7 @@
 
 namespace e3d::renderer {
 
-using triangle3d = std::array<geometry::vertex3d, 3>;
+using triangle3d = std::array<geometry::vertex, 3>;
 using screen_triangle = std::array<screen_vertex, 3>;
 
 class pipeline {

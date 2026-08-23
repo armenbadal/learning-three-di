@@ -8,8 +8,8 @@ namespace e3d::geometry {
 
 struct vertex {
     math::vector3 position{};
+    graphics::colour colour{graphics::white};
     math::vector3 normal{};
-    graphics::colour colour{};
 };
 
 struct vertex2d {

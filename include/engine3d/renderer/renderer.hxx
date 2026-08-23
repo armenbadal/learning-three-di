@@ -27,7 +27,7 @@ public:
 
     virtual void resize(std::uint32_t width, std::uint32_t height) = 0;
 
-    virtual void render(const scene& scene, const camera::camera& camera, const render_settings& settings) = 0;
+    virtual void render(const scene::scene& scene, const camera::camera& camera, const render_settings& settings) = 0;
 };
 
 } // namespace e3d::renderer
