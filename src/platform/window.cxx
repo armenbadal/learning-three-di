@@ -3,6 +3,7 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include <array>
 #include <string>
 
 namespace e3d::platform {
@@ -52,9 +53,27 @@ public:
         return glfwWindowShouldClose(_handle);
     }
 
+    bool key_down(key value) const noexcept
+    {
+        return _current_keys[to_index(value)];
+    }
+
+    bool key_pressed(key value) const noexcept
+    {
+        const auto index = to_index(value);
+        return _current_keys[index] && !_previous_keys[index];
+    }
+
+    void request_close() noexcept
+    {
+        glfwSetWindowShouldClose(_handle, GLFW_TRUE);
+    }
+
     void poll_events()
     {
+        _previous_keys = _current_keys;
         glfwPollEvents();
+        update_key_states();
     }
 
     void swap_buffers()
@@ -62,9 +81,38 @@ public:
         glfwSwapBuffers(_handle);
     }
 
+private:
+    static constexpr std::size_t key_count = static_cast<std::size_t>(key::count);
+
+    static constexpr std::size_t to_index(key value) noexcept
+    {
+        return static_cast<std::size_t>(value);
+    }
+
+    static constexpr std::array native_keys{
+        GLFW_KEY_ESCAPE,
+        GLFW_KEY_W,
+        GLFW_KEY_A,
+        GLFW_KEY_S,
+        GLFW_KEY_D,
+        GLFW_KEY_Z,
+        GLFW_KEY_C,
+        GLFW_KEY_1,
+        GLFW_KEY_2,
+    };
+
+    void update_key_states() noexcept
+    {
+        for( std::size_t index = 0; index < key_count; ++index )
+            _current_keys[index] = glfwGetKey(_handle, native_keys[index]) != GLFW_RELEASE;
+    }
+
+private:
     std::string _title;
 
     GLFWwindow* _handle{nullptr};
+    std::array<bool, key_count> _previous_keys{};
+    std::array<bool, key_count> _current_keys{};
 };
 
 window::window(extent size, std::string_view title)
@@ -81,6 +129,21 @@ window::extent window::size() const noexcept
 bool window::should_close() const noexcept
 {
     return _impl->should_close();
+}
+
+bool window::key_down(key value) const noexcept
+{
+    return _impl->key_down(value);
+}
+
+bool window::key_pressed(key value) const noexcept
+{
+    return _impl->key_pressed(value);
+}
+
+void window::request_close() noexcept
+{
+    _impl->request_close();
 }
 
 void window::poll_events()

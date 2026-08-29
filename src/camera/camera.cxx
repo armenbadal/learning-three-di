@@ -2,8 +2,19 @@
 #include "engine3d/math/transform.hxx"
 
 #include <cassert>
-#include <type_traits>
 #include <utility>
+
+namespace {
+
+template <typename... functions>
+struct overloaded : functions... {
+    using functions::operator()...;
+};
+
+template <typename... functions>
+overloaded(functions...) -> overloaded<functions...>;
+
+} // namespace
 
 namespace e3d::camera {
 
@@ -19,13 +30,11 @@ math::matrix4x4 camera::view_matrix() const
 math::matrix4x4 camera::projection_matrix(float aspect) const
 {
     return std::visit(
-        [aspect](const auto& projection) -> math::matrix4x4 {
-            using projection_type = std::decay_t<decltype(projection)>;
-
-            if constexpr ( std::is_same_v<projection_type, perspective_projection> ) {
+        overloaded{
+            [aspect](const perspective_projection& projection) {
                 return math::perspective(projection.fov_y, aspect, projection.near_plane, projection.far_plane);
-            }
-            else {
+            },
+            [aspect](const orthographic_projection& projection) -> math::matrix4x4 {
                 assert(aspect > 0.0F);
                 assert(projection.height > 0.0F);
                 assert(projection.near_plane > 0.0F);
@@ -40,7 +49,7 @@ math::matrix4x4 camera::projection_matrix(float aspect) const
                     -(projection.far_plane + projection.near_plane) / depth,
                     0.0F, 0.0F, 0.0F, 1.0F,
                 };
-            }
+            },
         },
         _projection);
 }

@@ -1,10 +1,30 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <string_view>
 
 namespace e3d::platform {
+
+enum class key {
+    escape,
+    w,
+    a,
+    s,
+    d,
+    z,
+    c,
+    one,
+    two,
+    count,
+};
+
+enum class key_state
+{
+    released,
+    pressed
+};
 
 class window {
 public:
@@ -28,6 +48,13 @@ public:
     [[nodiscard]]
     bool should_close() const noexcept;
 
+    [[nodiscard]]
+    bool key_down(key value) const noexcept;
+
+    [[nodiscard]]
+    bool key_pressed(key value) const noexcept;
+
+    void request_close() noexcept;
     void poll_events();
     void swap_buffers();
 

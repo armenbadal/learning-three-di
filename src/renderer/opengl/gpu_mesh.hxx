@@ -6,8 +6,7 @@
 
 namespace e3d::renderer::opengl {
 
-class gpu_mesh final
-{
+class gpu_mesh final {
 public:
     explicit gpu_mesh(const geometry::mesh& mesh);
 

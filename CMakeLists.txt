@@ -27,6 +27,7 @@ glad_add_library(glad_gl_core_46 STATIC REPRODUCIBLE LOADER API gl:core=4.6)
 add_library(engine3d STATIC
     src/camera/camera.cxx
     src/geometry/mesh.cxx
+    src/geometry/primitives.cxx
     src/scene/scene.cxx
     src/scene/scene_object.cxx
     src/scene/transform.cxx
@@ -64,6 +65,7 @@ add_executable(engine3d-tests
     tests/camera/camera_test.cxx
     tests/renderer/clipping_test.cxx
     tests/geometry/vertex_test.cxx
+    tests/geometry/primitives_test.cxx
     tests/math/transform_test.cxx
     tests/math/matrix4x4_test.cxx
     tests/math/vector2_test.cxx

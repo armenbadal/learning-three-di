@@ -109,7 +109,11 @@ GLuint create_shader_program()
 
 class software_presenter::implementation final {
 public:
-    implementation() {}
+    implementation()
+    {
+        create_program();
+        create_vertex_array();
+    }
 
     ~implementation()
     {

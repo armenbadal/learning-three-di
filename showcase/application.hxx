@@ -39,7 +39,8 @@ private:
 
     void build_scene();
     void resize_software_renderer();
-    void process_input();
+    void cycle_culling();
+    void process_input(duration delta_time);
     void update(duration delta_time);
     void render();
 
@@ -62,6 +63,9 @@ private:
 
     std::array<renderer_ptr, renderer_count> _renderers;
     std::size_t _active_renderer_index{};
+
+    float _camera_yaw{0.0F};
+    float _camera_distance{3.0F};
 };
 
 } // namespace showcase
