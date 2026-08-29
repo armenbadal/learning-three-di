@@ -1,5 +1,7 @@
 #pragma once
 
+#include "software_presenter.hxx"
+
 #include <array>
 #include <chrono>
 #include <cstddef>
@@ -9,6 +11,7 @@
 #include <engine3d/platform/window.hxx>
 #include <engine3d/renderer/render_settings.hxx>
 #include <engine3d/renderer/renderer.hxx>
+#include <engine3d/renderer/software/software_renderer.hxx>
 #include <engine3d/scene/scene.hxx>
 
 namespace showcase {
@@ -30,12 +33,12 @@ public:
 private:
     using clock = std::chrono::steady_clock;
     using duration = std::chrono::duration<float>;
-
-    using renderer_ptr =
-        std::unique_ptr<e3d::renderer::renderer>;
+    using renderer_ptr = std::unique_ptr<e3d::renderer::renderer>;
 
     static constexpr std::size_t renderer_count = 2;
 
+    void build_scene();
+    void resize_software_renderer();
     void process_input();
     void update(duration delta_time);
     void render();
@@ -44,13 +47,13 @@ private:
 
     [[nodiscard]]
     e3d::renderer::renderer& active_renderer() noexcept;
-
     [[nodiscard]]
-    const e3d::renderer::renderer&
-    active_renderer() const noexcept;
+    const e3d::renderer::renderer& active_renderer() const noexcept;
 
 private:
     e3d::platform::window _window;
+    e3d::renderer::software_renderer _software_renderer;
+    software_presenter _software_presenter;
 
     e3d::scene::scene _scene;
     e3d::camera::camera _camera;

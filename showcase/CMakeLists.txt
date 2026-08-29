@@ -1,6 +1,7 @@
 add_executable(showcase
     main.cxx
     application.cxx
+    software_presenter.cxx
 )
 
 target_link_libraries(showcase PRIVATE
