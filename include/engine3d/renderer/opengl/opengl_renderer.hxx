@@ -9,7 +9,7 @@ namespace e3d::renderer::opengl {
 class opengl_renderer final : public renderer {
 public:
     opengl_renderer();
-    ~opengl_renderer() override = default;
+    ~opengl_renderer() override;
 
     [[nodiscard]]
     std::string_view name() const noexcept override

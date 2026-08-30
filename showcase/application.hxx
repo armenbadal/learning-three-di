@@ -12,6 +12,7 @@
 #include <engine3d/renderer/render_settings.hxx>
 #include <engine3d/renderer/renderer.hxx>
 #include <engine3d/renderer/software/software_renderer.hxx>
+#include <engine3d/renderer/opengl/opengl_renderer.hxx>
 #include <engine3d/scene/scene.hxx>
 
 namespace showcase {
@@ -55,6 +56,7 @@ private:
     e3d::platform::window _window;
     e3d::renderer::software_renderer _software_renderer;
     software_presenter _software_presenter;
+    e3d::renderer::opengl::opengl_renderer _opengl_renderer;
 
     e3d::scene::scene _scene;
     e3d::camera::camera _camera;

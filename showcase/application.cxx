@@ -16,12 +16,16 @@ application::application()
     : _window{{800, 600}, "Showcasse 0.1"}
     , _software_renderer{800, 600}
     , _software_presenter{}
+    , _opengl_renderer{}
     , _scene{}
     , _camera{
         e3d::math::vector3{0.0F, 0.0F, 3.0F},
         e3d::math::vector3{0.0F, 0.0F, 0.0F},
         e3d::camera::perspective_projection{}}
 {
+    const auto sz = _window.size();
+    _opengl_renderer.resize(sz.width, sz.height);
+
     build_scene();
 }
 
@@ -149,8 +153,9 @@ void application::update(duration delta_time)
 
 void application::render()
 {
-    _software_renderer.render(_scene, _camera, _render_settings);
-    _software_presenter.present(_software_renderer.framebuffer());
+    _opengl_renderer.render(_scene, _camera, _render_settings);
+    //_software_renderer.render(_scene, _camera, _render_settings);
+    //_software_presenter.present(_software_renderer.framebuffer());
 }
 
 void application::switch_renderer()
