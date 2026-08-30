@@ -2,7 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "engine3d/math/transform.hxx"
-#include "engine3d/renderer/pipeline.hxx"
+#include "engine3d/renderer/software/pipeline.hxx"
 
 #include <numbers>
 
@@ -21,11 +21,13 @@ auto approx(float value)
 camera::camera test_camera()
 {
     return {
-        ._position = {0.0F, 0.0F, 0.0F},
-        ._target = {0.0F, 0.0F, -1.0F},
-        ._fov_y = std::numbers::pi_v<float> / 2.0F,
-        ._near_plane = 1.0F,
-        ._far_plane = 10.0F
+        {0.0F, 0.0F, 0.0F},
+        {0.0F, 0.0F, -1.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 10.0F,
+        },
     };
 }
 
@@ -100,8 +102,8 @@ TEST_CASE("pipeline applies matrices in projection view model order")
     renderer::framebuffer fb{120, 120};
     renderer::pipeline pipeline{fb};
     auto camera = test_camera();
-    camera._position = {0.0F, 0.0F, 1.0F};
-    camera._target = {0.0F, 0.0F, 0.0F};
+    camera.position({0.0F, 0.0F, 1.0F});
+    camera.look_at({0.0F, 0.0F, 0.0F});
     const auto model = math::model_matrix(
         {0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 0.0F}, {1.0F, 1.0F, 2.0F});
     const renderer::triangle3d triangle{{
@@ -123,11 +125,13 @@ TEST_CASE("pipeline places a triangle for a camera looking at the origin")
     renderer::framebuffer fb{200, 100};
     renderer::pipeline pipeline{fb};
     const camera::camera camera{
-        ._position = {0.0F, 0.0F, 5.0F},
-        ._target = {0.0F, 0.0F, 0.0F},
-        ._fov_y = std::numbers::pi_v<float> / 2.0F,
-        ._near_plane = 1.0F,
-        ._far_plane = 10.0F
+        {0.0F, 0.0F, 5.0F},
+        {0.0F, 0.0F, 0.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 10.0F,
+        },
     };
     const renderer::triangle3d triangle{{
         {{-1.0F, -1.0F, 0.0F}},

@@ -6,6 +6,7 @@ namespace e3d::math {
 
 class vector2 {
 public:
+    constexpr vector2() noexcept = default;
     constexpr vector2(float x, float y) noexcept : _x{x}, _y{y} {}
 
     constexpr float x() const noexcept { return _x; }

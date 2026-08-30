@@ -1,8 +1,8 @@
 #include "engine3d/camera/camera.hxx"
 #include "engine3d/math/transform.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/imager.hxx"
-#include "engine3d/renderer/pipeline.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/imager.hxx"
+#include "engine3d/renderer/software/pipeline.hxx"
 
 #include <numbers>
 
@@ -18,12 +18,13 @@ int main()
     renderer::pipeline pipeline{framebuffer};
 
     const camera::camera camera{
-        ._position = {0.0F, 0.0F, 5.0F},
-        ._target = {0.0F, 0.0F, 0.0F},
-        ._up = {0.0F, 1.0F, 0.0F},
-        ._fov_y = std::numbers::pi_v<float> / 3.0F,
-        ._near_plane = 0.1F,
-        ._far_plane = 100.0F
+        {0.0F, 0.0F, 5.0F},
+        {0.0F, 0.0F, 0.0F},
+        camera::perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 3.0F,
+            .near_plane = 0.1F,
+            .far_plane = 100.0F,
+        },
     };
 
     const renderer::triangle3d triangle{{

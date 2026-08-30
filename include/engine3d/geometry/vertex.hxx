@@ -6,6 +6,12 @@
 
 namespace e3d::geometry {
 
+struct vertex {
+    math::vector3 position{};
+    graphics::colour colour{graphics::white};
+    math::vector3 normal{};
+};
+
 struct vertex2d {
     e3d::math::vector2 position;
     e3d::graphics::colour colour;

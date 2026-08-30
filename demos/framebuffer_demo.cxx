@@ -1,6 +1,6 @@
 #include "engine3d/graphics/colour.hxx"
-#include "engine3d/renderer/framebuffer.hxx"
-#include "engine3d/renderer/imager.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
+#include "engine3d/renderer/software/imager.hxx"
 
 #include <cstddef>
 

@@ -15,6 +15,10 @@ public:
     std::size_t width() const noexcept { return _width; }
     std::size_t height() const noexcept { return _height; }
 
+    // Replaces both buffers with cleared storage for the requested dimensions.
+    // Throws std::invalid_argument when the dimensions cannot be represented.
+    void resize(std::size_t width, std::size_t height);
+
     // Checked access; throws std::out_of_range for coordinates outside the buffer.
     graphics::colour& at(std::size_t x, std::size_t y);
     const graphics::colour& at(std::size_t x, std::size_t y) const;

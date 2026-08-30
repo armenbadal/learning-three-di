@@ -6,6 +6,7 @@ namespace e3d::graphics {
 
 class colour {
 public:
+    colour() = default;
     constexpr colour(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) noexcept
         : _r{r}, _g{g}, _b{b}, _a{a}
     {}

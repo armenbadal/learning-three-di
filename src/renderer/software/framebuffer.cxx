@@ -1,8 +1,9 @@
-#include "engine3d/renderer/framebuffer.hxx"
+#include "engine3d/renderer/software/framebuffer.hxx"
 
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
+#include <utility>
 
 namespace e3d::renderer {
 
@@ -26,6 +27,18 @@ framebuffer::framebuffer(std::size_t width, std::size_t height)
     , _pixels(checked_area(width, height), graphics::black)
     , _depth_buffer(_pixels.size(), 1.0F)
 {
+}
+
+void framebuffer::resize(std::size_t width, std::size_t height)
+{
+    const std::size_t area = checked_area(width, height);
+    std::vector<graphics::colour> pixels(area, graphics::black);
+    std::vector<float> depth_buffer(area, 1.0F);
+
+    _width = width;
+    _height = height;
+    _pixels = std::move(pixels);
+    _depth_buffer = std::move(depth_buffer);
 }
 
 graphics::colour& framebuffer::at(std::size_t x, std::size_t y)

@@ -11,17 +11,22 @@ using namespace e3d::camera;
 
 namespace {
     auto approx = [](float value) { return Catch::Approx(value).margin(1e-5f); };
+
+    perspective_projection test_projection()
+    {
+        return {};
+    }
 }
 
-TEST_CASE("camera constructor compiles with position, target, up")
+TEST_CASE("camera constructor accepts position, target, and projection")
 {
-    const camera cam({1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}, {0.0F, 1.0F, 0.0F});
-    CHECK(true);
+    const camera cam({1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}, test_projection());
+    CHECK(cam.position() == vector3{1.0F, 2.0F, 3.0F});
 }
 
 TEST_CASE("camera default up is Y-axis")
 {
-    const camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, {0.0F, 1.0F, 0.0F});
+    const camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, test_projection());
 
     const auto vm = cam.view_matrix();
     const auto im = e3d::math::matrix4x4{};
@@ -31,7 +36,7 @@ TEST_CASE("camera default up is Y-axis")
 
 TEST_CASE("view_matrix returns look_at result")
 {
-    const camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, {0.0F, 1.0F, 0.0F});
+    const camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, test_projection());
 
     const auto vm = cam.view_matrix();
     const auto lm = e3d::math::look_at({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, {0.0F, 1.0F, 0.0F});
@@ -41,7 +46,7 @@ TEST_CASE("view_matrix returns look_at result")
 
 TEST_CASE("view_matrix identity camera")
 {
-    const camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, {0.0F, 1.0F, 0.0F});
+    const camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, test_projection());
 
     const auto vm = cam.view_matrix();
     const auto im = e3d::math::matrix4x4{};
@@ -51,7 +56,7 @@ TEST_CASE("view_matrix identity camera")
 
 TEST_CASE("view_matrix translates eye position")
 {
-    const camera cam({1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}, {0.0F, 1.0F, 0.0F});
+    const camera cam({1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}, test_projection());
 
     const auto vm = cam.view_matrix();
     const e3d::math::vector4 eye{1.0F, 2.0F, 3.0F, 1.0F};
@@ -64,7 +69,7 @@ TEST_CASE("view_matrix translates eye position")
 
 TEST_CASE("view_matrix orthonormal basis")
 {
-    const camera cam({1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}, {0.0F, 1.0F, 0.0F});
+    const camera cam({1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}, test_projection());
 
     const auto vm = cam.view_matrix();
     const e3d::math::vector3 row0{vm(0, 0), vm(0, 1), vm(0, 2)};
@@ -80,22 +85,13 @@ TEST_CASE("view_matrix orthonormal basis")
     CHECK(e3d::math::dot(row1, row2) == approx(0.0F));
 }
 
-TEST_CASE("view_matrix with custom up vector")
+TEST_CASE("look_at updates the camera target")
 {
-    const camera cam({0.0F, 0.0F, 0.0F}, {1.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 1.0F});
+    camera cam({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, -1.0F}, test_projection());
+    cam.look_at({1.0F, 0.0F, 0.0F});
 
-    const auto vm = cam.view_matrix();
-    const e3d::math::vector3 row0{vm(0, 0), vm(0, 1), vm(0, 2)};
-    const e3d::math::vector3 row1{vm(1, 0), vm(1, 1), vm(1, 2)};
-    const e3d::math::vector3 row2{vm(2, 0), vm(2, 1), vm(2, 2)};
-
-    CHECK(row0.length() == approx(1.0F));
-    CHECK(row1.length() == approx(1.0F));
-    CHECK(row2.length() == approx(1.0F));
-
-    CHECK(e3d::math::dot(row0, row1) == approx(0.0F));
-    CHECK(e3d::math::dot(row0, row2) == approx(0.0F));
-    CHECK(e3d::math::dot(row1, row2) == approx(0.0F));
+    CHECK(cam.view_matrix()
+          == e3d::math::look_at({0.0F, 0.0F, 0.0F}, {1.0F, 0.0F, 0.0F}, {0.0F, 1.0F, 0.0F}));
 }
 
 TEST_CASE("projection_matrix uses camera projection settings")
@@ -103,10 +99,11 @@ TEST_CASE("projection_matrix uses camera projection settings")
     const camera cam{
         {0.0F, 0.0F, 0.0F},
         {0.0F, 0.0F, -1.0F},
-        {0.0F, 1.0F, 0.0F},
-        std::numbers::pi_v<float> / 2.0F,
-        1.0F,
-        10.0F,
+        perspective_projection{
+            .fov_y = std::numbers::pi_v<float> / 2.0F,
+            .near_plane = 1.0F,
+            .far_plane = 10.0F,
+        },
     };
 
     CHECK(cam.projection_matrix(2.0F)
