@@ -8,7 +8,7 @@ namespace e3d::renderer::opengl {
 
 class opengl_renderer final : public renderer {
 public:
-    opengl_renderer();
+    opengl_renderer(std::uint32_t width, std::uint32_t height);
     ~opengl_renderer() override;
 
     [[nodiscard]]

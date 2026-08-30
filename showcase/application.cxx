@@ -9,23 +9,25 @@
 #include <array>
 #include <cmath>
 #include <memory>
+#include <stdexcept>
 
 namespace showcase {
 
 application::application()
     : _window{{800, 600}, "Showcasse 0.1"}
-    , _software_renderer{800, 600}
     , _software_presenter{}
-    , _opengl_renderer{}
     , _scene{}
     , _camera{
         e3d::math::vector3{0.0F, 0.0F, 3.0F},
         e3d::math::vector3{0.0F, 0.0F, 0.0F},
-        e3d::camera::perspective_projection{}}
+        e3d::camera::perspective_projection{}
+    }
+    , _renderers{
+        std::make_unique<e3d::renderer::software_renderer>(800, 600),
+        std::make_unique<e3d::renderer::opengl::opengl_renderer>(800, 600)
+    }
 {
-    const auto sz = _window.size();
-    _opengl_renderer.resize(sz.width, sz.height);
-
+    resize_renderers();
     build_scene();
 }
 
@@ -37,7 +39,7 @@ int application::run()
 
     while( !_window.should_close() ) {
         _window.poll_events();
-        resize_software_renderer();
+        resize_renderers();
 
         const auto current_time = clock::now();
         const duration delta_time = current_time - previous_time;
@@ -75,17 +77,18 @@ void application::build_scene()
     //_scene.add(e3d::scene::scene_object{ground, e3d::scene::transform{{0.0F, -1.0F, 0.0F}, {0.0F, 0.0F, 0.0F}}});
 }
 
-void application::resize_software_renderer()
+void application::resize_renderers()
 {
     const auto window_size = _window.size();
     if( window_size.width == 0 || window_size.height == 0 )
         return;
-
-    const auto& framebuffer = _software_renderer.framebuffer();
-    if( framebuffer.width() == window_size.width && framebuffer.height() == window_size.height )
+    if( window_size.width == _renderer_size.width && window_size.height == _renderer_size.height )
         return;
 
-    _software_renderer.resize(window_size.width, window_size.height);
+    for( const auto& renderer : _renderers )
+        renderer->resize(window_size.width, window_size.height);
+
+    _renderer_size = window_size;
 }
 
 void application::process_input(duration delta_time)
@@ -105,11 +108,13 @@ void application::process_input(duration delta_time)
     if( _window.key_down(e3d::platform::key::d) )
         _camera_yaw += orbit_speed * delta_time.count();
     if( _window.key_down(e3d::platform::key::w) )
-        _camera_distance = std::max(
-            minimum_camera_distance,
-            _camera_distance - zoom_speed * delta_time.count());
+        _camera_distance = std::max(minimum_camera_distance, _camera_distance - zoom_speed * delta_time.count());
     if( _window.key_down(e3d::platform::key::s) )
         _camera_distance += zoom_speed * delta_time.count();
+    if( _window.key_down(e3d::platform::key::one) )
+        _active_renderer_index = 0;
+    if( _window.key_down(e3d::platform::key::two) )
+        _active_renderer_index = 1;
 
     _camera.position({
         std::sin(_camera_yaw) * _camera_distance,
@@ -153,14 +158,23 @@ void application::update(duration delta_time)
 
 void application::render()
 {
-    _opengl_renderer.render(_scene, _camera, _render_settings);
-    //_software_renderer.render(_scene, _camera, _render_settings);
-    //_software_presenter.present(_software_renderer.framebuffer());
+    active_renderer().render(_scene, _camera, _render_settings);
+    if( _active_renderer_index == 0 )
+        _software_presenter.present(software_backend().framebuffer());
 }
 
 void application::switch_renderer()
 {
     _active_renderer_index = (_active_renderer_index + 1)  % _renderers.size();
+}
+
+e3d::renderer::software_renderer& application::software_backend()
+{
+    auto* renderer = dynamic_cast<e3d::renderer::software_renderer*>(_renderers[0].get());
+    if( renderer == nullptr )
+        throw std::logic_error{"Software renderer is not configured at index 0."};
+
+    return *renderer;
 }
 
 e3d::renderer::renderer& application::active_renderer() noexcept

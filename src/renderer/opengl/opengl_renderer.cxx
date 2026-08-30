@@ -125,9 +125,11 @@ private:
 };
 
 
-opengl_renderer::opengl_renderer()
+opengl_renderer::opengl_renderer(std::uint32_t width, std::uint32_t height)
     : _impl{std::make_unique<implementation>()}
-{}
+{
+    resize(width, height);
+}
 
 opengl_renderer::~opengl_renderer() = default;
 
