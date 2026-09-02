@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 4.2)
 
-set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_CXX_EXTENSIONS off)
@@ -58,7 +56,6 @@ target_include_directories(engine3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(engine3d PRIVATE glad_gl_core_46 glfw)
 
 find_package(Catch2 3 CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_executable(engine3d-tests
